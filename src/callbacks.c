@@ -52,6 +52,7 @@ void cb_connect(GObject *obj, struct connect_data *cd) {
 void cb_disconnect(GObject *obj, struct connect_data *cd) {
 
   LOG_STOPPED = 1;
+  pthread_join(log_thread, NULL);
 
   gtk_widget_set_visible(GTK_WIDGET(cd->conn_btn), 1);
   gtk_widget_set_visible(GTK_WIDGET(cd->disconn_btn), 0);
