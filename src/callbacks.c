@@ -43,7 +43,6 @@ void cb_connect(GObject *obj, struct connect_data *cd) {
   gtk_widget_set_visible(GTK_WIDGET(cd->conn_btn), 0);
   gtk_widget_set_visible(GTK_WIDGET(cd->disconn_btn), 1);
 
-
 }
 
 
@@ -93,10 +92,10 @@ struct connect_data *create_cd(
   cd->serial_fd = -1;
   cd->serial_path = "/dev/ttyACM0";
   cd->res = 0;
-  cd->main_win = NULL;
-  cd->conn_btn = NULL;
-  cd->disconn_btn = NULL;
-  cd->log_lbl = NULL;
+  cd->main_win = main_win;
+  cd->conn_btn = conn_btn;
+  cd->disconn_btn = disconn_btn;
+  cd->log_lbl = log_lbl;
 
   return cd;
 }
