@@ -9,6 +9,7 @@
 
 extern int LOG_STOPPED;
 extern pthread_t log_thread;
+struct thread_data td;
 
 
 
