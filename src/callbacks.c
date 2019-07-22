@@ -38,6 +38,7 @@ void cb_connect(GObject *obj, struct connect_data *cd) {
   // start log thread
   td.serial_fd = cd->serial_fd;
   td.log_lbl = cd->log_lbl;
+  td.scroll = cd->scroll;
   pthread_create(&log_thread, NULL, log_update, &td);
 
   gtk_widget_set_visible(GTK_WIDGET(cd->conn_btn), 0);
@@ -85,7 +86,8 @@ struct connect_data *create_cd(
     GObject *main_win, 
     GObject *conn_btn, 
     GObject *disconn_btn, 
-    GObject *log_lbl)
+    GObject *log_lbl,
+    GObject *scroll)
 {
   struct connect_data * cd = malloc(sizeof(struct connect_data));
   
@@ -96,6 +98,7 @@ struct connect_data *create_cd(
   cd->conn_btn = conn_btn;
   cd->disconn_btn = disconn_btn;
   cd->log_lbl = log_lbl;
+  cd->scroll = scroll;
 
   return cd;
 }
