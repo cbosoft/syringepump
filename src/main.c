@@ -4,6 +4,7 @@
 #include "error.h"
 #include "callbacks.h"
 
+int LOG_STOPPED = 1;
 int main (int argc, char **argv)
 {
   GtkBuilder *builder;
