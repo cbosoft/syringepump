@@ -18,8 +18,10 @@ void *log_update(void *vptr)
     
     // write to label
     char *current_text = (char *)gtk_label_get_text(GTK_LABEL(td->log_lbl));
-    char *new_text = calloc(strlen(current_text) + strlen(received_text) + 1, sizeof(char));
+    char *new_text = calloc(strlen(current_text) + 1 + strlen(received_text) + 1, sizeof(char));
     strcat(new_text, current_text);
+    if (strlen(current_text))
+      strcat(new_text, "\n");
     strcat(new_text, received_text);
     gtk_label_set_text(GTK_LABEL(td->log_lbl), new_text);
     free(new_text);
