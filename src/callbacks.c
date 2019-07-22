@@ -57,6 +57,7 @@ void cb_disconnect(GObject *obj, struct connect_data *cd) {
   gtk_widget_set_visible(GTK_WIDGET(cd->conn_btn), 1);
   gtk_widget_set_visible(GTK_WIDGET(cd->disconn_btn), 0);
 
+  close(cd->serial_fd);
 
 
 
