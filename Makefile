@@ -3,7 +3,7 @@ FQBN 			= archlinux-arduino:avr:uno
 HARDWARE	=	/usr/share/arduino/hardware
 TOOLS			=	/usr/bin
 BUILD			= build
-TARGET		= syrpu
+TARGET		= spfw
 
 # UPLOAD OPTIONS
 CONFIG		= /etc/avrdude.conf
