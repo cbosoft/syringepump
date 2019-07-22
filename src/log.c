@@ -24,6 +24,9 @@ void *log_update(void *vptr)
     gtk_label_set_text(GTK_LABEL(td->log_lbl), new_text);
     free(new_text);
 
+    GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(td->scroll));
+    gtk_adjustment_set_value(vadj, gtk_adjustment_get_upper(vadj));
+
     // write to log file
     // TODO
   }
