@@ -5,6 +5,8 @@
 #include "callbacks.h"
 
 int LOG_STOPPED = 1;
+pthread_t log_thread;
+
 int main (int argc, char **argv)
 {
   GtkBuilder *builder;
