@@ -17,10 +17,8 @@ int ard_openserial(const char *serial_port_path)
 
   fd = open(serial_port_path, O_RDWR | O_NOCTTY);
 
-  if (fd < 0) {
-    fprintf(stderr, "(%d) %s\n", errno, strerror(errno));
-    exit(1);
-  }
+  if (fd < 0)
+    return -1;
 
   struct termios toptions;
   tcgetattr(fd, &toptions);
