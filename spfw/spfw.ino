@@ -1,4 +1,5 @@
 #include <SPI.h>
+#include "hx711.h"
 
 // MOTOR
 
@@ -6,7 +7,7 @@
 const int MOTOR_PWM_PIN = 4;
 
 // Motor direction is controlled by H-bridge: two transistors control the
-// direction. If PIN_1 is high and PIN_2 is low.
+// direction. If PIN_1 is high and PIN_2 is low... TODO
 const int MOTOR_DIR_PIN_1 = 5;
 const int MOTOR_DIR_PIN_2 = 6;
 
@@ -40,20 +41,20 @@ float getSpeed()
   //speed_current = XX;
 
   // then return value
-  //return XX;
+  return speed_current;
 }
 
 long getLoadCellReading()
 {
   // TODO
   // ask ADC over SPI to send load cell signal
-  byte buf[3] = {0, 1, 2}; // TODO
-  SPI.beginTransaction(SPISettings(SPI_BITRATE, MSBFIRST, SPI_MODE0);
-  SPI.transfer(buf, 3);
-  SPI.endTransaction();
+  //byte buf[3] = {0, 1, 2}; // TODO
+  //SPI.beginTransaction(SPISettings(SPI_BITRATE, MSBFIRST, SPI_MODE0));
+  //SPI.transfer(buf, 3);
+  //SPI.endTransaction();
   // TODO: convert buf to number
-  long rv = 22l;
 
+  long rv = 22l;
   return rv;
 }
 
@@ -99,7 +100,7 @@ void setup ()
 {
   Serial.begin(9600);
   
-  SPI.begin();
+  //SPI.begin();
 
   // Load cell
   pinMode(SPI_CS, OUTPUT);
@@ -111,7 +112,7 @@ void setup ()
 
   // Optical encoder setup
   pinMode(OPT_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(OPT_PIN), optMark, BOTH);
+  attachInterrupt(digitalPinToInterrupt(OPT_PIN), optMark, CHANGE);
 
 }
 
