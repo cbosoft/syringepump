@@ -27,6 +27,7 @@ int main (int argc, char **argv)
   GObject *conn_btn     = gtk_builder_get_object(builder, "btnConn");
   GObject *disconn_btn  = gtk_builder_get_object(builder, "btnDisconn");
   GObject *ok_btn       = gtk_builder_get_object(builder, "btnOK");
+  GObject *scroll       = gtk_builder_get_object(builder, "scroll");
 
   struct connect_data *cd = create_cd(
       -1, 
@@ -35,7 +36,8 @@ int main (int argc, char **argv)
       main_win,
       conn_btn,
       disconn_btn,
-      log_lbl);
+      log_lbl,
+      scroll);
 
   g_signal_connect(main_win, "destroy", G_CALLBACK(cb_quit), cd);
   g_signal_connect(close_btn, "clicked", G_CALLBACK(cb_quit), cd);
