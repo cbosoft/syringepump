@@ -25,10 +25,6 @@ int main (int argc, char **argv)
   GObject *disconn_btn  = gtk_builder_get_object(builder, "btnDisconn");
   GObject *ok_btn       = gtk_builder_get_object(builder, "btnOK");
 
-  g_signal_connect(main_win, "destroy", G_CALLBACK(cb_quit), NULL);
-  g_signal_connect(close_btn, "clicked", G_CALLBACK(cb_quit), NULL);
-  g_signal_connect(ok_btn, "clicked", G_CALLBACK(cb_quit), NULL);
-
   struct connect_data *cd = create_cd(
       -1, 
       "/dev/ttyACM0",
@@ -38,6 +34,9 @@ int main (int argc, char **argv)
       disconn_btn,
       log_lbl);
 
+  g_signal_connect(main_win, "destroy", G_CALLBACK(cb_quit), cd);
+  g_signal_connect(close_btn, "clicked", G_CALLBACK(cb_quit), cd);
+  g_signal_connect(ok_btn, "clicked", G_CALLBACK(cb_quit), cd);
   g_signal_connect(conn_btn, "clicked", G_CALLBACK(cb_connect), cd);
   g_signal_connect(disconn_btn, "clicked", G_CALLBACK(cb_disconnect), cd);
 
