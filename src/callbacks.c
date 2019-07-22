@@ -59,7 +59,9 @@ void cb_disconnect(GObject *obj, struct connect_data *cd) {
 
   close(cd->serial_fd);
 
+  timestamp("disconnected");
 
+}
 
 
 
