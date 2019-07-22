@@ -13,8 +13,7 @@ struct thread_data td;
 
 
 
-
-void cb_connect(struct connect_data *cd) {
+void cb_connect(GObject *obj, struct connect_data *cd) {
 
   timestamp("connecting to \"%s\"", cd->serial_path);
   int serial_fd = ard_openserial(cd->serial_path);
@@ -52,12 +51,18 @@ void cb_connect(struct connect_data *cd) {
 
 
 
-void cb_disconnect(struct connect_data *cd) {
+void cb_disconnect(GObject *obj, struct connect_data *cd) {
 
   LOG_STOPPED = 1;
 
   gtk_widget_set_visible(GTK_WIDGET(cd->conn_btn), 1);
   gtk_widget_set_visible(GTK_WIDGET(cd->disconn_btn), 0);
+
+
+
+
+
+
 
 }
 
