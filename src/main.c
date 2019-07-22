@@ -2,6 +2,7 @@
 #include <pthread.h>
 
 #include "error.h"
+#include "callbacks.h"
 
 int main (int argc, char **argv)
 {
@@ -17,18 +18,32 @@ int main (int argc, char **argv)
     return 1;
   }
 
-  window = gtk_builder_get_object(builder, "window");
-  g_signal_connect(window, "destroy", G_CALLBACK(close_threads_and_quit), NULL);
+  GObject *main_win     = gtk_builder_get_object(builder, "winMain");
+  GObject *log_lbl      = gtk_builder_get_object(builder, "lblLog");
+  GObject *close_btn    = gtk_builder_get_object(builder, "btnClose");
+  GObject *conn_btn     = gtk_builder_get_object(builder, "btnConn");
+  GObject *disconn_btn  = gtk_builder_get_object(builder, "btnDisconn");
+  GObject *ok_btn       = gtk_builder_get_object(builder, "btnOK");
 
-  label = gtk_builder_get_object(builder, "label");
+  g_signal_connect(main_win, "destroy", G_CALLBACK(cb_quit), NULL);
+  g_signal_connect(close_btn, "clicked", G_CALLBACK(cb_quit), NULL);
+  g_signal_connect(ok_btn, "clicked", G_CALLBACK(cb_quit), NULL);
 
-  pthread_t thread;
+  struct connect_data *cd = create_cd(
+      -1, 
+      "/dev/ttyACM0",
+      0,
+      main_win,
+      conn_btn,
+      disconn_btn,
+      log_lbl);
 
-  pthread_create(&thread, NULL, f, label);
+  g_signal_connect(conn_btn, "clicked", G_CALLBACK(cb_connect), cd);
+  g_signal_connect(disconn_btn, "clicked", G_CALLBACK(cb_disconnect), cd);
 
   gtk_main();
 
-  pthread_join(thread, NULL);
+  free(cd);
 
   return 0;
 }
