@@ -63,7 +63,14 @@ void cb_disconnect(struct connect_data *cd) {
 
 
 
-struct connect_data *create_cd(int serial_fd, char *serial_path, int res, GObject *main_win, GObject *conn_btn, GObject *disconn_btn, GObject *log_lbl)
+struct connect_data *create_cd(
+    int serial_fd, 
+    char *serial_path, 
+    int res, 
+    GObject *main_win, 
+    GObject *conn_btn, 
+    GObject *disconn_btn, 
+    GObject *log_lbl)
 {
   struct connect_data * cd = malloc(sizeof(struct connect_data));
   
