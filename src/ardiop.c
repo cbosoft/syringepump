@@ -41,8 +41,8 @@ int ard_openserial(const char *serial_port_path)
 
   tcsetattr(fd, TCSANOW, &toptions);
 
-  // give the arduino a second to catch up
-  usleep(1000 * 1000);
+  // give the arduino a little bit of time to catch up
+  usleep(100*1000);
 
   //flush stream
   tcflush(fd, TCIFLUSH);
