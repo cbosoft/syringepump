@@ -83,7 +83,7 @@ int ard_readserial_until(
 
   } while( b[0] != until && i < buf_max);
 
-  buf[i] = 0;
+  buf[i-1] = 0;
   return 0;
 }
 
