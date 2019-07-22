@@ -36,7 +36,6 @@ void cb_connect(GObject *obj, struct connect_data *cd) {
   }
 
   // start log thread
-  struct thread_data td;
   td.serial_fd = cd->serial_fd;
   td.log_lbl = cd->log_lbl;
   pthread_create(&log_thread, NULL, log_update, &td);
