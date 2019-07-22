@@ -65,6 +65,14 @@ void cb_disconnect(GObject *obj, struct connect_data *cd) {
 
 
 
+void cb_quit(GObject *obj, struct connect_data *cd) {
+  
+  timestamp("closing...");
+
+  if (!LOG_STOPPED)
+    cb_disconnect(NULL, cd);
+
+  gtk_main_quit();
 
 }
 
