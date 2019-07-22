@@ -46,7 +46,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="btnDC">
+              <object class="GtkButton" id="btnDisconn">
                 <property name="label">gtk-disconnect</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
