@@ -16,9 +16,9 @@ struct thread_data td;
 void cb_connect(GObject *obj, struct connect_data *cd) {
 
   timestamp("connecting to \"%s\"", cd->serial_path);
-  int serial_fd = ard_openserial(cd->serial_path);
+  cd->serial_fd = ard_openserial(cd->serial_path);
 
-  if (serial_fd < 0) {
+  if (cd->serial_fd < 0) {
     timestamp("connecting to \"%s\"", cd->serial_path);
 
     GtkWidget *dialog = gtk_message_dialog_new(
@@ -32,7 +32,6 @@ void cb_connect(GObject *obj, struct connect_data *cd) {
         strerror(errno));
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
-
     return;
   }
 
