@@ -226,10 +226,10 @@ void setup ()
     while (!Serial.available()) delay(100);
 
     char recvd[65];
-    byte size = Serial.readBytes(input, 64);
+    byte size = Serial.readBytes(recvd, 64);
 
-    char* key = strok(input, "=");
-    char* val = strok(0, "=");
+    char* key = strtok(recvd, "=");
+    char* val = strtok(0, "=");
 
     if (key == 0) continue;
 
@@ -237,20 +237,19 @@ void setup ()
       speed_set_point = atof(val);
       got_setpoint = true;
     }
-    else if (strcmp(key, "kp") == ) {
+    else if (strcmp(key, "kp") == 0) {
       kp = atof(val);
       got_kp = true;
     }
-    else if (strcmp(key, "ki") == ) {
+    else if (strcmp(key, "ki") == 0) {
       ki = atof(val);
       got_ki = true;
     }
-    else if (strcmp(key, "kd") == ) {
+    else if (strcmp(key, "kd") == 0) {
       kd = atof(val);
       got_kd = true;
     }
     
-  }
   } 
 
   // reset millis counter to zero
