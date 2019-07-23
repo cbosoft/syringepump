@@ -22,19 +22,14 @@ const int LC_CLK = 8;
 const long LC_OFFSET = 0;
 const long LC_DIVIDER = 1;
 
-
-// ADC
-const int SPI_BITRATE = 14000000;
-const int SPI_CS = 13;
-const int SPI_MOSI = 17;
-const int SPI_MISO = 17;
-
+// RULERS
+const int RULER_LENGTH_PIN = A0;
+const int RULER_DIAMETER_PIN = A1;
 
 
 // OPTICAL ENCODER
-
 // Arduino UNO has two hardware interrupt pins: 2, 3;
-const int OPT_PIN = 2;
+#define OPT_PIN = 2;
 #define TIME_LEN 10
 static unsigned long times[TIME_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 static unsigned int time_counts = 0;
@@ -54,15 +49,17 @@ float getSpeed()
 
 long getLoadCellReading()
 {
-  // TODO
-  // ask ADC over SPI to send load cell signal
-  //byte buf[3] = {0, 1, 2}; // TODO
-  //SPI.beginTransaction(SPISettings(SPI_BITRATE, MSBFIRST, SPI_MODE0));
-  //SPI.transfer(buf, 3);
-  //SPI.endTransaction();
-  // TODO: convert buf to number
-
   return loadcell.get_value(1);
+}
+
+long getPositionReading()
+{
+  return analogRead(RULER_LENGTH_PIN);
+}
+
+long getDiameterReading()
+{
+  return analogRead(RULER_DIAMETER_PIN);
 }
 
 
@@ -95,6 +92,10 @@ void logToSerial() {
   
   // load cell
   Serial.print(getLoadCellReading());
+  Serial.print(",");
+  
+  // position (ruler)
+  Serial.print(getPositionReading());
   Serial.print(",");
 
   // speed
