@@ -21,7 +21,7 @@ void refresh_serial_list(struct Data *data)
   struct dirent *dir;
   d = opendir("/dev/.");
   if (!d) {
-    timestamp(data, "Error reading /dev/*");
+    timestamp_error(data, "Error reading /dev/*");
     return;
   }
 
@@ -40,7 +40,7 @@ void refresh_serial_list(struct Data *data)
   }
 
   if (!count) {
-    timestamp(data, "No arduino found!");
+    timestamp_error(data, "No arduino found!");
 
     // disable connect button
     gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
@@ -68,7 +68,7 @@ void send_key_value_to_arduino(struct Data *data, const char *key, void *val_vpt
   char value[(ARDUINO_MESG_LEN/2) + 1] = {0};
 
   if (strlen(key) > ARDUINO_MESG_LEN/2) {
-    timestamp(data, 
+    timestamp_error(data, 
         "KEY TOO LARGE TO SEND (must be < %d chars, is %lu chars)", 
         ARDUINO_MESG_LEN/2, 
         strlen(key));
@@ -78,7 +78,7 @@ void send_key_value_to_arduino(struct Data *data, const char *key, void *val_vpt
   switch(type) {
     case T_STR:
       if (strlen((char *)val_vptr) > ARDUINO_MESG_LEN/2) {
-        timestamp(data, 
+        timestamp_error(data, 
             "VALUE TOO LARGE TO SEND (must be < %d chars, is %lu chars)", 
             ARDUINO_MESG_LEN/2,
             strlen((char *)val_vptr));
