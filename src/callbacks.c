@@ -37,7 +37,10 @@ void cb_connect(GObject *obj, struct Data *data)
     return;
   }
 
-  pthread_create(&log_thread, NULL, log_update, &data);
+  timestamp(data, "waiting on arduino...");
+  sleep(2);
+
+  timestamp(data, "connected!");
 
   gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
