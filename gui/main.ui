@@ -75,6 +75,7 @@
                     <property name="tooltip_text" translatable="yes">Set point is the goal for the control system to achevie/maintain. The actual speed is subtracted from the setpoint to give an Error value, which is used along with the control parameters defined below to find an appropriate control action to give in order to maintain the setpoint speed using the PID algorithm:
 
 CA = (K&lt;sub&gt;P&lt;/sub&gt; × Error) + (K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt) + (K&lt;sub&gt;D&lt;/sub&gt; × dError/dt)</property>
+                    <property name="text" translatable="yes">10.0</property>
                     <property name="input_purpose">number</property>
                   </object>
                   <packing>
