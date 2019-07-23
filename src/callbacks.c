@@ -49,6 +49,32 @@ void cb_connect(GObject *obj, struct Data *data)
   gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
 
+  send_key_value_to_arduino(
+      data, 
+      "setpoint", 
+      (void *)gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)),
+      T_STR);
+
+  send_key_value_to_arduino(
+      data, 
+      "kp", 
+      (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)),
+      T_STR);
+
+  send_key_value_to_arduino(
+      data, 
+      "ki", 
+      (void *)gtk_entry_get_text(GTK_ENTRY(data->ki_inp)),
+      T_STR);
+
+  send_key_value_to_arduino(
+      data, 
+      "kd", 
+      (void *)gtk_entry_get_text(GTK_ENTRY(data->kd_inp)),
+      T_STR);
+
+  pthread_create(&log_thread, NULL, log_update, data);
+
 }
 
 
