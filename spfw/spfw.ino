@@ -16,6 +16,14 @@ static long speed_current = 0;
 
 
 // LOAD CELL
+HX711 loadcell;
+const int LC_DOUT = 7;
+const int LC_CLK = 8;
+const long LC_OFFSET = 0;
+const long LC_DIVIDER = 1;
+
+
+// ADC
 const int SPI_BITRATE = 14000000;
 const int SPI_CS = 13;
 const int SPI_MOSI = 17;
@@ -54,8 +62,7 @@ long getLoadCellReading()
   //SPI.endTransaction();
   // TODO: convert buf to number
 
-  long rv = 22l;
-  return rv;
+  return loadcell.get_value(1);
 }
 
 
@@ -103,6 +110,11 @@ void setup ()
   //SPI.begin();
 
   // Load cell
+  loadcell.begin(LC_DOUT, LC_CLK);
+  loadcell.set_scale(LC_DIVIDER);
+  loadcell.set_offset(LC_OFFSET);
+
+  // ADC
   pinMode(SPI_CS, OUTPUT);
 
   // Motor setup
