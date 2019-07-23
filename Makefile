@@ -24,7 +24,7 @@ clean:
 
 CC    = gcc
 CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
-LINK   = $(shell pkg-config --libs gtk+-3.0)
+LINK   = $(shell pkg-config --libs gtk+-3.0) -lX11
 OBJ   = src/main.o \
 				src/ardiop.o \
 				src/callbacks.o \

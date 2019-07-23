@@ -9,58 +9,6 @@ static char *log_string = NULL;
 
 
 
-void *log_update(void *void_data)
-{ 
-  struct Data *data = (struct Data *)void_data;
-  
-  timestamp(data, "Waiting for Arduino...");
-  int arduino_ready = 0, rv = 0;
-  while (!arduino_ready) {
-    char received_text[512] = {0};
-
-    if ( (rv = ard_readserial_line(data->serial_fd, received_text, 512, 1000)) ) {
-      timestamp(NULL, "Error reading from serial (%d)", rv);
-    }
-    timestamp(NULL, received_text);
-
-    if (strcmp(received_text, "START") == 0) {
-      arduino_ready = 1;
-    }
-
-  }
-  timestamp(data, "Arduino ready, starting!");
-
-  // TODO open log file
-
-  int i = 0;
-  LOG_STOPPED = 0;
-  while (!LOG_STOPPED) {
-    char received_text[512] = {0};
-    
-    puts("!!");
-    if ( (rv = ard_readserial_line(data->serial_fd, received_text, 512, 1000)) ) {
-      timestamp(NULL, "Error reading from serial (%d)", rv);
-      LOG_STOPPED = 1;
-      return NULL;
-    }
-
-    timestamp( ( (i % 10) == 0) ? data : NULL, "R: %s", received_text);
-
-    i = (i % 10 == 0) ? (1) : (i + 1);
-
-    // write to log file
-    // TODO
-  }
-
-  // post log;
-  // TODO close log file
-
-  return NULL;
-}
-
-
-
-
 void append_text_to_log(struct Data *data, const char *added_markup)
 {
 

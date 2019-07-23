@@ -1,18 +1,18 @@
 #include <gtk/gtk.h>
-#include <pthread.h>
+#include <X11/Xlib.h>
 
 #include "error.h"
 #include "serial.h"
 #include "callbacks.h"
 
 int LOG_STOPPED = 1;
-pthread_t log_thread;
 
 int main (int argc, char **argv)
 {
   GtkBuilder *builder;
   GError *error = NULL;
-
+  
+  XInitThreads();
   gtk_init(&argc, &argv);
 
   builder = gtk_builder_new();
