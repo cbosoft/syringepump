@@ -134,15 +134,15 @@ void updateMotorDC()
 
 void optMark()
 {
-  if (time_counts < TIME_LEN) {
-    times[time_counts] = millis();
-    time_counts ++;
+  if (time_count < TIME_LEN) {
+    time_hist[time_count] = millis();
+    time_count ++;
   }
   else {
     for (int i = 1; i < TIME_LEN; i++) {
-      times[i-1] = times[i];
+      time_hist[i-1] = time_hist[i];
     }
-    times[TIME_LEN-1] = millis();
+    time_hist[TIME_LEN-1] = millis();
   }
 }
 
