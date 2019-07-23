@@ -13,6 +13,7 @@
 void refresh_serial_list(struct Data *data)
 {
   timestamp(data, "Searching for Arduino...");
+  gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
   DIR *d;
   struct dirent *dir;
@@ -25,7 +26,7 @@ void refresh_serial_list(struct Data *data)
   int count = 0;
 
   while ((dir = readdir(d)) != NULL) {
-    if (strstr(dir->d_name, "tty") != NULL) {
+    if (strstr(dir->d_name, "ttyACM") != NULL) {
 
       char path[261] = {0};
       sprintf(path, "/dev/%s", dir->d_name);
@@ -38,9 +39,16 @@ void refresh_serial_list(struct Data *data)
 
   if (!count) {
     timestamp(data, "No arduino found!");
+
+    // disable connect button
     gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
   }
   else {
+
+    // enable connect button
+    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
+
+    gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
     if (count == 1) {
       timestamp(data, "Arduino found!");
     }
