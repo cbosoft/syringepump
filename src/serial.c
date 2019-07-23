@@ -12,11 +12,13 @@
 
 void refresh_serial_list(struct Data *data)
 {
+  timestamp(data, "Searching for Arduino...");
+
   DIR *d;
   struct dirent *dir;
   d = opendir("/dev/.");
   if (!d) {
-    timestamp(data, "error reading /dev/*");
+    timestamp(data, "Error reading /dev/*");
     return;
   }
 
@@ -37,5 +39,13 @@ void refresh_serial_list(struct Data *data)
   if (!count) {
     timestamp(data, "No arduino found!");
     gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
+  }
+  else {
+    if (count == 1) {
+      timestamp(data, "Arduino found!");
+    }
+    else {
+      timestamp(data, "Multiple possible Arduino found.");
+    }
   }
 }
