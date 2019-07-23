@@ -15,6 +15,7 @@ extern pthread_t log_thread;
 
 void cb_connect(GObject *obj, struct Data *data)
 {
+  data->serial_path = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
   timestamp(data, "connecting to \"%s\"", data->serial_path);
   data->serial_fd = ard_openserial(data->serial_path);
