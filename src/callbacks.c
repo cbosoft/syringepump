@@ -106,18 +106,22 @@ static void *arduino_connect_thread(void *vptr_data)
     return;
   }
 
-  timestamp(data, "waiting on arduino...");
-  sleep(2);
 
   timestamp(data, "connected!");
 
   gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
+  timestamp(data, "Waiting on Arduino...");
+  wait_for(data, "ON", 100);
+  timestamp(data, "Connected!");
   gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
   gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
 
+  wait_for(data, "WAIT", 100);
+
+  timestamp(data, "Sending run parameters to Arduino");
   send_key_value_to_arduino(
       data, 
       "setpoint", 

@@ -4,8 +4,10 @@
 #include <gtk/gtk.h>
 
 
+#include "ardiop.h"
 #include "serial.h"
 #include "error.h"
+#include "data.h"
 
 
 
@@ -58,6 +60,9 @@ void refresh_serial_list(struct Data *data)
   }
 }
 
+
+
+
 void send_key_value_to_arduino(struct Data *data, const char *key, void *val_vptr, int type)
 {
   char value[(ARDUINO_MESG_LEN/2) + 1] = {0};
@@ -94,10 +99,15 @@ void send_key_value_to_arduino(struct Data *data, const char *key, void *val_vpt
   strcat(mesg, "=");
   strcat(mesg, value);
 
-  timestamp(data, "sending k/v pair: %s", mesg);
+  timestamp(NULL, "sending k/v pair: %s", mesg);
   write(data->serial_fd, mesg, ARDUINO_MESG_LEN);
 
-  // give the Arduino time to read the full string
-  sleep(2);
+  if (wait_for(data, "OK", 10)) {
+    timestamp(NULL, "arduino did not reply okay");
+    exit(1);
+    // TODO: deal with this properly
+  }
+
+  timestamp(data, "Sent data { %s = %s } successfully.", key, value);
 
 }
