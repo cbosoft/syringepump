@@ -38,8 +38,8 @@ void cb_connect(GObject *obj, struct Data *data)
 
   pthread_create(&log_thread, NULL, log_update, &data);
 
-  gtk_widget_set_visible(GTK_WIDGET(data->conn_btn), 0);
-  gtk_widget_set_visible(GTK_WIDGET(data->disconn_btn), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
 
 }
 
@@ -52,8 +52,8 @@ void cb_disconnect(GObject *obj, struct Data *data)
   LOG_STOPPED = 1;
   pthread_join(log_thread, NULL);
 
-  gtk_widget_set_visible(GTK_WIDGET(data->conn_btn), 1);
-  gtk_widget_set_visible(GTK_WIDGET(data->disconn_btn), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 0);
 
   close(data->serial_fd);
 
