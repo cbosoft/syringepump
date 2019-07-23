@@ -6,6 +6,7 @@
 #include "ardiop.h"
 #include "error.h"
 #include "log.h"
+#include "serial.h"
 
 extern int LOG_STOPPED;
 extern pthread_t log_thread;
@@ -77,6 +78,13 @@ void cb_quit(GObject *obj, struct connect_data *cd)
 
   gtk_main_quit();
 
+}
+
+
+
+void cb_refresh_serial(GObject *obj, struct connect_data *cd )
+{
+  get_serial_name(GTK_COMBO_BOX_TEXT(cd->serial_cmb), GTK_WIDGET(cd->conn_btn));
 }
 
 
