@@ -38,7 +38,10 @@ const long LC_DIVIDER = 1;
 
 // }}}
 // RULERS {{{
-const int RULER_LENGTH_PIN = A0;
+const int RULER_POSITION_PIN = A0;
+const int RULER_POSITION_END = 960;
+int RULER_POSITION_START = 0;
+
 const int RULER_DIAMETER_PIN = A1;
 // }}}
 // OPTICAL ENCODER {{{
@@ -100,7 +103,7 @@ long getLoadCellReading()
 
 long getPositionReading()
 {
-  return analogRead(RULER_LENGTH_PIN);
+  return analogRead(RULER_POSITION_PIN);
 }
 
 
@@ -169,6 +172,23 @@ void logToSerial() {
 
 
 
+void checkPosition()
+{
+  long position = getPositionReading();
+  
+  if ((position > RULER_POSITION_END) && (!REVERSING)) {
+    motorSetDirection(REVERSE);
+    motorSetDC(255);
+    REVERSING = true;
+  }
+  else if ((position < RULER_POSITION_START) && (REVERSING)) {
+    motorSetDC(0);
+    STOPPED = true;
+  }
+}
+
+
+
 
 void setup () 
 {
@@ -231,6 +251,8 @@ void setup ()
     
   }
 
+  RULER_POSITION_START = getPositionReading();
+
   Serial.print("START\n");
 
 }
@@ -245,6 +267,14 @@ void loop ()
 
   // log stuff
   logToSerial();
+
+  // check position, update direction
+  checkPosition();
+
+  while (STOPPED) {
+    Serial.print("STOP\n");
+    delay(1000);
+  }
 }
 
 // vim: foldmethod=marker
