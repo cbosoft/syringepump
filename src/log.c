@@ -8,6 +8,7 @@ extern int LOG_STOPPED;
 void *log_update(void *void_data)
 { 
   struct Data *data = (struct Data *)void_data;
+
   // TODO open log file
   int i = 0;
   LOG_STOPPED = 0;
@@ -18,7 +19,6 @@ void *log_update(void *void_data)
     timestamp(data, "rec'd \"%s\"", received_text);
 
     if (i % 200 == 0) {
-      // write to label
       append_text_to_log(data, received_text);
       i = 0;
     }
@@ -30,6 +30,7 @@ void *log_update(void *void_data)
   }
 
   // post log;
+  // TODO close log file
 
   return NULL;
 }
@@ -43,7 +44,7 @@ void append_text_to_log(struct Data *data, const char *added_text)
   if (strlen(current_text))
     strcat(new_text, "\n");
   strcat(new_text, added_text);
-  gtk_label_set_text(GTK_LABEL(data->log_lbl), new_text);
+  gtk_label_set_markup(GTK_LABEL(data->log_lbl), new_text);
   free(new_text);
 
   GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(data->scroll));

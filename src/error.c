@@ -29,8 +29,8 @@ void timestamp(struct Data *data, const char *fmt, ...)
   fprintf(stderr, "%s - %s\n", timestr, mesg);
 
   if (data != NULL) {
-    append_text_to_log(data, timestr);
-    append_text_to_log(data, " - ");
-    append_text_to_log(data, mesg);
+    char s[1000] = {0};
+    sprintf(s, "<i>%s</i> %s", timestr, mesg);
+    append_text_to_log(data, s);
   }
 }
