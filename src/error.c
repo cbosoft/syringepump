@@ -30,7 +30,7 @@ void timestamp(struct Data *data, const char *fmt, ...)
 
   if (data != NULL) {
     char s[1000] = {0};
-    sprintf(s, "<i>%s</i> %s", timestr, mesg);
+    sprintf(s, "<tt><small>%s <b>%s</b></small></tt>", timestr, mesg);
     append_text_to_log(data, s);
   }
 }
