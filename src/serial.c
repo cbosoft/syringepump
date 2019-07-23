@@ -40,7 +40,7 @@ void refresh_serial_list(struct Data *data)
   }
 
   if (!count) {
-    timestamp_error(data, "No arduino found!");
+    timestamp_error(data, "No Arduino found!");
 
     // disable connect button
     gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
