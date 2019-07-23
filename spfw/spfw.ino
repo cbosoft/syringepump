@@ -194,6 +194,7 @@ void checkPosition()
 void setup () 
 {
   Serial.begin(9600);
+  Serial.print("ON");
 
   // Load cell
   loadcell.begin(LC_DOUT, LC_CLK);
@@ -215,6 +216,8 @@ void setup ()
   bool got_kp = false;
   bool got_ki = false;
   bool got_kd = false;
+
+  Serial.print("WAITING");
 
   while (!got_setpoint || !got_kp || !got_ki || !got_kd) {
     Serial.print("Waiting for \n");
