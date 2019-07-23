@@ -6,11 +6,32 @@
 extern int LOG_STOPPED;
 static char *log_string = NULL;
 
+
+
+
 void *log_update(void *void_data)
 { 
   struct Data *data = (struct Data *)void_data;
+  
+  timestamp(data, "Waiting for Arduino...");
+  int arduino_ready = 0, rv = 0;
+  while (!arduino_ready) {
+    char received_text[512] = {0};
+
+    if ( (rv = ard_readserial_line(data->serial_fd, received_text, 512, 1000)) ) {
+      timestamp(NULL, "Error reading from serial (%d)", rv);
+    }
+    timestamp(NULL, received_text);
+
+    if (strcmp(received_text, "START") == 0) {
+      arduino_ready = 1;
+    }
+
+  }
+  timestamp(data, "Arduino ready, starting!");
 
   // TODO open log file
+
   int i = 0;
   LOG_STOPPED = 0;
   while (!LOG_STOPPED) {
