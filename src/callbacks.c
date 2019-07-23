@@ -92,13 +92,19 @@ static void *arduino_connect_thread(void *vptr_data)
   if (data->serial_fd < 0) {
     timestamp_error(data, "Failed to connect: (%d) %s", errno, strerror(errno));
 
+    // re-enable connect button
+    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
 
+    // unref thread
+    g_thread_unref(connect_thread);
+    return NULL;
+  }
 
-
-  gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
   timestamp(data, "Waiting on Arduino...");
   wait_for(data, "ON", 100);
   timestamp(data, "Connected!");
+
+  // enable disconnect button, disable all input fields while connection is active.
   gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
   gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
