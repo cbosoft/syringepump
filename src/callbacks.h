@@ -9,8 +9,10 @@ struct connect_data {
   GObject *main_win;
   GObject *conn_btn;
   GObject *disconn_btn;
+  GObject *refresh_btn;
   GObject *log_lbl;
   GObject *scroll;
+  GObject *serial_cmb;
 };
 
 struct connect_data *create_cd(
@@ -20,11 +22,14 @@ struct connect_data *create_cd(
     GObject *main_win, 
     GObject *conn_btn,
     GObject *disconn_btn, 
+    GObject *refresh_btn, 
     GObject *log_lbl,
-    GObject *scroll);
+    GObject *scroll,
+    GObject *serial_cmb);
 
 void cb_connect(GObject *obj, struct connect_data *cd);
 void cb_disconnect(GObject *obj, struct connect_data *cd);
 void cb_quit(GObject *obj, struct connect_data *cd);
+void cb_refresh_serial(GObject *obj, struct connect_data *cd);
 
 // vim: ft=c

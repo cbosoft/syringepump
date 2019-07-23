@@ -13,7 +13,8 @@ struct thread_data td;
 
 
 
-void cb_connect(GObject *obj, struct connect_data *cd) {
+void cb_connect(GObject *obj, struct connect_data *cd)
+{
 
   timestamp("connecting to \"%s\"", cd->serial_path);
   cd->serial_fd = ard_openserial(cd->serial_path);
@@ -49,7 +50,8 @@ void cb_connect(GObject *obj, struct connect_data *cd) {
 
 
 
-void cb_disconnect(GObject *obj, struct connect_data *cd) {
+void cb_disconnect(GObject *obj, struct connect_data *cd)
+{
 
   LOG_STOPPED = 1;
   pthread_join(log_thread, NULL);
@@ -65,7 +67,8 @@ void cb_disconnect(GObject *obj, struct connect_data *cd) {
 
 
 
-void cb_quit(GObject *obj, struct connect_data *cd) {
+void cb_quit(GObject *obj, struct connect_data *cd)
+{
   
   timestamp("closing...");
 
@@ -86,8 +89,10 @@ struct connect_data *create_cd(
     GObject *main_win, 
     GObject *conn_btn, 
     GObject *disconn_btn, 
+    GObject *refresh_btn, 
     GObject *log_lbl,
-    GObject *scroll)
+    GObject *scroll,
+    GObject *serial_cmb)
 {
   struct connect_data * cd = malloc(sizeof(struct connect_data));
   
@@ -97,8 +102,10 @@ struct connect_data *create_cd(
   cd->main_win = main_win;
   cd->conn_btn = conn_btn;
   cd->disconn_btn = disconn_btn;
+  cd->refresh_btn = refresh_btn;
   cd->log_lbl = log_lbl;
   cd->scroll = scroll;
+  cd->serial_cmb = serial_cmb;
 
   return cd;
 }
