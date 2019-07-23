@@ -1,3 +1,7 @@
+#include <time.h>
+#include <errno.h>
+#include <string.h>
+
 #include "log.h"
 #include "ardiop.h"
 #include "error.h"
