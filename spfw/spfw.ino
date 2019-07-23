@@ -8,8 +8,12 @@ const int MOTOR_PWM_PIN = 4;
 
 // Motor direction is controlled by H-bridge: two transistors control the
 // direction. If PIN_1 is high and PIN_2 is low... TODO
+const int MOTOR_ENABLE_PIN = 4;
 const int MOTOR_DIR_PIN_1 = 5;
 const int MOTOR_DIR_PIN_2 = 6;
+
+#define REVERSE 0
+#define FORWARD 1
 
 // }}}
 // CONTROL {{{
@@ -47,7 +51,28 @@ static unsigned int time_count = 0;
 const float OPT_MASK_ARC_LEN = PI*2.0*0.25; // quarter turn
 // }}}
 
+static bool STOPPED = 0;
+static bool REVERSING = 0;
 
+
+
+
+void motorSetDirection(int dir)
+{
+  digitalWrite(MOTOR_DIR_PIN_1, dir);
+  digitalWrite(MOTOR_DIR_PIN_2, !dir);
+}
+
+void motorSetDC(unsigned int dc)
+{
+  if (dc > 255) {
+    dc = 255;
+  }
+
+  analogWrite(MOTOR_PWM_PIN, dc);
+
+  digitalWrite(MOTOR_ENABLE_PIN, (dc == 0)?LOW:HIGH);
+}
 
 
 float getSpeed()
@@ -94,6 +119,10 @@ void updateMotorDC()
   // TODO
   // Calculate CA based on past values of speed, set point
   // -> PID algorithm
+  
+  // normalise CA to range 0-255 -> DC
+  // set CA (DC) on motor PWM
+  motorSetDC(120);
 }
 
 
@@ -154,6 +183,8 @@ void setup ()
   pinMode(MOTOR_PWM_PIN, OUTPUT);
   pinMode(MOTOR_DIR_PIN_1, OUTPUT);
   pinMode(MOTOR_DIR_PIN_2, OUTPUT);
+  motorSetDirection(1);
+  motorSetDC(0);
 
   // Optical encoder setup
   pinMode(OPT_PIN, INPUT);
