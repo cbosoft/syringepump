@@ -35,12 +35,15 @@ int main (int argc, char **argv)
       gtk_builder_get_object(builder, "scroll"),
       gtk_builder_get_object(builder, "cmbSerial"));
 
-  refresh_serial_list(data);
 
   g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit), data);
   g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_connect), data);
   g_signal_connect(data->disconn_btn, "clicked", G_CALLBACK(cb_disconnect), data);
   g_signal_connect(data->refresh_btn, "clicked", G_CALLBACK(cb_refresh_serial), data);
+
+  timestamp(data, "Gui started");
+
+  refresh_serial_list(data);
 
   gtk_main();
 
