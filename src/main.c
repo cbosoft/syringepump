@@ -31,6 +31,10 @@ int main (int argc, char **argv)
       gtk_builder_get_object(builder, "btnConnect"),
       gtk_builder_get_object(builder, "btnDisconnect"),
       gtk_builder_get_object(builder, "btnSerialRefresh"),
+      gtk_builder_get_object(builder, "inpSetPoint"),
+      gtk_builder_get_object(builder, "inpKP"),
+      gtk_builder_get_object(builder, "inpKI"),
+      gtk_builder_get_object(builder, "inpKD"),
       gtk_builder_get_object(builder, "lblLog"),
       gtk_builder_get_object(builder, "scroll"),
       gtk_builder_get_object(builder, "cmbSerial"));

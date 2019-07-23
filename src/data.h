@@ -10,6 +10,10 @@ struct Data {
   GObject *conn_btn;
   GObject *disconn_btn;
   GObject *refresh_btn;
+  GObject *setpoint_inp;
+  GObject *kp_inp;
+  GObject *ki_inp;
+  GObject *kd_inp;
   GObject *log_lbl;
   GObject *scroll;
   GObject *serial_cmb;
@@ -23,6 +27,10 @@ struct Data *new_data(
     GObject *conn_btn,
     GObject *disconn_btn, 
     GObject *refresh_btn, 
+    GObject *setpoint_inp,
+    GObject *kp_inp,
+    GObject *ki_inp,
+    GObject *kd_inp,
     GObject *log_lbl,
     GObject *scroll,
     GObject *serial_cmb);

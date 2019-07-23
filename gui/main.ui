@@ -142,7 +142,7 @@ Set to zero to disable (not recommmended).</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry">
+                  <object class="GtkEntry" id="inpKI">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_markup" translatable="yes">How "strong" the integral gain is.
@@ -177,7 +177,7 @@ Set to zero to disable.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry">
+                  <object class="GtkEntry" id="inpKD">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_markup" translatable="yes">How "strong" the differential gain is.
@@ -366,7 +366,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
             <property name="position">1</property>

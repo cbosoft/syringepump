@@ -15,6 +15,7 @@ extern pthread_t log_thread;
 
 void cb_connect(GObject *obj, struct Data *data)
 {
+  data->serial_path = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
   timestamp(data, "connecting to \"%s\"", data->serial_path);
   data->serial_fd = ard_openserial(data->serial_path);
@@ -40,6 +41,10 @@ void cb_connect(GObject *obj, struct Data *data)
 
   gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
 
 }
 
@@ -54,6 +59,10 @@ void cb_disconnect(GObject *obj, struct Data *data)
 
   gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
   gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 1);
 
   close(data->serial_fd);
 
