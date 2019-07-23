@@ -147,7 +147,7 @@ Set to zero to disable (not recommmended).</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_markup" translatable="yes">How "strong" the integral gain is.
 
-CA = K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt
+CA = K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;-∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt
 
 High K&lt;sub&gt;I&lt;/sub&gt; means a strong dependence of the control action on past errors (long standing errors are eliminated), also guides against offset. Too high, and the controller will max out for the tiniest error.
 
