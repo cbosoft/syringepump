@@ -41,6 +41,10 @@ void cb_connect(GObject *obj, struct Data *data)
 
   gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
 
 }
 
@@ -55,6 +59,10 @@ void cb_disconnect(GObject *obj, struct Data *data)
 
   gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
   gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 0);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 1);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 1);
 
   close(data->serial_fd);
 
