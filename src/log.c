@@ -40,7 +40,7 @@ void append_text_to_log(struct Data *data, const char *added_markup)
 {
 
   if (log_string == NULL) {
-    log_string = calloc(strlen(added_markup), sizeof(char) + 1);
+    log_string = calloc(strlen(added_markup) + 1, sizeof(char));
     strcpy(log_string, added_markup);
   }
   else {
