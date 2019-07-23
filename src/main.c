@@ -23,22 +23,38 @@ int main (int argc, char **argv)
   }
 
 
-  struct Data *data = new_data(
-      -1, 
-      "/dev/ttyACM0",
-      0,
-      gtk_builder_get_object(builder, "winMain"),
-      gtk_builder_get_object(builder, "btnConnect"),
-      gtk_builder_get_object(builder, "btnDisconnect"),
-      gtk_builder_get_object(builder, "btnSerialRefresh"),
-      gtk_builder_get_object(builder, "inpSetPoint"),
-      gtk_builder_get_object(builder, "inpKP"),
-      gtk_builder_get_object(builder, "inpKI"),
-      gtk_builder_get_object(builder, "inpKD"),
-      gtk_builder_get_object(builder, "lblLog"),
-      gtk_builder_get_object(builder, "scroll"),
-      gtk_builder_get_object(builder, "cmbSerial"));
+  struct Data *data = malloc(sizeof(struct Data));;
 
+  // Serial
+  data->serial_fd = -1;
+  data->serial_path = "/dev/ttyACM0";
+
+  // ??
+  data->res = 0;
+
+  // Logging
+  data->tag = NULL;
+  data->logpath = NULL;
+
+  // GUI :: windows
+  data->main_win = gtk_builder_get_object(builder, "winMain");
+
+  // GUI :: buttons
+  data->conn_btn = gtk_builder_get_object(builder, "btnConnect");
+  data->disconn_btn = gtk_builder_get_object(builder, "btnDisconnect");
+  data->refresh_btn = gtk_builder_get_object(builder, "btnSerialRefresh");
+
+  // GUI :: inputs
+  data->setpoint_inp = gtk_builder_get_object(builder, "inpSetPoint");
+  data->kp_inp = gtk_builder_get_object(builder, "inpKP");
+  data->ki_inp = gtk_builder_get_object(builder, "inpKI");
+  data->kd_inp = gtk_builder_get_object(builder, "inpKD");
+  data->tag_inp = gtk_builder_get_object(builder, "inpTag");
+
+  // GUI :: other
+  data->log_lbl = gtk_builder_get_object(builder, "lblLog");
+  data->scroll = gtk_builder_get_object(builder, "scroll");
+  data->serial_cmb = gtk_builder_get_object(builder, "cmbSerial");
 
   g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit), data);
   g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_connect), data);
