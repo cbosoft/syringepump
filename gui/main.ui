@@ -356,23 +356,10 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="double_buffered">False</property>
-                    <property name="label" translatable="yes">
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate orci ante, iaculis venenatis ante tristique ac. Aenean sagittis et enim a ullamcorper. Suspendisse convallis rhoncus fringilla. Aliquam ullamcorper hendrerit orci, at rutrum arcu feugiat id. Suspendisse vitae rutrum magna, ac euismod nibh. Sed eu pulvinar odio, eget auctor ligula. Aenean iaculis nibh in ex iaculis laoreet. Nunc suscipit, lacus sit amet congue blandit, urna eros egestas sem, ut ultricies nulla erat a mauris. In metus urna, semper nec pretium vitae, interdum eget velit. Quisque ullamcorper consectetur justo sit amet laoreet. Nulla massa mi, tempor ut augue vitae, mollis interdum velit. Nunc in venenatis ex. Curabitur a diam id velit facilisis commodo id in nunc. Nulla non faucibus risus.
-
-Praesent vitae metus id nisl ultrices varius at vel diam. Nulla a ultricies nisl. Praesent nunc augue, tincidunt in laoreet luctus, faucibus et lorem. Fusce tempus, sapien eu condimentum commodo, diam magna aliquam ipsum, eget vestibulum ex neque ut metus. Curabitur a iaculis diam. Curabitur lorem nibh, aliquam nec erat ac, ullamcorper auctor tortor. In iaculis imperdiet odio vitae rutrum. Integer ut scelerisque augue, at vulputate felis. Donec ut enim mollis, tempor neque eu, viverra dolor. Praesent nec molestie turpis, eget tempor justo. Vivamus eget sollicitudin diam, nec ultricies orci. Pellentesque tincidunt at quam eu iaculis.
-
-Sed maximus eget nunc non fringilla. Nunc porttitor tincidunt ligula, a cursus arcu porta nec. Integer molestie erat tincidunt egestas viverra. Duis placerat interdum quam, sit amet malesuada eros. Sed elementum, orci et feugiat laoreet, neque metus tincidunt leo, quis congue ligula erat vitae felis. In quis vulputate dui. Nulla laoreet velit leo, at luctus nibh condimentum vel. Nam efficitur vulputate ex, eget imperdiet diam ullamcorper a. Morbi sagittis ac nibh sed placerat. Aliquam eu lorem arcu. Sed suscipit eu nunc ac venenatis. Nam semper dapibus nulla, a semper felis vehicula a. Quisque aliquet ultricies neque, in posuere augue viverra at. Duis et lorem nec lectus condimentum lacinia. Integer enim ipsum, ultrices aliquam erat non, vestibulum interdum libero. Etiam cursus malesuada magna, vel vestibulum neque tincidunt nec.
-
-Vestibulum lectus leo, rhoncus ut sapien in, facilisis vehicula magna. Aliquam congue vehicula commodo. Vivamus sem diam, mollis vitae urna vitae, finibus commodo odio. Vestibulum vitae dui congue, mollis mauris volutpat, ullamcorper lorem. Etiam eu leo lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus aliquet magna et massa aliquam pharetra. Cras luctus leo aliquet facilisis aliquet.
-
-Fusce tempus ipsum neque, auctor rhoncus massa interdum et. Aliquam semper orci eu egestas accumsan. Aliquam quis tortor dictum tortor pretium rhoncus at tincidunt sapien. Duis laoreet sapien sit amet nulla dapibus lobortis. Suspendisse sagittis hendrerit felis vel porttitor. Proin luctus sollicitudin dui nec facilisis. Morbi aliquet semper nunc, ullamcorper egestas odio vehicula nec. </property>
+                    <property name="use_markup">True</property>
                     <property name="selectable">True</property>
-                    <attributes>
-                      <attribute name="font-desc" value="Ubuntu Mono 10"/>
-                      <attribute name="gravity" value="north"/>
-                      <attribute name="gravity-hint" value="strong"/>
-                    </attributes>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
                   </object>
                 </child>
               </object>
