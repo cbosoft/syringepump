@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.1 -->
 <interface>
-  <requires lib="gtk+" version="3.0"/>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkListStore" id="lstSerial">
+    <columns>
+      <!-- column-name serialPort -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkAdjustment" id="scrollVadj">
+    <property name="upper">100</property>
+    <property name="value">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkApplicationWindow" id="winMain">
-    <property name="width_request">640</property>
-    <property name="height_request">480</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
@@ -19,45 +29,307 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkButton" id="btnClose">
-                <property name="label">gtk-close</property>
+              <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Control Parameters</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">5</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="btnConn">
-                <property name="label">gtk-connect</property>
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Speed set point (mm/s)</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="inpSetPoint">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Set point is the goal for the control system to achevie/maintain. The actual speed is subtracted from the setpoint to give an Error value, which is used along with the control parameters defined below to find an appropriate control action to give in order to maintain the setpoint speed using the PID algorithm:
+
+CA = (K&lt;sub&gt;P&lt;/sub&gt; × Error) + (K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt) + (K&lt;sub&gt;D&lt;/sub&gt; × dError/dt)</property>
+                    <property name="input_purpose">number</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">10</property>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="btnDisconn">
-                <property name="label">gtk-disconnect</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">K&lt;sub&gt;P&lt;/sub&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="inpKP">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_markup" translatable="yes">How "strong" the proportional gain is.
+
+CA = K&lt;sub&gt;P&lt;/sub&gt; × Error
+
+High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with lottle/no overshoot.
+
+Set to zero to disable (not recommmended).</property>
+                    <property name="text" translatable="yes">0.2</property>
+                    <property name="placeholder_text" translatable="yes">proportional control gain</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">K&lt;sub&gt;I&lt;/sub&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_markup" translatable="yes">How "strong" the integral gain is.
+
+CA = K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt
+
+High K&lt;sub&gt;I&lt;/sub&gt; means a strong dependence of the control action on past errors (long standing errors are eliminated), also guides against offset. Too high, and the controller will max out for the tiniest error.
+
+Set to zero to disable.</property>
+                    <property name="text" translatable="yes">0.0</property>
+                    <property name="placeholder_text" translatable="yes">integral control gain</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">K&lt;sub&gt;D&lt;/sub&gt;</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_markup" translatable="yes">How "strong" the differential gain is.
+
+CA = K&lt;sub&gt;D&lt;/sub&gt; × dError/dt
+
+K&lt;sub&gt;D&lt;/sub&gt; is used to respond to rapidly changing errors, but is highly susceptible to noise.
+
+Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
+                    <property name="text" translatable="yes">0.0</property>
+                    <property name="placeholder_text" translatable="yes">derivative control gain</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">10</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Connection</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="lblSerialPort">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Serial port of connected Arduino:</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="cmbSerial">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="active">0</property>
+                    <items>
+                      <item translatable="yes"> </item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="btnSerialRefresh">
+                    <property name="label">gtk-refresh</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="padding">10</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Logging</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="1.5"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Tag:</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="inpTag">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="placeholder_text" translatable="yes">tag to identify the logged data</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">10</property>
+                <property name="position">6</property>
               </packing>
             </child>
           </object>
@@ -71,7 +343,9 @@
           <object class="GtkScrolledWindow" id="scroll">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">never</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
+            <property name="vadjustment">scrollVadj</property>
             <property name="shadow_type">in</property>
             <child>
               <object class="GtkViewport">
@@ -81,11 +355,21 @@
                   <object class="GtkLabel" id="lblLog">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="valign">start</property>
-                    <property name="wrap">True</property>
+                    <property name="double_buffered">False</property>
+                    <property name="label" translatable="yes">
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate orci ante, iaculis venenatis ante tristique ac. Aenean sagittis et enim a ullamcorper. Suspendisse convallis rhoncus fringilla. Aliquam ullamcorper hendrerit orci, at rutrum arcu feugiat id. Suspendisse vitae rutrum magna, ac euismod nibh. Sed eu pulvinar odio, eget auctor ligula. Aenean iaculis nibh in ex iaculis laoreet. Nunc suscipit, lacus sit amet congue blandit, urna eros egestas sem, ut ultricies nulla erat a mauris. In metus urna, semper nec pretium vitae, interdum eget velit. Quisque ullamcorper consectetur justo sit amet laoreet. Nulla massa mi, tempor ut augue vitae, mollis interdum velit. Nunc in venenatis ex. Curabitur a diam id velit facilisis commodo id in nunc. Nulla non faucibus risus.
+
+Praesent vitae metus id nisl ultrices varius at vel diam. Nulla a ultricies nisl. Praesent nunc augue, tincidunt in laoreet luctus, faucibus et lorem. Fusce tempus, sapien eu condimentum commodo, diam magna aliquam ipsum, eget vestibulum ex neque ut metus. Curabitur a iaculis diam. Curabitur lorem nibh, aliquam nec erat ac, ullamcorper auctor tortor. In iaculis imperdiet odio vitae rutrum. Integer ut scelerisque augue, at vulputate felis. Donec ut enim mollis, tempor neque eu, viverra dolor. Praesent nec molestie turpis, eget tempor justo. Vivamus eget sollicitudin diam, nec ultricies orci. Pellentesque tincidunt at quam eu iaculis.
+
+Sed maximus eget nunc non fringilla. Nunc porttitor tincidunt ligula, a cursus arcu porta nec. Integer molestie erat tincidunt egestas viverra. Duis placerat interdum quam, sit amet malesuada eros. Sed elementum, orci et feugiat laoreet, neque metus tincidunt leo, quis congue ligula erat vitae felis. In quis vulputate dui. Nulla laoreet velit leo, at luctus nibh condimentum vel. Nam efficitur vulputate ex, eget imperdiet diam ullamcorper a. Morbi sagittis ac nibh sed placerat. Aliquam eu lorem arcu. Sed suscipit eu nunc ac venenatis. Nam semper dapibus nulla, a semper felis vehicula a. Quisque aliquet ultricies neque, in posuere augue viverra at. Duis et lorem nec lectus condimentum lacinia. Integer enim ipsum, ultrices aliquam erat non, vestibulum interdum libero. Etiam cursus malesuada magna, vel vestibulum neque tincidunt nec.
+
+Vestibulum lectus leo, rhoncus ut sapien in, facilisis vehicula magna. Aliquam congue vehicula commodo. Vivamus sem diam, mollis vitae urna vitae, finibus commodo odio. Vestibulum vitae dui congue, mollis mauris volutpat, ullamcorper lorem. Etiam eu leo lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus aliquet magna et massa aliquam pharetra. Cras luctus leo aliquet facilisis aliquet.
+
+Fusce tempus ipsum neque, auctor rhoncus massa interdum et. Aliquam semper orci eu egestas accumsan. Aliquam quis tortor dictum tortor pretium rhoncus at tincidunt sapien. Duis laoreet sapien sit amet nulla dapibus lobortis. Suspendisse sagittis hendrerit felis vel porttitor. Proin luctus sollicitudin dui nec facilisis. Morbi aliquet semper nunc, ullamcorper egestas odio vehicula nec. </property>
                     <property name="selectable">True</property>
                     <attributes>
+                      <attribute name="font-desc" value="Ubuntu Mono 10"/>
                       <attribute name="gravity" value="north"/>
                       <attribute name="gravity-hint" value="strong"/>
                     </attributes>
@@ -95,19 +379,26 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">10</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkBox">
+          <object class="GtkButtonBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="spacing">34</property>
+            <property name="layout_style">center</property>
             <child>
-              <object class="GtkEntry" id="entCmd">
+              <object class="GtkButton" id="btnDisconnect">
+                <property name="label">gtk-disconnect</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -116,15 +407,16 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="btnOK">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="btnConnect">
+                <property name="label">gtk-connect</property>
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -132,7 +424,8 @@
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
+            <property name="fill">False</property>
+            <property name="padding">10</property>
             <property name="position">2</property>
           </packing>
         </child>
