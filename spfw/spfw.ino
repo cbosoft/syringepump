@@ -54,6 +54,7 @@ static unsigned int time_count = 0;
 const float OPT_MASK_ARC_LEN = PI*2.0*0.25; // quarter turn
 // }}}
 
+extern volatile unsigned long timer0_millis;
 static bool STOPPED = 0;
 static bool REVERSING = 0;
 
@@ -250,6 +251,12 @@ void setup ()
     }
     
   }
+  } 
+
+  // reset millis counter to zero
+  noInterrupts();
+  timer0_millis = 0;
+  interrupts();
 
   RULER_POSITION_START = getPositionReading();
 
