@@ -3,9 +3,11 @@
 #include <string.h>
 #include <time.h>
 
+#include "callbacks.h"
 #include "error.h"
+#include "log.h"
 
-void timestamp(const char *fmt, ...)
+void timestamp(struct connect_data *cd, const char *fmt, ...)
 {
 
   char mesg[MESGLEN] = {0};
@@ -25,4 +27,10 @@ void timestamp(const char *fmt, ...)
   strftime(timestr, MESGLEN-1, "%x %X", info);
 
   fprintf(stderr, "%s - %s\n", timestr, mesg);
+
+  if (cd != NULL) {
+    append_text_to_log(cd, timestr);
+    append_text_to_log(cd, " - ");
+    append_text_to_log(cd, mesg);
+  }
 }
