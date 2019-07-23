@@ -62,3 +62,62 @@ void timestamp(struct Data *data, const char *fmt, ...)
     append_text_to_log(data, s);
   }
 }
+
+
+
+
+int check_form(struct Data *data)
+{
+  int rv = 0;
+
+  // check over the form, pre connection.
+  // none of the inputs should be empty (setpoint, kp, ki, kd, tag)
+
+  // setpoint, kp, ki, kd should be numbers (single precision floats) 
+  // (enforced by gtk)
+
+  if (IS_EMPTY_ENTRY(data->setpoint_inp)) {
+    rv = 1;
+    timestamp_error(data, "setpoint cannot be empty");
+  }
+  
+  if (IS_EMPTY_ENTRY(data->kp_inp)) {
+    rv = 1;
+    timestamp_error(data, "KP cannot be empty");
+  }
+  
+  if (IS_EMPTY_ENTRY(data->ki_inp)) {
+    rv = 1;
+    timestamp_error(data, "KI cannot be empty");
+  }
+
+  if (IS_EMPTY_ENTRY(data->kd_inp)) {
+    rv = 1;
+    timestamp_error(data, "KD cannot be empty");
+  }
+
+  if (IS_EMPTY_ENTRY(data->tag_inp)) {
+    rv = 1;
+    timestamp_error(data, "tag cannot be empty");
+  }
+
+  // tag has no requirements other than to exist.
+  // if tag contains spaces, periods, or underscores; they will be 
+  // replaced with dashes
+
+  const char *tag = gtk_entry_get_text(GTK_ENTRY(data->tag_inp));
+  int taglen = strlen(tag);
+  char santag[taglen+1];
+  for (int i = 0; i < taglen; i++) {
+    if (tag[i] == ' ' || tag[i] == '_' || tag[i] == '.') {
+      santag[i] = '-';
+    }
+    else {
+      santag[i] = tag[i];
+    }
+  }
+  santag[taglen] = 0;
+  gtk_entry_set_text(GTK_ENTRY(data->tag_inp), santag);
+
+  return rv;
+}
