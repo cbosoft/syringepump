@@ -29,6 +29,7 @@ OBJ   = src/main.o \
 				src/ardiop.o \
 				src/callbacks.o \
 				src/error.o \
+				src/serial.o \
 				src/log.o
 
 src/%.o: src/%.c
