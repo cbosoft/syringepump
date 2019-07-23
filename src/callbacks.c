@@ -90,24 +90,10 @@ static void *arduino_connect_thread(void *vptr_data)
   data->serial_fd = ard_openserial(data->serial_path);
 
   if (data->serial_fd < 0) {
-    timestamp(data, "connecting to \"%s\"", data->serial_path);
-
-    GtkWidget *dialog = gtk_message_dialog_new(
-        GTK_WINDOW(data->main_win), 
-        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
-        GTK_MESSAGE_INFO,
-        GTK_BUTTONS_CLOSE, 
-        "Could not connect on \"%s\"\n(%d) %s", 
-        data->serial_path, 
-        errno, 
-        strerror(errno));
-    gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
-    return;
-  }
+    timestamp_error(data, "Failed to connect: (%d) %s", errno, strerror(errno));
 
 
-  timestamp(data, "connected!");
+
 
   gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
   timestamp(data, "Waiting on Arduino...");
@@ -146,7 +132,8 @@ static void *arduino_connect_thread(void *vptr_data)
       (void *)gtk_entry_get_text(GTK_ENTRY(data->kd_inp)),
       T_STR);
 
-  pthread_create(&log_thread, NULL, log_update, data);
+  timestamp(data, "All parameters sent successfully!");
+
   log_thread = g_thread_new("log_thread", log_update_thread, data);
 
   return NULL;
@@ -193,7 +180,7 @@ void cb_disconnect(GObject *obj, struct Data *data)
 void cb_quit(GObject *obj, struct Data *data)
 {
   
-  timestamp(data, "closing...");
+  timestamp(data, "Closing...");
 
   if (!LOG_STOPPED)
     cb_disconnect(NULL, data);
