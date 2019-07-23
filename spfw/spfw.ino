@@ -29,7 +29,7 @@ const int RULER_DIAMETER_PIN = A1;
 
 // OPTICAL ENCODER
 // Arduino UNO has two hardware interrupt pins: 2, 3;
-#define OPT_PIN = 2;
+#define OPT_PIN 2
 #define TIME_LEN 10
 static unsigned long times[TIME_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 static unsigned int time_counts = 0;
@@ -97,6 +97,10 @@ void logToSerial() {
   // position (ruler)
   Serial.print(getPositionReading());
   Serial.print(",");
+  
+  // diameter (ruler)
+  Serial.print(getDiameterReading());
+  Serial.print(",");
 
   // speed
   Serial.print(speed_current);
@@ -108,15 +112,11 @@ void setup ()
 {
   Serial.begin(9600);
   
-  //SPI.begin();
 
   // Load cell
   loadcell.begin(LC_DOUT, LC_CLK);
   loadcell.set_scale(LC_DIVIDER);
   loadcell.set_offset(LC_OFFSET);
-
-  // ADC
-  pinMode(SPI_CS, OUTPUT);
 
   // Motor setup
   pinMode(MOTOR_PWM_PIN, OUTPUT);
@@ -126,6 +126,8 @@ void setup ()
   // Optical encoder setup
   pinMode(OPT_PIN, INPUT);
   attachInterrupt(digitalPinToInterrupt(OPT_PIN), optMark, CHANGE);
+
+  Serial.print("START\n");
 
 }
 
