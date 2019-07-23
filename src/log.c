@@ -36,16 +36,17 @@ void *log_update(void *void_data)
   LOG_STOPPED = 0;
   while (!LOG_STOPPED) {
     char received_text[512] = {0};
-    ard_readserial_line(data->serial_fd, received_text, 512, 1000);
-
-    timestamp(data, "rec'd \"%s\"", received_text);
-
-    if (i % 200 == 0) {
-      append_text_to_log(data, received_text);
-      i = 0;
+    
+    puts("!!");
+    if ( (rv = ard_readserial_line(data->serial_fd, received_text, 512, 1000)) ) {
+      timestamp(NULL, "Error reading from serial (%d)", rv);
+      LOG_STOPPED = 1;
+      return NULL;
     }
 
-    i++;
+    timestamp( ( (i % 10) == 0) ? data : NULL, "R: %s", received_text);
+
+    i = (i % 10 == 0) ? (1) : (i + 1);
 
     // write to log file
     // TODO
@@ -56,6 +57,9 @@ void *log_update(void *void_data)
 
   return NULL;
 }
+
+
+
 
 void append_text_to_log(struct Data *data, const char *added_markup)
 {
