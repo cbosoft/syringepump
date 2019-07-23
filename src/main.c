@@ -23,7 +23,7 @@ int main (int argc, char **argv)
   }
 
 
-  struct connect_data *cd = create_cd(
+  struct Data *data = new_data(
       -1, 
       "/dev/ttyACM0",
       0,
@@ -35,16 +35,16 @@ int main (int argc, char **argv)
       gtk_builder_get_object(builder, "scroll"),
       gtk_builder_get_object(builder, "cmbSerial"));
 
-  get_serial_name(GTK_COMBO_BOX_TEXT(cd->serial_cmb), GTK_WIDGET(cd->conn_btn));
+  refresh_serial_list(data);
 
-  g_signal_connect(cd->main_win, "destroy", G_CALLBACK(cb_quit), cd);
-  g_signal_connect(cd->conn_btn, "clicked", G_CALLBACK(cb_connect), cd);
-  g_signal_connect(cd->disconn_btn, "clicked", G_CALLBACK(cb_disconnect), cd);
-  g_signal_connect(cd->refresh_btn, "clicked", G_CALLBACK(cb_refresh_serial), cd);
+  g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit), data);
+  g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_connect), data);
+  g_signal_connect(data->disconn_btn, "clicked", G_CALLBACK(cb_disconnect), data);
+  g_signal_connect(data->refresh_btn, "clicked", G_CALLBACK(cb_refresh_serial), data);
 
   gtk_main();
 
-  free(cd);
+  free(data);
 
   return 0;
 }

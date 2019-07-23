@@ -30,6 +30,7 @@ OBJ   = src/main.o \
 				src/callbacks.o \
 				src/error.o \
 				src/serial.o \
+				src/data.o \
 				src/log.o
 
 src/%.o: src/%.c

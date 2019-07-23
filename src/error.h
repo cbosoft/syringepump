@@ -2,8 +2,8 @@
 
 #define MESGLEN 256
 
-#include "callbacks.h"
+#include "data.h"
 
-void timestamp(struct connect_data *cd, const char *fmt, ...);
+void timestamp(struct Data *data, const char *fmt, ...);
 
 // vim: ft=c

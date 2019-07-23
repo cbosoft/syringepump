@@ -1,6 +1,7 @@
 #pragma once
 #include <gtk/gtk.h>
+#include "data.h"
 
-void get_serial_name(GtkComboBoxText *serial_paths_cmb, GtkWidget *connect_btn);
+void refresh_serial_list(struct Data *data);
 
 // vim: ft=c

@@ -10,26 +10,25 @@
 
 extern int LOG_STOPPED;
 extern pthread_t log_thread;
-struct thread_data td;
 
 
 
-void cb_connect(GObject *obj, struct connect_data *cd)
+void cb_connect(GObject *obj, struct Data *data)
 {
 
-  timestamp("connecting to \"%s\"", cd->serial_path);
-  cd->serial_fd = ard_openserial(cd->serial_path);
+  timestamp(data, "connecting to \"%s\"", data->serial_path);
+  data->serial_fd = ard_openserial(data->serial_path);
 
-  if (cd->serial_fd < 0) {
-    timestamp("connecting to \"%s\"", cd->serial_path);
+  if (data->serial_fd < 0) {
+    timestamp(data, "connecting to \"%s\"", data->serial_path);
 
     GtkWidget *dialog = gtk_message_dialog_new(
-        GTK_WINDOW(cd->main_win), 
+        GTK_WINDOW(data->main_win), 
         GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT, 
         GTK_MESSAGE_INFO,
         GTK_BUTTONS_CLOSE, 
         "Could not connect on \"%s\"\n(%d) %s", 
-        cd->serial_path, 
+        data->serial_path, 
         errno, 
         strerror(errno));
     gtk_dialog_run(GTK_DIALOG(dialog));
@@ -37,44 +36,40 @@ void cb_connect(GObject *obj, struct connect_data *cd)
     return;
   }
 
-  // start log thread
-  td.serial_fd = cd->serial_fd;
-  td.log_lbl = cd->log_lbl;
-  td.scroll = cd->scroll;
-  pthread_create(&log_thread, NULL, log_update, &td);
+  pthread_create(&log_thread, NULL, log_update, &data);
 
-  gtk_widget_set_visible(GTK_WIDGET(cd->conn_btn), 0);
-  gtk_widget_set_visible(GTK_WIDGET(cd->disconn_btn), 1);
+  gtk_widget_set_visible(GTK_WIDGET(data->conn_btn), 0);
+  gtk_widget_set_visible(GTK_WIDGET(data->disconn_btn), 1);
 
 }
 
 
 
 
-void cb_disconnect(GObject *obj, struct connect_data *cd)
+void cb_disconnect(GObject *obj, struct Data *data)
 {
 
   LOG_STOPPED = 1;
   pthread_join(log_thread, NULL);
 
-  gtk_widget_set_visible(GTK_WIDGET(cd->conn_btn), 1);
-  gtk_widget_set_visible(GTK_WIDGET(cd->disconn_btn), 0);
+  gtk_widget_set_visible(GTK_WIDGET(data->conn_btn), 1);
+  gtk_widget_set_visible(GTK_WIDGET(data->disconn_btn), 0);
 
-  close(cd->serial_fd);
+  close(data->serial_fd);
 
-  timestamp("disconnected");
+  timestamp(data, "disconnected");
 
 }
 
 
 
-void cb_quit(GObject *obj, struct connect_data *cd)
+void cb_quit(GObject *obj, struct Data *data)
 {
   
-  timestamp("closing...");
+  timestamp(data, "closing...");
 
   if (!LOG_STOPPED)
-    cb_disconnect(NULL, cd);
+    cb_disconnect(NULL, data);
 
   gtk_main_quit();
 
@@ -82,38 +77,11 @@ void cb_quit(GObject *obj, struct connect_data *cd)
 
 
 
-void cb_refresh_serial(GObject *obj, struct connect_data *cd )
+void cb_refresh_serial(GObject *obj, struct Data *data )
 {
-  get_serial_name(GTK_COMBO_BOX_TEXT(cd->serial_cmb), GTK_WIDGET(cd->conn_btn));
+  refresh_serial_list(data);
 }
 
 
 
 
-struct connect_data *create_cd(
-    int serial_fd, 
-    char *serial_path, 
-    int res, 
-    GObject *main_win, 
-    GObject *conn_btn, 
-    GObject *disconn_btn, 
-    GObject *refresh_btn, 
-    GObject *log_lbl,
-    GObject *scroll,
-    GObject *serial_cmb)
-{
-  struct connect_data * cd = malloc(sizeof(struct connect_data));
-  
-  cd->serial_fd = -1;
-  cd->serial_path = "/dev/ttyACM0";
-  cd->res = 0;
-  cd->main_win = main_win;
-  cd->conn_btn = conn_btn;
-  cd->disconn_btn = disconn_btn;
-  cd->refresh_btn = refresh_btn;
-  cd->log_lbl = log_lbl;
-  cd->scroll = scroll;
-  cd->serial_cmb = serial_cmb;
-
-  return cd;
-}

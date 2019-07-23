@@ -10,13 +10,13 @@
 
 
 
-void get_serial_name(GtkComboBoxText *serial_paths_cmb, GtkWidget *connect_btn)
+void refresh_serial_list(struct Data *data)
 {
   DIR *d;
   struct dirent *dir;
   d = opendir("/dev/.");
   if (!d) {
-    timestamp("error reading /dev/*");
+    timestamp(data, "error reading /dev/*");
     return;
   }
 
@@ -28,14 +28,14 @@ void get_serial_name(GtkComboBoxText *serial_paths_cmb, GtkWidget *connect_btn)
       char path[261] = {0};
       sprintf(path, "/dev/%s", dir->d_name);
 
-      gtk_combo_box_text_append_text(serial_paths_cmb, path);
+      gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(data->serial_cmb), path);
       count ++;
 
     }
   }
 
   if (!count) {
-    timestamp("No arduino found!");
-    gtk_widget_set_sensitive(connect_btn, 0);
+    timestamp(data, "No arduino found!");
+    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
   }
 }

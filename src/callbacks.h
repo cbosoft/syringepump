@@ -1,35 +1,10 @@
 #pragma once
 #include <gtk/gtk.h>
+#include "data.h"
 
-struct connect_data {
-  int serial_fd;
-  char *serial_path;
-  int res;
-
-  GObject *main_win;
-  GObject *conn_btn;
-  GObject *disconn_btn;
-  GObject *refresh_btn;
-  GObject *log_lbl;
-  GObject *scroll;
-  GObject *serial_cmb;
-};
-
-struct connect_data *create_cd(
-    int serial_fd, 
-    char *serial_path, 
-    int res, 
-    GObject *main_win, 
-    GObject *conn_btn,
-    GObject *disconn_btn, 
-    GObject *refresh_btn, 
-    GObject *log_lbl,
-    GObject *scroll,
-    GObject *serial_cmb);
-
-void cb_connect(GObject *obj, struct connect_data *cd);
-void cb_disconnect(GObject *obj, struct connect_data *cd);
-void cb_quit(GObject *obj, struct connect_data *cd);
-void cb_refresh_serial(GObject *obj, struct connect_data *cd);
+void cb_connect(GObject *obj, struct Data *data);
+void cb_disconnect(GObject *obj, struct Data *data);
+void cb_quit(GObject *obj, struct Data *data);
+void cb_refresh_serial(GObject *obj, struct Data *data);
 
 // vim: ft=c
