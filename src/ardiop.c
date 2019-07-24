@@ -12,21 +12,33 @@
 
 #include "ardiop.h"
 #include "data.h"
+#include "error.h"
 
 
 
 
-int wait_for(struct Data *data, const char *trigger, int number) {
+int wait_for(struct Data *data, const char *trigger, int timeout) {
 
-  for (int i = 0; i < number; i++) {
+  for (int time = 0; time < timeout; time++) {
     char buffer[512] = {0};
-    ard_readserial_line(data->serial_fd, buffer, 512, 1000);
 
-    if (strstr(buffer, trigger) == 0) {
+    ard_readserial_line(
+        data->serial_fd, 
+        buffer, 
+        512, 
+        1000);
+
+    if (strcmp(buffer, trigger) == 0) {
       return 0;
     }
 
     sleep(1);
+
+    timestamp(NULL, 
+        "waiting for \"%s\" (%ds / %ds)", 
+        trigger, 
+        time, 
+        timeout);
 
   }
 
