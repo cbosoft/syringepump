@@ -19,13 +19,15 @@ const int MOTOR_DIR_PIN_2 = 6;
 // CONTROL {{{
 
 #define ERR_HIST_LEN 1000
-static long speed_set_point = 0;
-static long speed_current = 0;
-static float err_hist[ERR_HIST_LEN] = {0};
+static double speed_set_point = 0;
+static double speed_current = 0;
+static double speed_hist[32] = {0};
+static int speed_hist_count = 0;
+static double err_hist[ERR_HIST_LEN] = {0};
 static unsigned int err_count = 0;
-static float kp = 0.2;
-static float ki = 0.0;
-static float kd = 0.0;
+static double kp = 0.2;
+static double ki = 0.0;
+static double kd = 0.0;
 
 // }}}
 // LOAD CELL {{{
@@ -38,9 +40,16 @@ const long LC_DIVIDER = 1;
 
 // }}}
 // RULERS {{{
+const double RULER_POSITION_CAL_M = -0.12646004;
+const double RULER_POSITION_CAL_C = 124.12431658;
 const int RULER_POSITION_PIN = A0;
 const int RULER_POSITION_END = 960;
 int RULER_POSITION_START = 0;
+
+long position_byte = 0;
+long time_position_read = 0;
+
+double speed_hist[]
 
 const int RULER_DIAMETER_PIN = A1;
 // }}}
@@ -51,7 +60,7 @@ const int RULER_DIAMETER_PIN = A1;
 #define TIME_LEN 10
 static unsigned long time_hist[TIME_LEN] = {0};
 static unsigned int time_count = 0;
-const float OPT_MASK_ARC_LEN = PI*2.0*0.25; // quarter turn
+const double OPT_MASK_ARC_LEN = PI*2.0*0.25; // quarter turn
 // }}}
 
 extern volatile unsigned long timer0_millis;
@@ -78,16 +87,16 @@ void motorSetDC(unsigned int dc)
   digitalWrite(MOTOR_ENABLE_PIN, (dc == 0)?LOW:HIGH);
 }
 
-
-float getSpeed()
+double byte_pos_to_mm(long byte_pos)
 {
-  // TODO
-  // calculate speed
+  double byte_pos_f = double(byte_pos);
 
-  // set speed_current
-  //speed_current = XX;
+  return (byte_pos_f * RULER_POSITION_CAL_M) + RULER_POSITION_CAL_C;
+}
 
-  // then return value
+
+double getSpeedReading()
+{
   return speed_current;
 }
 
@@ -132,23 +141,6 @@ void updateMotorDC()
 
 
 
-void optMark()
-{
-  if (time_count < TIME_LEN) {
-    time_hist[time_count] = millis();
-    time_count ++;
-  }
-  else {
-    for (int i = 1; i < TIME_LEN; i++) {
-      time_hist[i-1] = time_hist[i];
-    }
-    time_hist[TIME_LEN-1] = millis();
-  }
-}
-
-
-
-
 void logToSerial() {
   // time since start
   Serial.print(millis());
@@ -175,10 +167,8 @@ void logToSerial() {
 
 void checkPosition()
 {
-  long position = getPositionReading();
 
-
-  if (position > RULER_POSITION_END) {
+  if (position_byte > RULER_POSITION_END) {
     motorSetDC(0);
     STOPPED = true;
   }
@@ -204,10 +194,6 @@ void setup ()
   pinMode(MOTOR_DIR_PIN_2, OUTPUT);
   motorSetDirection(1);
   motorSetDC(0);
-
-  // Optical encoder setup
-  pinMode(OPT_PIN, INPUT);
-  attachInterrupt(digitalPinToInterrupt(OPT_PIN), optMark, CHANGE);
 
   bool got_setpoint = false;
   bool got_kp = false;
@@ -254,17 +240,31 @@ void setup ()
   timer0_millis = 0;
   interrupts();
 
-  RULER_POSITION_START = getPositionReading();
-
   Serial.print("START\n");
+
+  RULER_POSITION_START = getPositionReading();
 
 }
 
 
-
-
 void loop ()
 {
+  long new_position_byte = getPositionReading();
+  long new_time_position_read = millis();
+
+  long dr = new_position_byte - position_byte;
+  long dt = new_time_position_read - time_position_read;
+
+  position_byte = new_position_byte;
+  time_position_read = new_time_position_read;
+
+  speed_current = double(dr)/double(dt);
+
+  if (speed_hist_count < SPEED_HIST_LEN){
+    // TODO APPEND NEW RAW SPEED TO HIST
+    // SET AVERAGE SPEED TO AVERAGE
+  }
+
   // control speed
   updateMotorDC();
 
