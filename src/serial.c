@@ -12,58 +12,11 @@
 
 
 
-void refresh_serial_list(struct Data *data)
-{
-  timestamp(data, "Searching for Arduino...");
-  gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(data->serial_cmb));
-
-  DIR *d;
-  struct dirent *dir;
-  d = opendir("/dev/.");
-  if (!d) {
-    timestamp_error(data, "Error reading /dev/*");
-    return;
-  }
-
-  int count = 0;
-
-  while ((dir = readdir(d)) != NULL) {
-    if (strstr(dir->d_name, "ttyACM") != NULL) {
-
-      char path[261] = {0};
-      sprintf(path, "/dev/%s", dir->d_name);
-
-      gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(data->serial_cmb), path);
-      count ++;
-
-    }
-  }
-
-  if (!count) {
-    timestamp_error(data, "No Arduino found!");
-
-    // disable connect button
-    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
-  }
-  else {
-
-    // enable connect button
-    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
-
-    gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
-    if (count == 1) {
-      timestamp(data, "Arduino found!");
-    }
-    else {
-      timestamp(data, "Multiple possible Arduino found.");
-    }
-  }
-}
-
-
-
-
-void send_key_value_to_arduino(struct Data *data, const char *key, void *val_vptr, int type)
+void send_key_value_to_arduino(
+    struct Data *data, 
+    const char *key, 
+    void *val_vptr, 
+    int type)
 {
   char value[(ARDUINO_MESG_LEN/2) + 1] = {0};
 

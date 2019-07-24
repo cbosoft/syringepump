@@ -63,7 +63,7 @@ int main (int argc, char **argv)
 
   timestamp(data, "Gui started");
 
-  refresh_serial_list(data);
+  cb_refresh_serial(NULL, data);
 
   gtk_main();
 
