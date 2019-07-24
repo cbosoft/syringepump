@@ -95,6 +95,6 @@ char *get_new_log_name(struct Data *data)
   free(date);
   
   data->logpath = logpath;
-  timestamp(data, "Generated log path <big?\"%s\"</big>", logpath);
+  timestamp(data, "Generated log path \"%s\"", logpath);
   return logpath;
 }
