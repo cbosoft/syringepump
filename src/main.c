@@ -68,7 +68,9 @@ int main (int argc, char **argv)
   cb_refresh_serial(NULL, data);
 
   gtk_main();
-
+  
+  if (data->logpath != NULL)
+    free(data->logpath);
   free(data);
 
   return 0;
