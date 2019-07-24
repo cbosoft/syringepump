@@ -12,6 +12,11 @@ PROG			= arduino
 PORT			= /dev/ttyACM0
 BAUD			= 115200
 
+
+gui: syringepump
+
+firmware: build upload
+
 build: $(TARGET)/$(TARGET).ino
 	mkdir -p $(BUILD)
 	arduino-builder -fqbn $(FQBN) -hardware $(HARDWARE) -tools $(TOOLS) -verbose -build-path $(BUILD) $(TARGET)
