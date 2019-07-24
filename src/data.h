@@ -24,6 +24,7 @@ struct Data {
   GObject *ki_inp;
   GObject *kd_inp;
   GObject *tag_inp;
+  GObject *log_folder_fch;
   GObject *log_lbl;
   GObject *scroll;
   GObject *serial_cmb;

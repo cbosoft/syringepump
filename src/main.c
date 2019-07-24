@@ -50,6 +50,8 @@ int main (int argc, char **argv)
   data->ki_inp = gtk_builder_get_object(builder, "inpKI");
   data->kd_inp = gtk_builder_get_object(builder, "inpKD");
   data->tag_inp = gtk_builder_get_object(builder, "inpTag");
+  data->log_folder_fch = gtk_builder_get_object(builder, "fchLogFolder");
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(data->log_folder_fch), getenv("HOME"));
 
   // GUI :: other
   data->log_lbl = gtk_builder_get_object(builder, "lblLog");
