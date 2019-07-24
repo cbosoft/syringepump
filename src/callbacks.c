@@ -253,6 +253,23 @@ static void *arduino_connect_thread(void *vptr_data)
 
 
 
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+// BUTTON CALLBACKS ///////////////////////////////////////////////////////////
+
+void cb_lbl_size_changed(GObject *obj, GdkRectangle *allocation, struct Data *data)
+{
+  GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(
+      GTK_SCROLLED_WINDOW(data->scroll));
+
+  gtk_adjustment_set_value(vadj, gtk_adjustment_get_upper(vadj));
+}
+
+
 void cb_connect(GObject *obj, struct Data *data)
 {
 

@@ -39,10 +39,6 @@ void append_text_to_log(struct Data *data, const char *added_markup)
 
   gtk_label_set_markup(GTK_LABEL(data->log_lbl), log_string);
 
-  GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(
-      GTK_SCROLLED_WINDOW(data->scroll));
-
-  gtk_adjustment_set_value(vadj, gtk_adjustment_get_upper(vadj));
 }
 
 
