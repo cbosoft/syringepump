@@ -55,8 +55,8 @@ const float OPT_MASK_ARC_LEN = PI*2.0*0.25; // quarter turn
 // }}}
 
 extern volatile unsigned long timer0_millis;
-static bool STOPPED = 0;
-static bool REVERSING = 0;
+static bool STOPPED = false;
+static bool REVERSING = false;
 
 
 
@@ -176,16 +176,13 @@ void logToSerial() {
 void checkPosition()
 {
   long position = getPositionReading();
-  
-  if ((position > RULER_POSITION_END) && (!REVERSING)) {
-    motorSetDirection(REVERSE);
-    motorSetDC(255);
-    REVERSING = true;
-  }
-  else if ((position < RULER_POSITION_START) && (REVERSING)) {
+
+
+  if (position > RULER_POSITION_END) {
     motorSetDC(0);
     STOPPED = true;
   }
+
 }
 
 
@@ -194,7 +191,7 @@ void checkPosition()
 void setup () 
 {
   Serial.begin(9600);
-  Serial.print("ON");
+  Serial.print("ON\n");
 
   // Load cell
   loadcell.begin(LC_DOUT, LC_CLK);
@@ -217,7 +214,7 @@ void setup ()
   bool got_ki = false;
   bool got_kd = false;
 
-  Serial.print("WAITING");
+  Serial.print("WAIT\n");
 
   while (!got_setpoint || !got_kp || !got_ki || !got_kd) {
 
