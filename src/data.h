@@ -1,10 +1,18 @@
 #pragma once
 #include <gtk/gtk.h>
 
+#ifdef WIDNOWS
+#include <windows.h>
+#endif
+
 struct Data {
 
+#ifdef WINDOWS
+  HANDLE serial_handle;
+#else
   // Serial
   int serial_fd;
+#endif
   char *serial_path;
 
   // ??

@@ -4,7 +4,15 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+
+#ifdef WINDOWS
+#include <windows.h>
+#else // Linux or MacOS
 #include <termios.h>
+#endif
+
+
+
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
