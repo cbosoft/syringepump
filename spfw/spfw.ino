@@ -220,11 +220,6 @@ void setup ()
   Serial.print("WAITING");
 
   while (!got_setpoint || !got_kp || !got_ki || !got_kd) {
-    Serial.print("Waiting for \n");
-    if (!got_setpoint) Serial.print("  - set point\n");
-    if (!got_kp) Serial.print("  - Kp\n");
-    if (!got_ki) Serial.print("  - Ki\n");
-    if (!got_kd) Serial.print("  - Kd\n");
 
     while (!Serial.available()) delay(100);
 
@@ -252,7 +247,9 @@ void setup ()
       kd = atof(val);
       got_kd = true;
     }
-    
+
+    Serial.print("OK\n");
+
   } 
 
   // reset millis counter to zero
