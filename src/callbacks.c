@@ -89,6 +89,7 @@ static void *refresh_serial_list(void *vptr_data)
 static void *log_update_loop(void *void_data)
 { 
   struct Data *data = (struct Data *)void_data;
+  const int print_every = 100;
   
   timestamp(data, "Waiting for Arduino...");
   wait_for(data, "START", 100);
@@ -97,7 +98,7 @@ static void *log_update_loop(void *void_data)
   get_new_log_name(data);
   FILE *fp = fopen(data->logpath, "w");
 
-  int i = 0, timeout = 1000;
+  int lineno = 0, charno = 0, timeout = 1000;
   LOG_STOPPED = 0;
   
   struct timespec ms_span;
@@ -105,9 +106,13 @@ static void *log_update_loop(void *void_data)
   ms_span.tv_nsec = 1000*1000;
 
   while (!LOG_STOPPED) {
-    char received_text[512] = {0};
+    char received_text[512];
+
+    for (int i = 0; i < 512; i++)
+      received_text[i] = 0;
     
     char b[1];
+    charno = 0;
     do {
       int n = read(data->serial_fd, b, 1);
 
@@ -132,18 +137,27 @@ static void *log_update_loop(void *void_data)
         continue;
       }
 
-      received_text[i] = b[0];
+      received_text[charno] = b[0];
 
-      i++;
+      charno++;
 
-    } while(b[0] != '\n' && i < 512 && !LOG_STOPPED);
+    } while(b[0] != '\n' && charno < 512 && !LOG_STOPPED);
 
-    timestamp( ( (i % 10) == 0) ? data : NULL, "R: %s", received_text);
+    if (received_text[0] == 'P') {
+      timestamp(NULL, " :: %s", received_text);
+    }
+    else {
+      timestamp( 
+          ((lineno % print_every) == 0) ? data : NULL,
+          "R: %s",
+          received_text);
+      lineno = 
+        (lineno % print_every == 0) ? (1) : (lineno + 1);
+    }
 
-    i = (i % 10 == 0) ? (1) : (i + 1);
-
-    if (strstr(received_text, "STOP") == 0) {
+    if (strcmp(received_text, "STOP") == 0) {
       // arduino requests stop
+      timestamp(data, "Arduino finished!");
       LOG_STOPPED = 1;
     }
     else {
@@ -202,6 +216,7 @@ static void *arduino_connect_thread(void *vptr_data)
   gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
 
+  timestamp(data, "Waiting for Arduino...");
   wait_for(data, "WAIT", 100);
 
   timestamp(data, "Sending run parameters to Arduino");
