@@ -249,6 +249,9 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                   <object class="GtkComboBoxText" id="cmbSerial">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="tooltip_markup" translatable="yes">The Arduino microporcessor does the bulk of the work, and communicates with this software over USB.
+
+The software will search for likely Arduino connections and display them here. If there are multiple, you will have to choose which one is correct. If it is not, nothing bad will happen, trial and error is a good way of finding the Arduino.</property>
                     <property name="active">0</property>
                     <items>
                       <item translatable="yes"> </item>
