@@ -72,7 +72,7 @@
                   <object class="GtkEntry" id="inpSetPoint">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Set point is the goal for the control system to achevie/maintain. The actual speed is subtracted from the setpoint to give an Error value, which is used along with the control parameters defined below to find an appropriate control action to give in order to maintain the setpoint speed using the PID algorithm:
+                    <property name="tooltip_markup" translatable="yes">Set point is the goal for the control system to acheive/maintain. The actual speed is subtracted from the setpoint to give an Error value, which is used along with the control parameters defined below to find an appropriate control action to give in order to maintain the setpoint speed using the PID algorithm:
 
 CA = (K&lt;sub&gt;P&lt;/sub&gt; × Error) + (K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt) + (K&lt;sub&gt;D&lt;/sub&gt; × dError/dt)</property>
                     <property name="text" translatable="yes">10.0</property>
@@ -120,7 +120,7 @@ CA = (K&lt;sub&gt;P&lt;/sub&gt; × Error) + (K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt
 
 CA = K&lt;sub&gt;P&lt;/sub&gt; × Error
 
-High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with lottle/no overshoot.
+High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with little/no overshoot.
 
 Set to zero to disable (not recommmended).</property>
                     <property name="text" translatable="yes">0.2</property>
