@@ -25,14 +25,15 @@ clean:
 CC    = gcc
 CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
 LINK   = $(shell pkg-config --libs gtk+-3.0) -lX11
-OBJ   = src/main.o \
-				src/ardiop.o \
-				src/callbacks.o \
-				src/error.o \
-				src/serial.o \
-				src/log.o
+OBJ    = src/main.o \
+				 src/ardiop.o \
+				 src/callbacks.o \
+				 src/error.o \
+				 src/serial.o \
+				 src/log.o
+HDRS   = src/data.h
 
-src/%.o: src/%.c
+src/%.o: src/%.c $(HDRS)
 	$(CC) $(CFLAGS) $< -c -o $@
 
 syringepump: $(OBJ)
