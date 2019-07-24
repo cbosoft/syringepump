@@ -1,5 +1,8 @@
 #include <gtk/gtk.h>
+
+#ifdef LINUX
 #include <X11/Xlib.h>
+#endif
 
 #include "error.h"
 #include "serial.h"
@@ -12,7 +15,10 @@ int main (int argc, char **argv)
   GtkBuilder *builder;
   GError *error = NULL;
   
+#ifdef LINUX
   XInitThreads();
+#endif
+
   gtk_init(&argc, &argv);
 
   builder = gtk_builder_new();
