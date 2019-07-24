@@ -311,7 +311,7 @@ The software will search for likely Arduino connections and display them here. I
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Tag:</property>
+                    <property name="label" translatable="yes">Log folder:</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -321,16 +321,49 @@ The software will search for likely Arduino connections and display them here. I
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="inpTag">
+                  <object class="GtkFileChooserButton" id="fchLogFolder">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="placeholder_text" translatable="yes">tag to identify the logged data</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_text" translatable="yes">Folder where logs are stored.</property>
+                    <property name="action">select-folder</property>
+                    <property name="preview_widget_active">False</property>
+                    <property name="use_preview_label">False</property>
+                    <property name="title" translatable="yes">Log Folder</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="padding">10</property>
                     <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Tag:</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="inpTag">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Log names are generated according to the time they were created, the control parameters, and this user defined "tag".
+
+Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will be converted to dashes ('-') before use.</property>
+                    <property name="placeholder_text" translatable="yes">tag to identify the logged data</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>
