@@ -7,6 +7,7 @@
 #include "error.h"
 #include "serial.h"
 #include "callbacks.h"
+#include "version.h"
 
 int LOG_STOPPED = 1;
 
@@ -63,6 +64,9 @@ int main (int argc, char **argv)
   data->log_lbl = gtk_builder_get_object(builder, "lblLog");
   data->scroll = gtk_builder_get_object(builder, "scroll");
   data->serial_cmb = gtk_builder_get_object(builder, "cmbSerial");
+
+  gtk_window_set_title(GTK_WINDOW(data->main_win), "Syringepump ("LONG_VERSION")");
+  puts(LONG_VERSION);
 
   g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit), data);
   g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_connect), data);

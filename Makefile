@@ -15,6 +15,9 @@ BAUD			= 115200
 
 gui: syringepump
 
+bumpver:
+	touch src/version.h
+
 firmware: build upload
 
 build: $(TARGET)/$(TARGET).ino
@@ -26,40 +29,44 @@ upload: build
 
 clean:
 	rm -rf build
+	rm -rf src/*.o
 
 CC    = gcc
 CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
 LINK   = $(shell pkg-config --libs gtk+-3.0)
 
-OSFLAG     :=
+DEFS     :=
 ifeq ($(OS),Windows_NT)
- OSFLAG += -D WIN32
+ DEFS += -D WIN32
  ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
-  OSFLAG += -D AMD64
+  DEFS += -D AMD64
  endif
  ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-  OSFLAG += -D IA32
+  DEFS += -D IA32
  endif
 else
  UNAME_S := $(shell uname -s)
  ifeq ($(UNAME_S),Linux)
-  OSFLAG += -D LINUX
+  DEFS += -D LINUX
 	LINK += "-lX11"
  endif
  ifeq ($(UNAME_S),Darwin)
-  OSFLAG += -D OSX
+  DEFS += -D OSX
  endif
   UNAME_P := $(shell uname -p)
  ifeq ($(UNAME_P),x86_64)
-  OSFLAG += -D AMD64
+  DEFS += -D AMD64
  endif
   ifneq ($(filter %86,$(UNAME_P)),)
- OSFLAG += -D IA32
+ DEFS += -D IA32
   endif
  ifneq ($(filter arm%,$(UNAME_P)),)
-  OSFLAG += -D ARM
+  DEFS += -D ARM
  endif
 endif
+
+DEFS += -DDATE=\"$(shell date +"%Y-%m-%d")\"
+DEFS += -DARCH=\"$(shell gcc -dumpmachine)\"
 
 
 OBJ    = src/main.o \
@@ -71,7 +78,10 @@ OBJ    = src/main.o \
 HDRS   = src/data.h
 
 src/%.o: src/%.c $(HDRS)
-	$(CC) $(CFLAGS) $< -c -o $@ $(OSFLAG)
+	$(CC) $(CFLAGS) $< -c -o $@ $(DEFS)
 
-syringepump: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $@ $(OSFLAG) $(LINK)
+syringepump: touchmain $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -o $@ $(DEFS) $(LINK)
+
+touchmain:
+	touch src/main.c
