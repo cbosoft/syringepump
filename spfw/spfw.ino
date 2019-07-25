@@ -18,16 +18,18 @@ const int MOTOR_DIR_PIN_2 = 6;
 // }}}
 // CONTROL {{{
 
+#define SPEED_HIST_LEN 32
 #define ERR_HIST_LEN 1000
-static double speed_set_point = 0;
-static double speed_current = 0;
-static double speed_hist[32] = {0};
-static int speed_hist_count = 0;
-static double err_hist[ERR_HIST_LEN] = {0};
-static unsigned int err_count = 0;
-static double kp = 0.2;
-static double ki = 0.0;
-static double kd = 0.0;
+double speed_set_point = 0;
+double speed_current = 0;
+double speed_average = 0;
+double speed_hist[SPEED_HIST_LEN] = {0};
+int speed_hist_count = 0;
+double err_hist[ERR_HIST_LEN] = {0};
+unsigned int err_count = 0;
+double kp = 0.2;
+double ki = 0.0;
+double kd = 0.0;
 
 // }}}
 // LOAD CELL {{{
@@ -49,8 +51,6 @@ int RULER_POSITION_START = 0;
 long position_byte = 0;
 long time_position_read = 0;
 
-double speed_hist[]
-
 const int RULER_DIAMETER_PIN = A1;
 // }}}
 // OPTICAL ENCODER {{{
@@ -64,8 +64,8 @@ const double OPT_MASK_ARC_LEN = PI*2.0*0.25; // quarter turn
 // }}}
 
 extern volatile unsigned long timer0_millis;
-static bool STOPPED = false;
-static bool REVERSING = false;
+bool STOPPED = false;
+bool REVERSING = false;
 
 
 
@@ -151,7 +151,7 @@ void logToSerial() {
   Serial.print(",");
   
   // position (ruler)
-  Serial.print(getPositionReading());
+  Serial.print(position_byte);
   Serial.print(",");
   
   // diameter (ruler)
@@ -160,6 +160,8 @@ void logToSerial() {
 
   // speed
   Serial.print(speed_current);
+  Serial.print(",");
+  Serial.print(speed_average);
   Serial.print("\n");
 }
 
@@ -175,7 +177,12 @@ void checkPosition()
 
 }
 
-
+int ledstatus = 0;
+void optMark(void)
+{
+  ledstatus = !ledstatus;
+  digitalWrite(13, ledstatus);
+}
 
 
 void setup () 
@@ -194,6 +201,12 @@ void setup ()
   pinMode(MOTOR_DIR_PIN_2, OUTPUT);
   motorSetDirection(1);
   motorSetDC(0);
+
+  // Optical encoder
+  pinMode(OPT_PIN, INPUT);
+  digitalWrite(OPT_PIN, HIGH);
+  pinMode(13, OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(OPT_PIN), optMark, CHANGE);
 
   bool got_setpoint = false;
   bool got_kp = false;
@@ -243,33 +256,54 @@ void setup ()
   Serial.print("START\n");
 
   RULER_POSITION_START = getPositionReading();
+  analogWrite(MOTOR_PWM_PIN, 120);
 
 }
 
 
 void loop ()
 {
+  delay(1000);
   long new_position_byte = getPositionReading();
   long new_time_position_read = millis();
 
   long dr = new_position_byte - position_byte;
   long dt = new_time_position_read - time_position_read;
 
+  if (dt == 0)
+    Serial.print("DT IS ZERO");
+
   position_byte = new_position_byte;
   time_position_read = new_time_position_read;
 
-  speed_current = double(dr)/double(dt);
+  speed_current = double(1000*dr)/double(dt);
 
   if (speed_hist_count < SPEED_HIST_LEN){
-    // TODO APPEND NEW RAW SPEED TO HIST
-    // SET AVERAGE SPEED TO AVERAGE
+    speed_hist[speed_hist_count] = speed_current;
+    speed_hist_count ++;
   }
+  else {
+    for (int i = 0; i < SPEED_HIST_LEN-1; i++)
+      speed_hist[i] = speed_hist[i+i];
+    speed_hist[SPEED_HIST_LEN-1] = speed_current;
+  }
+  double total = 0.0;
+  for (int i = 0; i < speed_hist_count; i++) {
+    total += speed_hist[i];
+  }
+  speed_average = total / double(speed_hist_count);
+  Serial.print(speed_current);
+  Serial.print(", ");
+  Serial.print(total);
+  Serial.print(", ");
+  Serial.print(speed_average);
+  Serial.print("\n");
 
   // control speed
   updateMotorDC();
 
   // log stuff
-  logToSerial();
+  //logToSerial();
 
   // check position, update direction
   checkPosition();
