@@ -37,31 +37,14 @@ LINK   = $(shell pkg-config --libs gtk+-3.0)
 
 DEFS     :=
 ifeq ($(OS),Windows_NT)
- DEFS += -D WIN32
- ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
-  DEFS += -D AMD64
- endif
- ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-  DEFS += -D IA32
- endif
+ DEFS += -D WINDOWS
 else
  UNAME_S := $(shell uname -s)
  ifeq ($(UNAME_S),Linux)
   DEFS += -D LINUX
 	LINK += "-lX11"
- endif
- ifeq ($(UNAME_S),Darwin)
+ else
   DEFS += -D OSX
- endif
-  UNAME_P := $(shell uname -p)
- ifeq ($(UNAME_P),x86_64)
-  DEFS += -D AMD64
- endif
-  ifneq ($(filter %86,$(UNAME_P)),)
- DEFS += -D IA32
-  endif
- ifneq ($(filter arm%,$(UNAME_P)),)
-  DEFS += -D ARM
  endif
 endif
 
