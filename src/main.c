@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <gtk/gtk.h>
 
 #ifdef LINUX
@@ -30,10 +31,14 @@ int main (int argc, char **argv)
   }
 
 
-  struct Data *data = malloc(sizeof(struct Data));;
+  struct Data *data = malloc(sizeof(struct Data));
 
   // Serial
+#ifdef WINDOWS
+  data->serial_handle = NULL; // TODO
+#else
   data->serial_fd = -1;
+#endif
   data->serial_path = "/dev/ttyACM0";
 
   // ??

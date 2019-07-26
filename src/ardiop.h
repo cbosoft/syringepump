@@ -1,6 +1,10 @@
 #pragma once
 #include "data.h"
 
+#ifdef WINDOWS
+#include <Windows.h>
+#endif
+
 int wait_for(struct Data *data, const char *trigger, int number);
 
 #ifdef WINDOWS

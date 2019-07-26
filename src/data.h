@@ -1,8 +1,8 @@
 #pragma once
 #include <gtk/gtk.h>
 
-#ifdef WIDNOWS
-#include <windows.h>
+#ifdef WINDOWS
+#include <Windows.h>
 #endif
 
 struct Data {

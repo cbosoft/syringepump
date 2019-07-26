@@ -8,7 +8,7 @@
 #include <time.h>
 
 #ifdef WINDOWS
-#include <windows.h>
+#include <Windows.h>
 #else // Linux or MacOS
 #include <termios.h>
 #endif
