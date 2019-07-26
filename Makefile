@@ -61,10 +61,13 @@ OBJ    = src/main.o \
 				 src/util.o
 HDRS   = src/data.h
 
+echodefs:
+	@echo $(DEFS)
+
 src/%.o: src/%.c $(HDRS)
 	$(CC) $(CFLAGS) $< -c -o $@ $(DEFS)
 
-syringepump: touchmain $(OBJ)
+syringepump: echodefs touchmain $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ $(DEFS) $(LINK)
 
 touchmain:
