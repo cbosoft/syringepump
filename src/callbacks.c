@@ -143,6 +143,8 @@ static void *log_update_loop(void *void_data)
 
     } while(b[0] != '\n' && charno < 512 && !LOG_STOPPED);
 
+    received_text[charno-1] = '0';
+
     if (received_text[0] == 'P') {
       timestamp(NULL, " :: %s", received_text);
     }
@@ -192,15 +194,19 @@ static void *arduino_connect_thread(void *vptr_data)
       GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
   timestamp(data, "connecting to \"%s\"", data->serial_path);
-  data->serial_fd = ard_openserial(data->serial_path);
 
-  if (data->serial_fd < 0) {
-    timestamp_error(data, 
-        "Failed to connect: (%d) %s", 
-        errno, strerror(errno));
-
+  int rv = ard_openserial(data->serial_path, &data->serial_fd);
+  if (rv < 0) {
+    switch (rv) {
+      case -1:
+        timestamp_error(data, "Failed to connect");
+        break;
+      case -2:
+      case -3:
+        timestamp_error(data, "Failed to apply serial settings");
+        break;
+    }
     gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
-
     g_thread_unref(connect_thread);
     return NULL;
   }
