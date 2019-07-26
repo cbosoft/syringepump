@@ -36,8 +36,6 @@ void setup ()
 
   Serial.print("START\n");
 
-  //RULER_POSITION_START = getPositionReading();
-
 }
 
 
@@ -45,10 +43,10 @@ void setup ()
 
 void loop ()
 {
-  position = getPositionReading();
+  position = getTripCount();//getPositionReading();
   load_cell_reading = getLoadCellReading();
 
-  speed = getSpeedReading();
+  speed = 0.1;//getSpeedReading();
   control_action = getControlAction(speed);
 
   logToSerial(load_cell_reading, position, speed);

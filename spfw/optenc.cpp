@@ -1,10 +1,8 @@
 #include <Arduino.h>
 #include "optenc.h"
 
-volatile long tripc = 0;
-unsigned long time_last_check = 0;
-const double trips_per_mm = 1000.0;
-const double ms_per_s = 1000.0;
+static volatile long tripc = 0;
+static unsigned long time_last_check = 0;
 
 
 
@@ -12,6 +10,14 @@ const double ms_per_s = 1000.0;
 void optMark()
 {
   tripc ++;
+}
+
+
+
+
+long getTripCount()
+{
+  return tripc;
 }
 
 
@@ -26,8 +32,9 @@ double getSpeedReading()
   long dtrips = tripc;
   tripc = 0;
   interrupts();
-  return (double(dtrips) * trips_per_mm * ms_per_s) / double(dt);
+  return (double(dtrips) * TRIPS_PER_MM * MS_PER_S) / double(dt);
 }
+
 
 
 
@@ -37,5 +44,9 @@ void optencInit()
   digitalWrite(OPT_PIN, HIGH);
   attachInterrupt(digitalPinToInterrupt(OPT_PIN), optMark, CHANGE);
 }
+
+
+
+
 
 // vim: ft=arduino
