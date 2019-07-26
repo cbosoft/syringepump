@@ -74,7 +74,8 @@ OBJ    = src/main.o \
 				 src/callbacks.o \
 				 src/error.o \
 				 src/serial.o \
-				 src/log.o
+				 src/log.o \
+				 src/util.o
 HDRS   = src/data.h
 
 src/%.o: src/%.c $(HDRS)
