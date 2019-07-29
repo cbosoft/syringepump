@@ -83,7 +83,7 @@ int main (int argc, char **argv)
   }
 
 
-  struct Data *data = malloc(sizeof(struct Data));
+  struct Data *data = calloc(1, sizeof(struct Data));
 
   // Serial
 #ifdef WINDOWS
