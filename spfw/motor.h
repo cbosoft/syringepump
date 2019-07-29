@@ -2,9 +2,9 @@
 #define __MOTOR__
 
 // define pins used
+#define MOTOR_PWM_PIN 3
 #define MOTOR_DIR_PIN_1 4
-#define MOTOR_PWM_PIN 5
-#define MOTOR_DIR_PIN_2 6
+#define MOTOR_DIR_PIN_2 5
 
 // define directions
 #define MOTOR_REVERSE 0
