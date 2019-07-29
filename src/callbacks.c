@@ -91,6 +91,7 @@ static void *log_update_loop(void *void_data)
 { 
   struct Data *data = (struct Data *)void_data;
   const int print_every = 100;
+  LOG_STOPPED = 0;
   
   timestamp(data, "Waiting for Arduino...");
   switch (wait_for(data, "START", 100)) {
@@ -219,8 +220,17 @@ static void *arduino_connect_thread(void *vptr_data)
     return NULL;
   }
 
+  LOG_STOPPED = 0;
   timestamp(data, "Waiting on Arduino...");
-  wait_for(data, "ON", 10);
+  switch (wait_for(data, "ON", 100)) {
+    case -1:
+      timestamp_error(data, "Cancelled by user.");
+      return NULL;
+    case -2:
+      timestamp_error(data, "Arduino connection timed out!");
+      return NULL;
+  }
+  LOG_STOPPED = 1;
   timestamp(data, "Connected!");
 
   // enable disconnect button, disable all input fields while connected.
@@ -230,8 +240,17 @@ static void *arduino_connect_thread(void *vptr_data)
   gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
   gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
 
-  timestamp(data, "Waiting for Arduino...");
-  wait_for(data, "WAIT", 10);
+  LOG_STOPPED = 0;
+  timestamp(data, "Waiting on Arduino...");
+  switch (wait_for(data, "WAIT", 100)) {
+    case -1:
+      timestamp_error(data, "Cancelled by user.");
+      return NULL;
+    case -2:
+      timestamp_error(data, "Arduino connection timed out!");
+      return NULL;
+  }
+  LOG_STOPPED = 1;
 
   timestamp(data, "Sending run parameters to Arduino");
 

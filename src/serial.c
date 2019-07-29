@@ -55,10 +55,14 @@ void send_key_value_to_arduino(
   timestamp(NULL, "sending k/v pair: %s", mesg);
   write(data->serial_fd, mesg, ARDUINO_MESG_LEN);
 
-  if (wait_for(data, "OK", 10)) {
-    timestamp(NULL, "arduino did not reply okay");
-    exit(1);
+  switch (wait_for(data, "OK", 10)) {
+  case -1:
+    timestamp_error(NULL, "Cancelled by user.");
+    return;
+  case -2:
+    timestamp_error(NULL, "Arduino didn't understand message");
     // TODO: deal with this properly
+    exit(1);
   }
 
   timestamp(data, "Sent data { %s = %s } successfully.", key, value);
