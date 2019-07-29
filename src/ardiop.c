@@ -184,7 +184,7 @@ int ard_writeserial(HANDLE serial_handle, char *mesg, int mesglen)
 
 
 
-#else
+#else // NOT WINDOWS: MACOS OR LINUX
 
 
 int ard_openserial(const char *serial_port_path, int * serial_fd_ptr)
