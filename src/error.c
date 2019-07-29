@@ -10,10 +10,23 @@
 #include "error.h"
 #include "log.h"
 #include "data.h"
+#include "util.h"
 
 #ifdef WINDOWS
 #error this file not yet ported (error.h)
 #endif
+
+#define CHECK_ENTRY_NUMBER(DATA,MESG_EMPTY,MESG_NOT_NUM) \
+  if (IS_EMPTY_ENTRY(DATA)) { \
+      rv = 1; \
+      timestamp_error(data, MESG_EMPTY); \
+    } \
+    else { \
+      if (is_not_number( gtk_entry_get_text(GTK_ENTRY(DATA)) )) { \
+        rv = 1; \
+        timestamp_error(data, MESG_NOT_NUM); \
+      } \
+    }
 
 
 const char *log_path = "log.txt";
@@ -120,44 +133,39 @@ int check_form(struct Data *data)
   // check over the form, pre connection.
   // none of the inputs should be empty (setpoint, kp, ki, kd, tag)
 
-  // setpoint, kp, ki, kd should be numbers (single precision floats) 
-  // (enforced by gtk)
+  // setpoint, kp, ki, kd should be numbers
+  // (enforced by gtk, but can be overridden using cli args, so do need to 
+  // check here)
 
   if (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
-
-    if (IS_EMPTY_ENTRY(data->dc_inp)) {
-      rv = 1;
-      timestamp_error(data, "Duty cycle is a required field for this control scheme.");
-    }
-
+    CHECK_ENTRY_NUMBER(data->dc_inp,
+        "Duty cycle is a required field for this control scheme.", 
+        "Duty cycle must be a number (containing only numbers 0-9 and decimal "
+        "points ('.').");
   }
   else {
+    CHECK_ENTRY_NUMBER(data->setpoint_inp, 
+        "Set point is a required field for PID control.", 
+        "Set point must be a number (containing only numbers 0-9 and decimal "
+        "points ('.').");
+    CHECK_ENTRY_NUMBER(data->kp_inp,
+        "KP is a required field for PID control.",
+        "KP must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+    CHECK_ENTRY_NUMBER(data->ki_inp,
+        "KI is a required field for PID control.",
+        "KI must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+    CHECK_ENTRY_NUMBER(data->kd_inp,
+        "KD is a required field for PID control.",
+        "KD must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+  }
 
-    if (IS_EMPTY_ENTRY(data->setpoint_inp)) {
-      rv = 1;
-      timestamp_error(data, "Set point is a required field for PID control.");
-    }
-    
-    if (IS_EMPTY_ENTRY(data->kp_inp)) {
-      rv = 1;
-      timestamp_error(data, "KP is a required field for PID control. Set to zero to disable.");
-    }
-    
-    if (IS_EMPTY_ENTRY(data->ki_inp)) {
-      rv = 1;
-      timestamp_error(data, "KI is a reuired field for PID control. Set to zero to disable.");
-    }
-
-    if (IS_EMPTY_ENTRY(data->kd_inp)) {
-      rv = 1;
-      timestamp_error(data, "KD is a required field for PID control. Set to zero to disable.");
-    }
-
-    if (IS_EMPTY_ENTRY(data->tag_inp)) {
-      rv = 1;
-      timestamp_error(data, "Tag should not be empty; use it to describe the run in a few words.");
-    }
-
+  if (IS_EMPTY_ENTRY(data->tag_inp)) {
+    rv = 1;
+    timestamp_error(data, 
+        "Tag should not be empty; use it to describe the run in a few words.");
   }
 
   // if tag contains spaces, periods, or underscores; they will be 
