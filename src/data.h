@@ -36,6 +36,8 @@ struct Data {
   GObject *log_lbl;
   GObject *scroll;
   GObject *serial_cmb;
+  GObject *control_tab;
+  GObject *dc_inp;
 };
 
 // vim: ft=c

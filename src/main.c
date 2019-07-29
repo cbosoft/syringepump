@@ -58,6 +58,7 @@ int main (int argc, char **argv)
 
   // GUI :: inputs
   data->setpoint_inp = gtk_builder_get_object(builder, "inpSetPoint");
+  data->dc_inp = gtk_builder_get_object(builder, "inpDC");
   data->kp_inp = gtk_builder_get_object(builder, "inpKP");
   data->ki_inp = gtk_builder_get_object(builder, "inpKI");
   data->kd_inp = gtk_builder_get_object(builder, "inpKD");
@@ -69,6 +70,7 @@ int main (int argc, char **argv)
   data->log_lbl = gtk_builder_get_object(builder, "lblLog");
   data->scroll = gtk_builder_get_object(builder, "scroll");
   data->serial_cmb = gtk_builder_get_object(builder, "cmbSerial");
+  data->control_tab = gtk_builder_get_object(builder, "tabControl");
 
   gtk_window_set_title(GTK_WINDOW(data->main_win), "Syringepump ("LONG_VERSION")");
   puts(LONG_VERSION);

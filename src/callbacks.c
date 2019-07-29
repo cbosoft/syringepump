@@ -226,30 +226,39 @@ static void *arduino_connect_thread(void *vptr_data)
   wait_for(data, "WAIT", 10);
 
   timestamp(data, "Sending run parameters to Arduino");
-  send_key_value_to_arduino(
-      data, 
-      "setpoint", 
-      (void *)gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)),
-      T_STR);
 
-  send_key_value_to_arduino(
-      data, 
-      "kp", 
-      (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)),
-      T_STR);
+  if (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
+    send_key_value_to_arduino(
+        data, 
+        "DC",
+        (void *)gtk_entry_get_text(GTK_ENTRY(data->dc_inp)),
+        T_STR);
+  }
+  else {
+    send_key_value_to_arduino(
+        data, 
+        "setpoint", 
+        (void *)gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)),
+        T_STR);
 
-  send_key_value_to_arduino(
-      data, 
-      "ki", 
-      (void *)gtk_entry_get_text(GTK_ENTRY(data->ki_inp)),
-      T_STR);
+    send_key_value_to_arduino(
+        data, 
+        "kp", 
+        (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)),
+        T_STR);
 
-  send_key_value_to_arduino(
-      data, 
-      "kd", 
-      (void *)gtk_entry_get_text(GTK_ENTRY(data->kd_inp)),
-      T_STR);
+    send_key_value_to_arduino(
+        data, 
+        "ki", 
+        (void *)gtk_entry_get_text(GTK_ENTRY(data->ki_inp)),
+        T_STR);
 
+    send_key_value_to_arduino(
+        data, 
+        "kd", 
+        (void *)gtk_entry_get_text(GTK_ENTRY(data->kd_inp)),
+        T_STR);
+  }
   timestamp(data, "All parameters sent successfully!");
 
   log_thread = g_thread_new("log_thread", log_update_loop, data);
