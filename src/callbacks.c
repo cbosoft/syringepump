@@ -212,7 +212,7 @@ static void *arduino_connect_thread(void *vptr_data)
   }
 
   timestamp(data, "Waiting on Arduino...");
-  wait_for(data, "ON", 100);
+  wait_for(data, "ON", 10);
   timestamp(data, "Connected!");
 
   // enable disconnect button, disable all input fields while connected.
@@ -223,7 +223,7 @@ static void *arduino_connect_thread(void *vptr_data)
   gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
 
   timestamp(data, "Waiting for Arduino...");
-  wait_for(data, "WAIT", 100);
+  wait_for(data, "WAIT", 10);
 
   timestamp(data, "Sending run parameters to Arduino");
   send_key_value_to_arduino(
