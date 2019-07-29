@@ -8,7 +8,7 @@ def read_csv(path):
         data = list(zip(*[[float(cell) for cell in l.split(',')] for l in csvf.readlines()[1:]]))
     return data
 
-positions, readings = read_csv("cal.csv")
+positions, readings = read_csv("position_data.csv")
 coefs = np.polyfit(readings, positions, 1)
 print(coefs)
 fit_positions = np.add(np.multiply(coefs[0], readings), coefs[1])
