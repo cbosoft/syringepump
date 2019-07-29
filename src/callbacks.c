@@ -115,11 +115,7 @@ static void *log_update_loop(void *void_data)
   ms_span.tv_nsec = 1000*1000;
 
   while (!LOG_STOPPED) {
-    char received_text[512];
-
-    for (int i = 0; i < 512; i++)
-      received_text[i] = 0;
-    
+    char received_text[512] = {0};
     char b[1];
     charno = 0;
     do {
