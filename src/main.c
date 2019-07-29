@@ -12,6 +12,35 @@
 
 int LOG_STOPPED = 1;
 
+
+
+
+void usage()
+{
+  fprintf(stderr, 
+      "  Syringepump ("LONG_VERSION")\n"
+      "\n"
+      "  Syringe pump control software.\n"
+         ////////////////////////////////////////////////////////////////////////////////
+      "  An Arduino is used to control the speed and logging of data from a syringe\n"
+      "  pump. The GUI should be fairly self explanatory, and I don't want to write\n"
+      "  too much here as it may bo out of date fairly quickly. Log an issue on \n"
+      "  github (https://github.com/cbosoft/syringepump) if there's something wrong,\n"
+      "  or if you want to request anything.\n"
+      "\n"
+      "  Command line usage:\n"
+      "    syringepump [--set-point <set point>] \\\n"
+      "                [--kp <kp>] \\\n"
+      "                [--ki <ki>] \\\n"
+      "                [--kd <kd>] \\\n"
+      "                [--dc <dc>] \\\n"
+      "                [--tag <tag>]"
+      "\n");
+}
+
+
+
+
 int main (int argc, char **argv)
 {
   GtkBuilder *builder;
@@ -22,6 +51,14 @@ int main (int argc, char **argv)
 #endif
 
   gtk_init(&argc, &argv);
+
+  // preliminary arg check
+  for (int i = 0; i < argc; i++) {
+    if ((strcmp(argv[i], "--help") == 0) || (strcmp(argv[i], "-h") == 0)) {
+      usage();
+      exit(0);
+    }
+  }
 
   builder = gtk_builder_new();
   if (gtk_builder_add_from_file(builder, "gui/main.ui", &error) == 0) {
@@ -72,8 +109,41 @@ int main (int argc, char **argv)
   data->serial_cmb = gtk_builder_get_object(builder, "cmbSerial");
   data->control_tab = gtk_builder_get_object(builder, "tabControl");
 
+  // SET UP
   gtk_window_set_title(GTK_WINDOW(data->main_win), "Syringepump ("LONG_VERSION")");
-  puts(LONG_VERSION);
+  timestamp(data, "Starting Syringepump (%s)", LONG_VERSION);
+
+  for (int i = 0; i < argc; i++) {
+    if (strcmp(argv[i], "--set-point") == 0) {
+      i++;
+      gtk_entry_set_text(GTK_ENTRY(data->setpoint_inp), argv[i]);
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
+    }
+    if (strcmp(argv[i], "--kp") == 0) {
+      i++;
+      gtk_entry_set_text(GTK_ENTRY(data->kp_inp), argv[i]);
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
+    }
+    if (strcmp(argv[i], "--ki") == 0) {
+      i++;
+      gtk_entry_set_text(GTK_ENTRY(data->ki_inp), argv[i]);
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
+    }
+    if (strcmp(argv[i], "--kd") == 0) {
+      i++;
+      gtk_entry_set_text(GTK_ENTRY(data->kd_inp), argv[i]);
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
+    }
+    if (strcmp(argv[i], "--dc") == 0) {
+      i++;
+      gtk_entry_set_text(GTK_ENTRY(data->dc_inp), argv[i]);
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 1);
+    }
+    if (strcmp(argv[i], "--tag") == 0) {
+      i++;
+      gtk_entry_set_text(GTK_ENTRY(data->tag_inp), argv[i]);
+    }
+  }
 
   g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit), data);
   g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_connect), data);
