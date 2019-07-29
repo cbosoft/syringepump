@@ -1,4 +1,4 @@
-#define VERSION "alpha"
+#define VERSION "v0.1"
 
 #ifndef DATE
 #define DATE "??"
@@ -9,6 +9,6 @@
 #endif
 
 
-#define LONG_VERSION VERSION" ("ARCH") built on "DATE
+#define LONG_VERSION VERSION", built on "DATE" for "ARCH
 
 // vim: ft=c
