@@ -151,7 +151,7 @@ static void *log_update_loop(void *void_data)
 
     } while(b[0] != '\n' && charno < 512 && !LOG_STOPPED);
 
-    received_text[charno-1] = '0';
+    received_text[charno-1] = 0;
 
     if (received_text[0] == 'P') {
       timestamp(NULL, " :: %s", received_text);
