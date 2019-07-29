@@ -126,7 +126,7 @@ static void *log_update_loop(void *void_data)
         timestamp_error(NULL, 
             "something went wrong reading a byte (read failed) (%d) %s", 
             errno, strerror(errno));
-        exit(0); // TODO handle properly
+        exit(1); // TODO handle properly
       }
       else if(n == 0) {
         // no read
@@ -136,7 +136,7 @@ static void *log_update_loop(void *void_data)
           timestamp_error(NULL, 
               "something went wrong reading a byte (timed out) (%d), %s", 
               errno, strerror(errno));
-          exit(0); // TODO handle properly
+          exit(1); // TODO handle properly
         }
 
         continue;
