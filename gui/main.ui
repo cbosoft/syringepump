@@ -52,163 +52,277 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="GtkNotebook" id="tabControl">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can_focus">True</property>
+                <property name="tab_pos">left</property>
+                <property name="show_border">False</property>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Speed set point (mm/s):</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="inpSetPoint">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_markup" translatable="yes">Set point is the goal for the control system to acheive/maintain. The actual speed is subtracted from the setpoint to give an Error value, which is used along with the control parameters defined below to find an appropriate control action to give in order to maintain the setpoint speed using the PID algorithm:
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Speed set point (mm/s):</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="inpSetPoint">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_markup" translatable="yes">Set point is the goal for the control system to acheive/maintain. The actual speed is subtracted from the setpoint to give an Error value, which is used along with the control parameters defined below to find an appropriate control action to give in order to maintain the setpoint speed using the PID algorithm:
 
 CA = (K&lt;sub&gt;P&lt;/sub&gt; × Error) + (K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt) + (K&lt;sub&gt;D&lt;/sub&gt; × dError/dt)</property>
-                    <property name="text" translatable="yes">10.0</property>
-                    <property name="placeholder_text" translatable="yes">set point</property>
-                    <property name="input_purpose">number</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">10</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">K&lt;sub&gt;P&lt;/sub&gt;:</property>
-                    <property name="use_markup">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="inpKP">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_markup" translatable="yes">How "strong" the proportional gain is.
+                            <property name="text" translatable="yes">10.0</property>
+                            <property name="placeholder_text" translatable="yes">set point</property>
+                            <property name="input_purpose">number</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">K&lt;sub&gt;P&lt;/sub&gt;:</property>
+                            <property name="use_markup">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="inpKP">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_markup" translatable="yes">How "strong" the proportional gain is.
 
 CA = K&lt;sub&gt;P&lt;/sub&gt; × Error
 
 High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with little/no overshoot.
 
 Set to zero to disable (not recommmended).</property>
-                    <property name="text" translatable="yes">0.2</property>
-                    <property name="placeholder_text" translatable="yes">proportional control gain</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">K&lt;sub&gt;I&lt;/sub&gt;:</property>
-                    <property name="use_markup">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="inpKI">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_markup" translatable="yes">How "strong" the integral gain is.
+                            <property name="text" translatable="yes">0.2</property>
+                            <property name="placeholder_text" translatable="yes">proportional control gain</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">K&lt;sub&gt;I&lt;/sub&gt;:</property>
+                            <property name="use_markup">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="inpKI">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_markup" translatable="yes">How "strong" the integral gain is.
 
 CA = K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;-∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt
 
 High K&lt;sub&gt;I&lt;/sub&gt; means a strong dependence of the control action on past errors (long standing errors are eliminated), also guides against offset. Too high, and the controller will max out for the tiniest error.
 
 Set to zero to disable.</property>
-                    <property name="text" translatable="yes">0.0</property>
-                    <property name="placeholder_text" translatable="yes">integral control gain</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">K&lt;sub&gt;D&lt;/sub&gt;:</property>
-                    <property name="use_markup">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="inpKD">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_markup" translatable="yes">How "strong" the differential gain is.
+                            <property name="text" translatable="yes">0.0</property>
+                            <property name="placeholder_text" translatable="yes">integral control gain</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">K&lt;sub&gt;D&lt;/sub&gt;:</property>
+                            <property name="use_markup">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="inpKD">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_markup" translatable="yes">How "strong" the differential gain is.
 
 CA = K&lt;sub&gt;D&lt;/sub&gt; × dError/dt
 
 K&lt;sub&gt;D&lt;/sub&gt; is used to respond to rapidly changing errors, but is highly susceptible to noise.
 
 Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
-                    <property name="text" translatable="yes">0.0</property>
-                    <property name="placeholder_text" translatable="yes">derivative control gain</property>
+                            <property name="text" translatable="yes">0.0</property>
+                            <property name="placeholder_text" translatable="yes">derivative control gain</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">5</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">PID Control</property>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">5</property>
+                    <property name="tab_fill">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Motor duty cycle (number, 0-255):</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="inpDC">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="tooltip_markup" translatable="yes">The motor is controlled using "pulse width modulation". A square wave is sent to the motor, powering it. The speed can be changed by changing the ratio of "on" to "off" in the square wave; this is called the duty cycle. This is normalized to a range 0-255; so a duty cycle of 0 is the motor off, and a duty cycle of 255 is the fastest it can go.</property>
+                            <property name="text" translatable="yes">10.0</property>
+                            <property name="placeholder_text" translatable="yes">set point</property>
+                            <property name="input_purpose">number</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="padding">10</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child type="tab">
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">No control</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                    <property name="tab_fill">False</property>
                   </packing>
                 </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">10</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -225,7 +339,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">3</property>
+                <property name="position">2</property>
               </packing>
             </child>
             <child>
@@ -283,7 +397,7 @@ The software will search for likely Arduino connections and display them here. I
                 <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="padding">10</property>
-                <property name="position">4</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -300,7 +414,7 @@ The software will search for likely Arduino connections and display them here. I
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">5</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
@@ -371,7 +485,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">10</property>
-                <property name="position">6</property>
+                <property name="position">5</property>
               </packing>
             </child>
           </object>
