@@ -11,7 +11,7 @@ double getPositionReadingMillimeter()
 
 
 
-long getPositionReading()
+unsigned long getPositionReading()
 {
   return analogRead(RULER_POSITION_PIN);
 }
@@ -19,7 +19,7 @@ long getPositionReading()
 
 
 
-long getDiameterReading()
+unsigned long getDiameterReading()
 {
   return analogRead(RULER_DIAMETER_PIN);
 }

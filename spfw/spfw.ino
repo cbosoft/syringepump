@@ -10,10 +10,10 @@
 extern volatile unsigned long timer0_millis;
 bool STOPPED = false;
 bool REVERSING = false;
-long position = 0;
+unsigned long position = 0;
 double speed = 0.0;
 int control_action;
-int load_cell_reading = 0;
+long load_cell_reading = 0;
 
 
 
@@ -42,14 +42,14 @@ void setup ()
 
 
 
-
 void loop ()
 {
   position = getTripCount();//getPositionReading();
   load_cell_reading = getLoadCellReading();
 
-  speed = 0.1;//getSpeedReading();
+  speed = 0;//getSpeedReading();
   control_action = getControlAction(speed);
+  motorSetDC(control_action);
 
   logToSerial(load_cell_reading, position, speed);
 

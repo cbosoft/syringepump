@@ -6,7 +6,7 @@
 #define TRIPS_PER_MM 1000.0
 #define MS_PER_S 1000.0
 
-long getTripCount();
+unsigned long getTripCount();
 double getSpeedReading();
 void optMark();
 void optencInit();

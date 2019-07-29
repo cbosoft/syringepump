@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "log.h"
 
-void logToSerial(long load_cell_reading, int position, double speed) {
+void logToSerial(long load_cell_reading, unsigned long position, double speed) {
   // time since start
   Serial.print(millis());
   Serial.print(",");

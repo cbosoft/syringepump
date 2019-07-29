@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "optenc.h"
 
-static volatile long tripc = 0;
+static volatile unsigned long tripc = 0;
 static unsigned long time_last_check = 0;
 
 
@@ -15,7 +15,7 @@ void optMark()
 
 
 
-long getTripCount()
+unsigned long getTripCount()
 {
   return tripc;
 }
