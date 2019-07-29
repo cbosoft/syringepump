@@ -272,7 +272,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_markup" translatable="yes">The motor is controlled using "pulse width modulation". A square wave is sent to the motor, powering it. The speed can be changed by changing the ratio of "on" to "off" in the square wave; this is called the duty cycle. This is normalized to a range 0-255; so a duty cycle of 0 is the motor off, and a duty cycle of 255 is the fastest it can go.</property>
-                            <property name="text" translatable="yes">10.0</property>
+                            <property name="text" translatable="yes">120</property>
                             <property name="placeholder_text" translatable="yes">set point</property>
                             <property name="input_purpose">number</property>
                           </object>
