@@ -33,15 +33,11 @@ int getControlAction(double speed)
 
 void controlInit(){
 
-  bool got_setpoint = false;
-  bool got_kp = false;
-  bool got_ki = false;
-  bool got_kd = false;
-  bool got_dc = false;
-
+  int params_got = 0;
+  int params_needed = 1;
   Serial.print("WAIT\n");
 
-  while ((!got_setpoint || !got_kp || !got_ki || !got_kd) && !got_dc) {
+  while (params_got < params_needed) {
 
     while (!Serial.available()) delay(100);
 
@@ -54,31 +50,37 @@ void controlInit(){
     if (key == 0) continue;
 
     if (strcmp(key, "setpoint") == 0) {
-      control_type = CONTROL_PID
+      control_type = CONTROL_PID;
       speed_set_point = atof(val);
-      got_setpoint = true;
     }
     else if (strcmp(key, "kp") == 0) {
-      control_type = CONTROL_PID
+      control_type = CONTROL_PID;
       kp = atof(val);
-      got_kp = true;
     }
     else if (strcmp(key, "ki") == 0) {
-      control_type = CONTROL_PID
+      control_type = CONTROL_PID;
       ki = atof(val);
-      got_ki = true;
     }
     else if (strcmp(key, "kd") == 0) {
-      control_type = CONTROL_PID
+      control_type = CONTROL_PID;
       kd = atof(val);
-      got_kd = true;
     }
     else if (strcmp(key, "dc") == 0) {
-      control_type = CONTROL_NONE
+      control_type = CONTROL_NONE;
       dc = atoi(val);
-      got_dc = true;
     }
 
+    params_got ++;
+
+    switch (control_type) {
+      case CONTROL_PID:
+        params_needed = 4;
+        break;
+      case CONTROL_UNSET:
+      case CONTROL_NONE:
+        params_needed = 1;
+        break;
+    }
     Serial.print("OK\n");
 
   } 
