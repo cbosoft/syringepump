@@ -28,6 +28,8 @@ void setup ()
   motorInit();
   optencInit();
   controlInit();
+  
+  delay(500);
 
   // reset millis counter to zero
   noInterrupts();
