@@ -232,7 +232,7 @@ int ard_openserial(const char *serial_port_path, int * serial_fd_ptr)
 
   // polling read: int read(fd) is non-blocking
   toptions.c_cc[VMIN] = 0;
-  toptions.c_cc[VTIME] = 0;
+  toptions.c_cc[VTIME] = 2;
 
   if (tcsetattr(fd, TCSANOW, &toptions)) {
     close(fd);
