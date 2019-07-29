@@ -18,6 +18,8 @@
 #include "error.h"
 #include "util.h"
 
+extern int LOG_STOPPED;
+
 
 
 
@@ -40,6 +42,9 @@ int wait_for(struct Data *data, const char *trigger, int timeout_s) {
 
     ptble_usleep(delay_us);
 
+    if (LOG_STOPPED)
+      return -1;
+
     timestamp(NULL, 
         "waiting for \"%s\" (%ds / %ds)", 
         trigger, 
@@ -48,7 +53,7 @@ int wait_for(struct Data *data, const char *trigger, int timeout_s) {
 
   }
 
-  return 1;
+  return -2;
 }
 
 
