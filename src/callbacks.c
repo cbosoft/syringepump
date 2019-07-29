@@ -10,6 +10,7 @@
 
 extern int LOG_STOPPED;
 
+int log_started;
 static GThread *log_thread;
 static GThread *connect_thread;
 static GThread *refresh_thread;
@@ -92,7 +93,14 @@ static void *log_update_loop(void *void_data)
   const int print_every = 100;
   
   timestamp(data, "Waiting for Arduino...");
-  wait_for(data, "START", 100);
+  switch (wait_for(data, "START", 100)) {
+    case -1:
+      timestamp_error(data, "Cancelled by user.");
+      return NULL;
+    case -2:
+      timestamp_error(data, "Arduino connection timed out!");
+      return NULL;
+  }
   timestamp(data, "Arduino ready, starting!");
 
   get_new_log_name(data);
@@ -308,6 +316,11 @@ void cb_disconnect(GObject *obj, struct Data *data)
 
   LOG_STOPPED = 1;
   g_thread_join(log_thread);
+
+#ifndef WINDOWS
+  if (data->serial_fd > 0)
+    close(data->serial_fd);
+#endif
 
   timestamp(data, "disconnected");
 
