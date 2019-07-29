@@ -123,32 +123,43 @@ int check_form(struct Data *data)
   // setpoint, kp, ki, kd should be numbers (single precision floats) 
   // (enforced by gtk)
 
-  if (IS_EMPTY_ENTRY(data->setpoint_inp)) {
-    rv = 1;
-    timestamp_error(data, "setpoint cannot be empty");
+  if (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
+
+    if (IS_EMPTY_ENTRY(data->dc_inp)) {
+      rv = 1;
+      timestamp_error(data, "Duty cycle is a required field for this control scheme.");
+    }
+
   }
-  
-  if (IS_EMPTY_ENTRY(data->kp_inp)) {
-    rv = 1;
-    timestamp_error(data, "KP cannot be empty");
-  }
-  
-  if (IS_EMPTY_ENTRY(data->ki_inp)) {
-    rv = 1;
-    timestamp_error(data, "KI cannot be empty");
+  else {
+
+    if (IS_EMPTY_ENTRY(data->setpoint_inp)) {
+      rv = 1;
+      timestamp_error(data, "Set point is a required field for PID control.");
+    }
+    
+    if (IS_EMPTY_ENTRY(data->kp_inp)) {
+      rv = 1;
+      timestamp_error(data, "KP is a required field for PID control. Set to zero to disable.");
+    }
+    
+    if (IS_EMPTY_ENTRY(data->ki_inp)) {
+      rv = 1;
+      timestamp_error(data, "KI is a reuired field for PID control. Set to zero to disable.");
+    }
+
+    if (IS_EMPTY_ENTRY(data->kd_inp)) {
+      rv = 1;
+      timestamp_error(data, "KD is a required field for PID control. Set to zero to disable.");
+    }
+
+    if (IS_EMPTY_ENTRY(data->tag_inp)) {
+      rv = 1;
+      timestamp_error(data, "Tag should not be empty; use it to describe the run in a few words.");
+    }
+
   }
 
-  if (IS_EMPTY_ENTRY(data->kd_inp)) {
-    rv = 1;
-    timestamp_error(data, "KD cannot be empty");
-  }
-
-  if (IS_EMPTY_ENTRY(data->tag_inp)) {
-    rv = 1;
-    timestamp_error(data, "tag cannot be empty");
-  }
-
-  // tag has no requirements other than to exist.
   // if tag contains spaces, periods, or underscores; they will be 
   // replaced with dashes
 
