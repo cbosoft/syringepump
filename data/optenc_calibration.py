@@ -21,5 +21,7 @@ print(f"Median number of ticks {med}")
 
 total_length = 113.0 # mm
 ticks_per_mm = med / total_length
+mm_per_tick = 1.0 / ticks_per_mm
 
 print(f"Ticks per mm {ticks_per_mm}")
+print(f"mm per tick {mm_per_tick}")

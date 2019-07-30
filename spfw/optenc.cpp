@@ -32,7 +32,7 @@ double getSpeedReading()
   long dtrips = tripc;
   tripc = 0;
   interrupts();
-  return (double(dtrips) * TRIPS_PER_MM * MS_PER_S) / double(dt);
+  return (double(dtrips) * MM_PER_TRIP * MS_PER_S) / (double(dt));
 }
 
 

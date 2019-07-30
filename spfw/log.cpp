@@ -15,7 +15,7 @@ void logToSerial(long load_cell_reading, unsigned long position, double speed) {
   Serial.print(",");
   
   // speed
-  Serial.print(speed);
+  Serial.print(speed, 10);
   Serial.print("\n");
 }
 
