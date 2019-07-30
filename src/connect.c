@@ -108,7 +108,7 @@ static void *connect_worker(void *vptr_data)
 
 
 
-void connect(struct Data *data)
+void connect_to(struct Data *data)
 {
 
   if (check_form(data))
