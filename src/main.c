@@ -153,6 +153,8 @@ int main (int argc, char **argv)
 #ifndef WINDOWS
   // TODO error handling around this
   signal(SIGINT, catch);
+#else
+  // TODO signal catching or equivalent?
 #endif
 
   for (int i = 0; i < argc; i++) {
