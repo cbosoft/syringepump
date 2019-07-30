@@ -333,8 +333,12 @@ void cb_disconnect(GObject *obj, struct Data *data)
   g_thread_join(log_thread);
 
 #ifndef WINDOWS
+  ard_writeserial(data->serial_fd, "QUIT", 4);
   if (data->serial_fd > 0)
     close(data->serial_fd);
+#else
+  //TODO
+  // tell arduino to reset, destroy HANDLE appropriately
 #endif
 
   timestamp(data, "disconnected");
