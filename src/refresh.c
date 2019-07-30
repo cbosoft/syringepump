@@ -6,12 +6,11 @@
 
 
 extern int refresh_worker_status;
-static GThread *refresh_worker_thread;
+static GThread *refresh_worker_thread = NULL;
 
 
 
 
-// TODO use new status variable
 static void *refresh_worker(void *vptr_data)
 {
   refresh_worker_status = THREAD_STARTED;
