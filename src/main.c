@@ -87,7 +87,10 @@ int main (int argc, char **argv)
   XInitThreads();
 #endif
 
+
   gtk_init(&argc, &argv);
+
+  timestamp(NULL, "GTK initialised.");
 
   // preliminary arg check
   for (int i = 0; i < argc; i++) {
@@ -103,6 +106,7 @@ int main (int argc, char **argv)
     g_clear_error(&error);
     return 1;
   }
+  timestamp(NULL, "Layout loaded.");
 
 
   data = calloc(1, sizeof(struct Data));
