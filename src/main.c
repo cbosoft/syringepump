@@ -11,9 +11,18 @@
 #include "version.h"
 
 int LOG_STOPPED = 1;
+struct Data *data;
 
-
-
+void catch(int signal)
+{
+  switch (signal){
+    default:
+      if (!LOG_STOPPED)
+        cb_disconnect(NULL, data);
+      break;
+  }
+  exit(1);
+}
 
 void usage()
 {
@@ -83,7 +92,7 @@ int main (int argc, char **argv)
   }
 
 
-  struct Data *data = calloc(1, sizeof(struct Data));
+  data = calloc(1, sizeof(struct Data));
 
   // Serial
 #ifdef WINDOWS
@@ -127,6 +136,11 @@ int main (int argc, char **argv)
   // SET UP
   gtk_window_set_title(GTK_WINDOW(data->main_win), "Syringepump ("LONG_VERSION")");
   timestamp(data, "Starting Syringepump (%s)", LONG_VERSION);
+  
+#ifndef WINDOWS
+  // TODO error handling around this
+  signal(SIGINT, catch);
+#endif
 
   for (int i = 0; i < argc; i++) {
     if (strcmp(argv[i], "--set-point") == 0) {
