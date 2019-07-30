@@ -4,11 +4,11 @@
 #include <glob.h>
 
 #include "log.h"
-#include "ardiop.h"
 #include "error.h"
 #include "data.h"
 #include "threads.h"
 #include "disconnect.h"
+#include "serial.h"
 
 
 
@@ -203,4 +203,14 @@ char *get_new_log_name(struct Data *data)
   data->logpath = logpath;
   timestamp(data, "Generated log path \"%s\"", logpath);
   return logpath;
+}
+
+
+
+void cancel_log(struct Data *data)
+{
+  if (log_worker_status < THREAD_CANCELLED) {
+    log_worker_status = THREAD_CANCELLED;
+    g_thread_join(log_worker_thread);
+  }
 }
