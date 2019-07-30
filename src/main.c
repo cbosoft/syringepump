@@ -189,10 +189,10 @@ int main (int argc, char **argv)
     }
   }
 
-  g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit), data);
-  g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_connect), data);
-  g_signal_connect(data->disconn_btn, "clicked", G_CALLBACK(cb_disconnect), data);
-  g_signal_connect(data->refresh_btn, "clicked", G_CALLBACK(cb_refresh_serial), data);
+  g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit_clicked), data);
+  g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_begin_clicked), data);
+  g_signal_connect(data->disconn_btn, "clicked", G_CALLBACK(cb_stop_clicked), data);
+  g_signal_connect(data->refresh_btn, "clicked", G_CALLBACK(cb_refresh_clicked), data);
   g_signal_connect(data->log_lbl, "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
 
   timestamp(data, "Gui started");
