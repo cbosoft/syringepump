@@ -1,46 +1,28 @@
 #include "disconnect.h"
-#include "threads.h"
-#include "ardiop.h"
+#include "connect.h"
+#include "refresh.h"
+#include "log.h"
+#include "serial.h"
 #include "error.h"
-
-
-
-
-extern int connect_worker_status;
-extern int log_worker_status;
-extern int refresh_worker_status;
-extern GThread *connect_worker_thread;
-extern GThread *log_worker_thread;
-extern GThread *refresh_worker_thread;
 
 
 
 
 void disconnect(struct Data *data)
 {
-  if (connect_worker_status < THREAD_CANCELLED) {
-    connect_worker_status = THREAD_CANCELLED;
-    g_thread_join(connect_worker_thread);
-  }
-  
-  if (log_worker_status < THREAD_CANCELLED) {
-    log_worker_status = THREAD_CANCELLED;
-    g_thread_join(log_worker_thread);
-  }
-  
-  if (refresh_worker_status < THREAD_CANCELLED) {
-    refresh_worker_status = THREAD_CANCELLED;
-    g_thread_join(refresh_worker_thread);
-  }
+  cancel_connect(data);
+  cancel_log(data);
+  cancel_refresh(data);
 
 #ifndef WINDOWS
-  ard_writeserial(data->serial_fd, "QUIT", 4);
-  if (data->serial_fd > 0)
+  if (data->serial_fd > 0) {
+    write_serial(data, "QUIT", 4);
     close(data->serial_fd);
+  }
 #else
   //TODO
-  // tell arduino to reset, destroy HANDLE appropriately
+  // destroy HANDLE appropriately
 #endif
 
-  timestamp(data, "disconnected");
+  timestamp(data, "Stopped");
 }
