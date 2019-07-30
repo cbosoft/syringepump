@@ -9,8 +9,13 @@
 #include "serial.h"
 #include "callbacks.h"
 #include "version.h"
+#include "threads.h"
 
-int LOG_STOPPED = 1;
+
+
+int log_worker_status = THREAD_NULL;
+int refresh_worker_status = THREAD_NULL;
+int connect_worker_status = THREAD_NULL;
 struct Data *data;
 
 void catch(int signal)
