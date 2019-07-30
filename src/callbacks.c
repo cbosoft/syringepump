@@ -36,35 +36,20 @@ void cb_begin_clicked(GObject *obj, struct Data *data)
 
 
 
-void cb_disconnect(GObject *obj, struct Data *data)
+void cb_stop_clicked(GObject *obj, struct Data *data)
 {
-
-  LOG_STOPPED = 1;
-  g_thread_join(log_thread);
-
-#ifndef WINDOWS
-  ard_writeserial(data->serial_fd, "QUIT", 4);
-  if (data->serial_fd > 0)
-    close(data->serial_fd);
-#else
-  //TODO
-  // tell arduino to reset, destroy HANDLE appropriately
-#endif
-
-  timestamp(data, "disconnected");
-
+  // button "Stop" clicked
+  disconnect(data);
 }
+
 
 
 
 void cb_quit(GObject *obj, struct Data *data)
 {
-  
+
+  disconnect(data);
   timestamp(data, "Closing...");
-
-  if (!LOG_STOPPED)
-    cb_disconnect(NULL, data);
-
   gtk_main_quit();
 
 }
@@ -75,7 +60,3 @@ void cb_refresh_serial(GObject *obj, struct Data *data )
 {
   refresh(data);
 }
-
-
-
-
