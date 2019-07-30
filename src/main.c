@@ -9,6 +9,7 @@
 #include "serial.h"
 #include "callbacks.h"
 #include "version.h"
+#include "disconnect.h"
 #include "threads.h"
 
 
@@ -18,16 +19,22 @@ int refresh_worker_status = THREAD_NULL;
 int connect_worker_status = THREAD_NULL;
 struct Data *data;
 
+
+
+#ifndef WINDOWS
 void catch(int signal)
 {
   switch (signal){
     default:
-      if (!LOG_STOPPED)
-        cb_disconnect(NULL, data);
+      disconnect(data);
       break;
   }
   exit(1);
 }
+#endif
+
+
+
 
 void usage()
 {
