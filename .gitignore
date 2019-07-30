@@ -3,3 +3,4 @@ syringepump
 *.o
 *~
 log.txt
+vgcore*
