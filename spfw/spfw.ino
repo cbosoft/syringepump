@@ -62,4 +62,7 @@ void loop ()
     // after a few seconds of repeating "STOP", reset
     softReset();
   }
+
+  if (Serial.available())
+    softReset();
 }
