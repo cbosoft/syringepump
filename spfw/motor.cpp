@@ -7,10 +7,14 @@ void motorSetDirection(int dir)
   digitalWrite(MOTOR_DIR_PIN_2, !dir);
 }
 
-void motorSetDC(unsigned int dc)
+void motorSetDC(int dc)
 {
   if (dc > 255) {
     dc = 255;
+  }
+
+  if (dc < 0) {
+    dc = 0;
   }
 
   analogWrite(MOTOR_PWM_PIN, dc);

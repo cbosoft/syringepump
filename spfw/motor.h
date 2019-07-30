@@ -11,7 +11,7 @@
 #define MOTOR_FORWARD 1
 
 void motorSetDirection(int dir);
-void motorSetDC(unsigned int dc);
+void motorSetDC(int dc);
 void motorInit();
 
 #endif
