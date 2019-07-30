@@ -121,3 +121,13 @@ void connect(struct Data *data)
       connect_worker, 
       data);
 }
+
+
+
+void cancel_connect(struct Data *data)
+{
+  if (connect_worker_status < THREAD_CANCELLED) {
+    connect_worker_status = THREAD_CANCELLED;
+    g_thread_join(connect_worker_thread);
+  }
+}
