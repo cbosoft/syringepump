@@ -25,19 +25,12 @@ void cb_lbl_size_changed(GObject *obj, GdkRectangle *allocation, struct Data *da
 }
 
 
-void cb_connect(GObject *obj, struct Data *data)
+
+
+void cb_begin_clicked(GObject *obj, struct Data *data)
 {
-
-  if (check_form(data))
-    return;
-
-  gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
-
-  connect_thread = g_thread_new(
-      "connect_thread", 
-      arduino_connect_thread, 
-      data);
-
+  // button "Begin!" clicked
+  connect(data);
 }
 
 
