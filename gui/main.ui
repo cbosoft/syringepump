@@ -536,12 +536,11 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="layout_style">center</property>
             <child>
               <object class="GtkButton" id="btnDisconnect">
-                <property name="label">gtk-disconnect</property>
+                <property name="label">Stop</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -551,12 +550,11 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             </child>
             <child>
               <object class="GtkButton" id="btnConnect">
-                <property name="label">gtk-connect</property>
+                <property name="label">Begin</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
