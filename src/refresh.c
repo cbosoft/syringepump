@@ -2,6 +2,7 @@
 #include "threads.h"
 #include "error.h"
 #include "form.h"
+#include "errno.h"
 
 
 
@@ -10,7 +11,7 @@ static GThread *refresh_worker_thread = NULL;
 
 
 
-
+// resource temporarily unavailable thrown here
 static void *refresh_worker(void *vptr_data)
 {
   refresh_worker_status = THREAD_STARTED;
@@ -30,14 +31,17 @@ static void *refresh_worker(void *vptr_data)
   DIR *d;
   struct dirent *dir;
   d = opendir("/dev/.");
-  if (!d) {
-    timestamp_error(data, "Error reading /dev/*");
+  const char *dev = "/dev/*";
+
+  if (d == NULL) {
+    timestamp_error(data, "Error reading %s", dev);
 
     g_thread_unref(refresh_worker_thread);
     refresh_worker_status = THREAD_NULL;
     form_set_sensitive(data, FORM_NOSERIAL);
     return NULL;
   }
+
 
   int count = 0;
 
@@ -61,6 +65,10 @@ static void *refresh_worker(void *vptr_data)
       count ++;
 
     }
+  }
+
+  if (errno) {
+    timestamp_error(data, "Error reading contents of %s", dev);
   }
 
   if (!count) {
