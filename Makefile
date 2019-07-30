@@ -53,11 +53,14 @@ DEFS += -DARCH=\"$(shell gcc -dumpmachine)\"
 
 
 OBJ    = src/main.o \
-				 src/ardiop.o \
 				 src/callbacks.o \
 				 src/error.o \
 				 src/serial.o \
 				 src/log.o \
+				 src/connect.o \
+				 src/disconnect.o \
+				 src/refresh.o \
+				 src/form.o \
 				 src/util.o
 HDRS   = src/data.h
 
