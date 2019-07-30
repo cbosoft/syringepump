@@ -1,7 +1,6 @@
 #include "connect.h"
 #include "error.h"
 #include "serial.h"
-#include "ardiop.h"
 #include "threads.h"
 #include "form.h"
 #include "log.h"
@@ -23,7 +22,7 @@ static void *connect_worker(void *vptr_data)
 
   timestamp(data, "connecting to \"%s\"", data->serial_path);
 
-  int rv = ard_openserial(data->serial_path, &data->serial_fd);
+  int rv = open_serial(data->serial_path, data);
   if (rv < 0) {
     switch (rv) {
       case -1:
@@ -67,36 +66,31 @@ static void *connect_worker(void *vptr_data)
   timestamp(data, "Sending run parameters to Arduino");
 
   if (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
-    send_key_value_to_arduino(
+    send_data_packet(
         data, 
         "DC",
-        (void *)gtk_entry_get_text(GTK_ENTRY(data->dc_inp)),
-        T_STR);
+        gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
   }
   else {
-    send_key_value_to_arduino(
+    send_data_packet(
         data, 
         "setpoint", 
-        (void *)gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)),
-        T_STR);
+        gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)));
 
-    send_key_value_to_arduino(
+    send_data_packet(
         data, 
         "kp", 
-        (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)),
-        T_STR);
+        (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)));
 
-    send_key_value_to_arduino(
+    send_data_packet(
         data, 
         "ki", 
-        (void *)gtk_entry_get_text(GTK_ENTRY(data->ki_inp)),
-        T_STR);
+        gtk_entry_get_text(GTK_ENTRY(data->ki_inp)));
 
-    send_key_value_to_arduino(
+    send_data_packet(
         data, 
         "kd", 
-        (void *)gtk_entry_get_text(GTK_ENTRY(data->kd_inp)),
-        T_STR);
+        gtk_entry_get_text(GTK_ENTRY(data->kd_inp)));
   }
   timestamp(data, "All parameters sent successfully!");
   
