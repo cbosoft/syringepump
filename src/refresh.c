@@ -90,3 +90,12 @@ void refresh(struct Data* data)
       refresh_worker, 
       data);
 }
+
+
+void cancel_refresh(struct Data *data)
+{
+  if (refresh_worker_status < THREAD_CANCELLED) {
+    refresh_worker_status = THREAD_CANCELLED;
+    g_thread_join(refresh_worker_thread);
+  }
+}
