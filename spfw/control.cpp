@@ -2,12 +2,6 @@
 #include "control.h"
 
 double speed_set_point = 0;
-double speed_current = 0;
-double speed_average = 0;
-double speed_hist[SPEED_HIST_LEN] = {0};
-int speed_hist_count = 0;
-double err_hist[ERR_HIST_LEN] = {0};
-unsigned int err_count = 0;
 double kp = 0.2;
 double ki = 0.0;
 double kd = 0.0;
@@ -19,15 +13,63 @@ enum controllers {
 };
 int control_type = CONTROL_UNSET;
 
-int getControlAction(double speed)
+
+
+
+typedef struct ll_control_hist {
+  struct ll_control_hist *next;
+  double error;
+} ll_control_hist;
+ll_control_hist *control_hist = NULL;
+
+
+
+ll_control_hist *remove_lru(ll_control_hist *start)
 {
-  // TODO
+  ll_control_hist *rv = start->next;
+  free(start);
+  return rv;
+}
+
+
+
+ll_control_hist *append_to_max(ll_control_hist *start, double error)
+{
+  ll_control_hist *new_item = calloc(1, sizeof(ll_control_hist));
+  new_item->error = error;
+
+  if (start == NULL)
+    return new_item;
+
+  int i = 0;
+  ll_control_hist *last;
+  for (last = start; last->next != NULL; last = last->next, i++);
+  last->next = new_item;
+
+  if (i >= ERR_HIST_LEN) {
+    return remove_lru(start);
+  }
+  
+  return start;
+}
+
+
+int ccntr = 0;
+double getControlAction(double pca, double speed)
+{
 
   if (control_type == CONTROL_NONE) {
     return dc;
   }
-  
-  return 120;
+
+  double error = speed_set_point - speed;
+  append_to_max(control_hist, error);
+  double dca = kp * error;
+
+  // TODO integral
+
+  // TODO derivative control
+  return pca + dca;
 }
 
 
