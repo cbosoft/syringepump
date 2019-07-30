@@ -90,7 +90,7 @@ static void *refresh_serial_list(void *vptr_data)
 static void *log_update_loop(void *void_data)
 { 
   struct Data *data = (struct Data *)void_data;
-  const int print_every = 100;
+  const int print_every = 10;
   LOG_STOPPED = 0;
   
   timestamp(data, "Waiting for Arduino...");
