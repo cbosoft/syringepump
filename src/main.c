@@ -10,6 +10,7 @@
 #include "callbacks.h"
 #include "version.h"
 #include "disconnect.h"
+#include "refresh.h"
 #include "threads.h"
 
 
@@ -194,7 +195,7 @@ int main (int argc, char **argv)
 
   timestamp(data, "Gui started");
 
-  cb_refresh_serial(NULL, data);
+  refresh(data);
 
   gtk_main();
   
