@@ -10,7 +10,7 @@
 extern volatile unsigned long timer0_millis;
 unsigned long position = 0;
 double speed = 0.0;
-int control_action = 0;
+double control_action = 0;
 long load_cell_reading = 0;
 void (*softReset)(void) = 0;
 
@@ -47,10 +47,10 @@ void loop ()
   load_cell_reading = getLoadCellReading();
 
   speed = getSpeedReading();
-  control_action = getControlAction(speed);
-  motorSetDC(control_action);
+  control_action = getControlAction(control_action, speed);
+  motorSetDC(int(control_action));
 
-  logToSerial(load_cell_reading, position, speed);
+  logToSerial(load_cell_reading, position, speed, control_action);
 
   if (getPositionReading() > RULER_POSITION_END) {
     for (int i = 0; i < 6; i++) {
