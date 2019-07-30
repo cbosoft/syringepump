@@ -51,7 +51,7 @@ static void *connect_worker(void *vptr_data)
   timestamp(data, "Connected!");
 
   // enable disconnect button, disable all input fields while connected.
-  form_set_sensitive(FORM_CONNECTED);
+  form_set_sensitive(data, FORM_CONNECTED);
 
   timestamp(data, "Waiting on Arduino...");
   switch (wait_for(data, "WAIT", 100, &connect_worker_status, THREAD_CANCELLED)) {
@@ -108,7 +108,7 @@ void connect_to(struct Data *data)
   if (check_form(data))
     return;
 
-  form_set_sensitive(FORM_BUSY);
+  form_set_sensitive(data, FORM_BUSY);
 
   connect_worker_thread = g_thread_new(
       "connect_thread", 

@@ -1,6 +1,7 @@
 #include "refresh.h"
 #include "threads.h"
 #include "error.h"
+#include "form.h"
 
 
 
@@ -15,10 +16,10 @@ static void *refresh_worker(void *vptr_data)
 {
   refresh_worker_status = THREAD_STARTED;
   struct Data *data = (struct Data *)vptr_data;
-
-  gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 0);
+  form_set_sensitive(data, FORM_REFRESHING);
 
   timestamp(data, "Searching for Arduino...");
+
   struct timespec ms300_span;
   ms300_span.tv_sec = 0;
   ms300_span.tv_nsec = 300*1000*1000;
@@ -34,12 +35,21 @@ static void *refresh_worker(void *vptr_data)
     timestamp_error(data, "Error reading /dev/*");
 
     g_thread_unref(refresh_worker_thread);
+    refresh_worker_status = THREAD_NULL;
+    form_set_sensitive(data, FORM_NOSERIAL);
     return NULL;
   }
 
   int count = 0;
 
   while ((dir = readdir(d)) != NULL) {
+
+    if (refresh_worker_status > THREAD_STARTED) {
+      refresh_worker_status = THREAD_NULL;
+      form_set_sensitive(data, FORM_NOSERIAL);
+      return NULL;
+    }
+
     if (strstr(dir->d_name, "ttyACM") != NULL) {
 
       char path[261] = {0};
@@ -56,27 +66,23 @@ static void *refresh_worker(void *vptr_data)
 
   if (!count) {
     timestamp_error(data, "No Arduino found!");
+    form_set_sensitive(data, FORM_NOSERIAL);
+    refresh_worker_status = THREAD_NULL;
+    return NULL;
+  }
 
-    // disable connect button
-    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
+  form_set_sensitive(data, FORM_DISCONNECTED);
+  refresh_worker_status = THREAD_NULL;
+
+  gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
+
+  if (count == 1) {
+    timestamp(data, "Arduino found!");
   }
   else {
-
-    // enable connect button
-    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
-
-    gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
-    if (count == 1) {
-      timestamp(data, "Arduino found!");
-    }
-    else {
-      timestamp(data, "Multiple possible Arduino found.");
-    }
+    timestamp(data, "Multiple possible Arduino found.");
   }
 
-  gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 1);
-
-  // g_thread_unref(refresh_thread);
   return NULL;
 }
 
