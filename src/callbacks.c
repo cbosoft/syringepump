@@ -3,7 +3,6 @@
 #include <time.h>
 
 #include "callbacks.h"
-#include "ardiop.h"
 #include "error.h"
 #include "log.h"
 #include "serial.h"
@@ -45,7 +44,7 @@ void cb_stop_clicked(GObject *obj, struct Data *data)
 
 
 
-void cb_quit(GObject *obj, struct Data *data)
+void cb_quit_clicked(GObject *obj, struct Data *data)
 {
 
   disconnect(data);
@@ -56,7 +55,7 @@ void cb_quit(GObject *obj, struct Data *data)
 
 
 
-void cb_refresh_serial(GObject *obj, struct Data *data )
+void cb_refresh_clicked(GObject *obj, struct Data *data )
 {
   refresh(data);
 }
