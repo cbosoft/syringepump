@@ -23,7 +23,7 @@ extern int LOG_STOPPED;
 
 
 
-int wait_for(struct Data *data, const char *trigger, int timeout_s) {
+int wait_for(struct Data *data, const char *trigger, int timeout_s, int *flagaddr, int stopval) {
   
   int delay_us = 100 * 1000; // half a second
   int timeout_n = (1000 * 1000 * timeout_s) / delay_us;
@@ -42,7 +42,7 @@ int wait_for(struct Data *data, const char *trigger, int timeout_s) {
 
     ptble_usleep(delay_us);
 
-    if (LOG_STOPPED)
+    if ((*flagaddr) == stopval)
       return -1;
 
     timestamp(NULL, 

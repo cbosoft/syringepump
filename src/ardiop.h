@@ -5,7 +5,7 @@
 #include <Windows.h>
 #endif
 
-int wait_for(struct Data *data, const char *trigger, int number);
+int wait_for(struct Data *data, const char *trigger, int number, int *flagaddr, int stopval);
 
 #ifdef WINDOWS
 int ard_openserial(const char *serial_path, HANDLE * serial_handle_ptr);
