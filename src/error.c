@@ -28,9 +28,25 @@ FILE *open_log(const char *path)
   return fp;
 }
 
+struct timestamp_callback_data {
+  struct Data *data;
+  char *message;
+};
 
 
-void timestamp_error(struct Data *data, const char *fmt, ...)
+gboolean timestamp_callback(struct timestamp_callback_data *tcd)
+{
+
+  append_text_to_log(tcd->data, tcd->message);
+  free(tcd->message);
+  free(tcd);
+
+  return 0;
+}
+
+
+
+void timestamp_error(struct Data *data, int is_gui, const char *fmt, ...)
 {
 
   char mesg[MESGLEN] = {0};
@@ -71,15 +87,23 @@ void timestamp_error(struct Data *data, const char *fmt, ...)
       strcat(s, e);
       errno = 0;
     }
-
-    append_text_to_log(data, s);
+    
+    if (is_gui)
+      append_text_to_log(data, s);
+    else {
+      struct timestamp_callback_data *tcd = calloc(1, sizeof(struct timestamp_callback_data));
+      tcd->data = data;
+      tcd->message = calloc(1+strlen(s), sizeof(char));
+      strcpy(tcd->message, s);
+      g_idle_add((GSourceFunc)timestamp_callback, tcd);
+    }
   }
 }
 
 
 
 
-void timestamp(struct Data *data, const char *fmt, ...)
+void timestamp(struct Data *data, int is_gui, const char *fmt, ...)
 {
 
   char mesg[MESGLEN] = {0};
@@ -106,6 +130,15 @@ void timestamp(struct Data *data, const char *fmt, ...)
   if (data != NULL) {
     char s[1000] = {0};
     sprintf(s, "<tt><small>%s <b>%s</b></small></tt>", timestr, mesg);
-    append_text_to_log(data, s);
+
+    if (is_gui)
+      append_text_to_log(data, s);
+    else {
+      struct timestamp_callback_data *tcd = calloc(1, sizeof(struct timestamp_callback_data));
+      tcd->data = data;
+      tcd->message = calloc(1+strlen(s), sizeof(char));
+      strcpy(tcd->message, s);
+      g_idle_add((GSourceFunc)timestamp_callback, tcd);
+    }
   }
 }

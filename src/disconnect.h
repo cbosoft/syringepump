@@ -2,6 +2,6 @@
 
 #include "data.h"
 
-void disconnect(struct Data *data);
+void disconnect(struct Data *data, int is_gui);
 
 // vim: ft=c

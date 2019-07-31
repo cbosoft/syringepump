@@ -38,7 +38,7 @@ void cb_begin_clicked(GObject *obj, struct Data *data)
 void cb_stop_clicked(GObject *obj, struct Data *data)
 {
   // button "Stop" clicked
-  disconnect(data);
+  disconnect(data, 1);
 }
 
 
@@ -47,8 +47,8 @@ void cb_stop_clicked(GObject *obj, struct Data *data)
 void cb_quit_clicked(GObject *obj, struct Data *data)
 {
 
-  disconnect(data);
-  timestamp(data, "Closing...");
+  disconnect(data, 1);
+  timestamp(data, 1, "Closing...");
   gtk_main_quit();
 
 }

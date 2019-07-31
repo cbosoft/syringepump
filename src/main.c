@@ -27,7 +27,7 @@ void catch(int signal)
 {
   switch (signal){
     default:
-      disconnect(data);
+      disconnect(data, 1);
       break;
   }
   exit(1);
@@ -90,7 +90,7 @@ int main (int argc, char **argv)
 
   gtk_init(&argc, &argv);
 
-  timestamp(NULL, "GTK initialised.");
+  timestamp(NULL, 1, "GTK initialised.");
 
   // preliminary arg check
   for (int i = 0; i < argc; i++) {
@@ -102,11 +102,11 @@ int main (int argc, char **argv)
 
   builder = gtk_builder_new();
   if (gtk_builder_add_from_file(builder, "gui/main.ui", &error) == 0) {
-    timestamp(NULL, "Error loading file: %s\n", error->message);
+    timestamp(NULL, 1, "Error loading layout file: %s\n", error->message);
     g_clear_error(&error);
     return 1;
   }
-  timestamp(NULL, "Layout loaded.");
+  timestamp(NULL, 1, "Layout loaded.");
 
 
   data = calloc(1, sizeof(struct Data));
@@ -153,7 +153,7 @@ int main (int argc, char **argv)
 
   // SET UP
   gtk_window_set_title(GTK_WINDOW(data->main_win), "Syringepump ("LONG_VERSION")");
-  timestamp(data, "Starting Syringepump (%s)", LONG_VERSION);
+  timestamp(data, 1, "Starting Syringepump (%s)", LONG_VERSION);
   
 #ifndef WINDOWS
   // TODO error handling around this
@@ -200,7 +200,7 @@ int main (int argc, char **argv)
   g_signal_connect(data->refresh_btn, "clicked", G_CALLBACK(cb_refresh_clicked), data);
   g_signal_connect(data->log_lbl, "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
 
-  timestamp(data, "Gui started");
+  timestamp(data, 1, "GUI started");
 
   refresh(data);
 

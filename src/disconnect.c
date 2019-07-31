@@ -8,7 +8,7 @@
 
 
 
-void disconnect(struct Data *data)
+void disconnect(struct Data *data, int is_gui)
 {
   cancel_connect(data);
   cancel_log(data);

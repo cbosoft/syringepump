@@ -20,17 +20,17 @@ static void *connect_worker(void *vptr_data)
   data->serial_path = gtk_combo_box_text_get_active_text(
       GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
-  timestamp(data, "connecting to \"%s\"", data->serial_path);
+  timestamp(data, 0, "connecting to \"%s\"", data->serial_path);
 
   int rv = open_serial(data->serial_path, data);
   if (rv < 0) {
     switch (rv) {
       case -1:
-        timestamp_error(data, "Failed to connect");
+        timestamp_error(data, 0, "Failed to connect");
         break;
       case -2:
       case -3:
-        timestamp_error(data, "Failed to apply serial settings");
+        timestamp_error(data, 0, "Failed to apply serial settings");
         break;
     }
     gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
@@ -38,61 +38,66 @@ static void *connect_worker(void *vptr_data)
     return NULL;
   }
 
-  timestamp(data, "Waiting on Arduino...");
-  switch (wait_for(data, "ON", 100, &connect_worker_status, THREAD_CANCELLED)) {
+  timestamp(data, 0, "Waiting on Arduino...");
+  switch (wait_for(data, 0, "ON", 100, &connect_worker_status, THREAD_CANCELLED)) {
     case -1:
-      timestamp_error(data, "Cancelled by user.");
+      timestamp_error(data, 0, "Cancelled by user.");
       return NULL;
     case -2:
-      timestamp_error(data, "Arduino connection timed out!");
+      timestamp_error(data, 0, "Arduino connection timed out!");
       return NULL;
   }
 
-  timestamp(data, "Connected!");
+  timestamp(data, 0, "Connected!");
 
   // enable disconnect button, disable all input fields while connected.
   form_set_sensitive(data, FORM_CONNECTED);
 
-  timestamp(data, "Waiting on Arduino...");
-  switch (wait_for(data, "WAIT", 100, &connect_worker_status, THREAD_CANCELLED)) {
+  timestamp(data, 0, "Waiting on Arduino...");
+  switch (wait_for(data, 0, "WAIT", 100, &connect_worker_status, THREAD_CANCELLED)) {
     case -1:
-      timestamp_error(data, "Cancelled by user.");
+      timestamp_error(data, 0, "Cancelled by user.");
       return NULL;
     case -2:
-      timestamp_error(data, "Arduino connection timed out!");
+      timestamp_error(data, 0, "Arduino connection timed out!");
       return NULL;
   }
 
-  timestamp(data, "Sending run parameters to Arduino");
+  timestamp(data, 0, "Sending run parameters to Arduino");
 
   if (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
     send_data_packet(
         data, 
+        0,
         "DC",
         gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
   }
   else {
     send_data_packet(
         data, 
+        0,
         "setpoint", 
         gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)));
 
     send_data_packet(
         data, 
+        0,
         "kp", 
         (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)));
 
     send_data_packet(
         data, 
+        0,
         "ki", 
         gtk_entry_get_text(GTK_ENTRY(data->ki_inp)));
 
     send_data_packet(
         data, 
+        0,
         "kd", 
         gtk_entry_get_text(GTK_ENTRY(data->kd_inp)));
   }
-  timestamp(data, "All parameters sent successfully!");
+  timestamp(data, 0, "All parameters sent successfully!");
   
   start_log(data);
 

@@ -9,12 +9,12 @@
 #define CHECK_ENTRY_NUMBER(DATA,MESG_EMPTY,MESG_NOT_NUM) \
   if (IS_EMPTY_ENTRY(DATA)) { \
       rv = 1; \
-      timestamp_error(data, MESG_EMPTY); \
+      timestamp_error(data, 1, MESG_EMPTY); \
     } \
     else { \
       if (is_not_number( gtk_entry_get_text(GTK_ENTRY(DATA)) )) { \
         rv = 1; \
-        timestamp_error(data, MESG_NOT_NUM); \
+        timestamp_error(data, 1, MESG_NOT_NUM); \
       } \
     }
 
@@ -57,7 +57,7 @@ int check_form(struct Data *data)
 
   if (IS_EMPTY_ENTRY(data->tag_inp)) {
     rv = 1;
-    timestamp_error(data, 
+    timestamp_error(data, 1,
         "Tag should not be empty; use it to describe the run in a few words.");
   }
 
@@ -164,7 +164,7 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       form_set_cursor(data, "normal");
       break;
     default:
-      timestamp(NULL, "Tried to set an unknown sensitivity");
+      timestamp(NULL, 1, "Tried to set an unknown sensitivity");
     case FORM_ALL:
       gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);

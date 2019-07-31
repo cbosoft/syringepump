@@ -18,7 +18,7 @@ static void *refresh_worker(void *vptr_data)
   struct Data *data = (struct Data *)vptr_data;
   form_set_sensitive(data, FORM_REFRESHING);
 
-  timestamp(data, "Searching for Arduino...");
+  timestamp(data, 0, "Searching for Arduino...");
 
   struct timespec ms300_span;
   ms300_span.tv_sec = 0;
@@ -34,10 +34,10 @@ static void *refresh_worker(void *vptr_data)
   const char *dev = "/dev/*";
 
   if (d == NULL) {
-    timestamp_error(data, "Error reading %s", dev);
 
     g_thread_unref(refresh_worker_thread);
     refresh_worker_status = THREAD_NULL;
+    timestamp_error(data, 0, "No Arduino found!");
     form_set_sensitive(data, FORM_NOSERIAL);
     return NULL;
   }

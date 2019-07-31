@@ -30,12 +30,12 @@
 #define ARDUINO_MESG_LEN 64
 
 
-void send_data_packet(struct Data *data, const char *key, const char *value)
+void send_data_packet(struct Data *data, int is_gui, const char *key, const char *value)
 {
   int len;
 
   if ((len = strlen(key)) > ARDUINO_MESG_LEN/2) {
-    timestamp_error(data, 
+    timestamp_error(data, is_gui,
         "KEY TOO LARGE TO SEND (must be < %d chars, is %lu chars)", 
         ARDUINO_MESG_LEN/2, 
         len);
@@ -43,7 +43,7 @@ void send_data_packet(struct Data *data, const char *key, const char *value)
   }
 
   if ((len = strlen(value)) > ARDUINO_MESG_LEN/2) {
-    timestamp_error(data, 
+    timestamp_error(data, is_gui,
         "VALUE TOO LARGE TO SEND (must be < %d chars, is %lu chars)", 
         ARDUINO_MESG_LEN/2,
         len);
@@ -53,32 +53,33 @@ void send_data_packet(struct Data *data, const char *key, const char *value)
   char mesg[ARDUINO_MESG_LEN+1] = {0};
   sprintf(mesg, "%s=%s", key, value);
 
-  timestamp(NULL, "sending k/v pair: %s", mesg);
+  timestamp(NULL, is_gui, "sending k/v pair: %s", mesg);
   write(data->serial_fd, mesg, ARDUINO_MESG_LEN);
 
-  switch (wait_for(data, "OK", 10, NULL, THREAD_CANCELLED)) {
+  switch (wait_for(data, is_gui, "OK", 10, NULL, THREAD_CANCELLED)) {
   case -1:
-    timestamp_error(NULL, "Cancelled by user.");
+    timestamp_error(NULL, is_gui, "Cancelled by user.");
     return;
   case -2:
-    timestamp_error(NULL, "Arduino didn't understand message");
+    timestamp_error(NULL, is_gui, "Arduino didn't understand message");
     // TODO: deal with this properly
     exit(1);
   }
 
-  timestamp(data, "Sent data { %s = %s } successfully.", key, value);
+  timestamp(data, is_gui, "Sent data { %s = %s } successfully.", key, value);
 
 }
 
 
 
 
-int wait_for(struct Data *data, const char *trigger, int timeout_s, int *flagaddr, int stopval) {
+int wait_for(struct Data *data, int is_gui, const char *trigger, int timeout_s, int *flagaddr, int stopval) {
   
   int delay_us = 100 * 1000; // half a second
   int timeout_n = (1000 * 1000 * timeout_s) / delay_us;
 
   for (int time = 0; time < timeout_n; time++) {
+
     char buffer[512] = {0};
 
     read_serial_line(data, buffer, 512, 10);
@@ -86,12 +87,13 @@ int wait_for(struct Data *data, const char *trigger, int timeout_s, int *flagadd
     if (strcmp(buffer, trigger) == 0)
       return 0;
 
+
     ptble_usleep(delay_us);
 
     if ((*flagaddr) == stopval)
       return -1;
 
-    timestamp(NULL, 
+    timestamp(NULL, is_gui,
         "waiting for \"%s\" (%ds / %ds)", 
         trigger, 
         (int)( ((float)time+1) * ((float)delay_us) / ((float)timeout_n) ), 

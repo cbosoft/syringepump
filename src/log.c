@@ -26,16 +26,16 @@ static void *log_worker(void *void_data)
   struct Data *data = (struct Data *)void_data;
   const int print_every = 10;
   
-  timestamp(data, "Waiting for Arduino...");
-  switch (wait_for(data, "START", 100, &log_worker_status, THREAD_CANCELLED)) {
+  timestamp(data, 0, "Waiting for Arduino...");
+  switch (wait_for(data, 0, "START", 100, &log_worker_status, THREAD_CANCELLED)) {
     case -1:
-      timestamp_error(data, "Cancelled by user.");
+      timestamp_error(data, 0, "Cancelled by user.");
       return NULL;
     case -2:
-      timestamp_error(data, "Arduino connection timed out!");
+      timestamp_error(data, 0, "Arduino connection timed out!");
       return NULL;
   }
-  timestamp(data, "Arduino ready, starting!");
+  timestamp(data, 0, "Arduino ready, starting!");
 
   get_new_log_name(data);
   FILE *fp = fopen(data->logpath, "w");
@@ -55,7 +55,7 @@ static void *log_worker(void *void_data)
 
       if(n == -1) {
         // error
-        timestamp_error(NULL, 
+        timestamp_error(NULL, 0, 
             "something went wrong reading a byte (read failed) (%d) %s", 
             errno, strerror(errno));
         exit(1); // TODO handle properly
@@ -65,7 +65,7 @@ static void *log_worker(void *void_data)
         nanosleep(&ms_span, NULL);  // wait 1 msec try again
         timeout--;
         if(timeout == 0){
-          timestamp_error(NULL, 
+          timestamp_error(NULL, 0,  
               "something went wrong reading a byte (timed out) (%d), %s", 
               errno, strerror(errno));
           exit(1); // TODO handle properly
@@ -96,7 +96,7 @@ static void *log_worker(void *void_data)
 
     if (strcmp(received_text, "STOP") == 0) {
       // arduino requests stop
-      timestamp(data, "Arduino finished!");
+      timestamp(data, 0, "Arduino finished!");
       log_worker_status = THREAD_STOPPED;
     }
     else {
