@@ -199,6 +199,7 @@ int main (int argc, char **argv)
   g_signal_connect(data->disconn_btn, "clicked", G_CALLBACK(cb_stop_clicked), data);
   g_signal_connect(data->refresh_btn, "clicked", G_CALLBACK(cb_refresh_clicked), data);
   g_signal_connect(data->log_lbl, "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
+  g_signal_connect(data->tag_inp, "changed", G_CALLBACK(cb_tag_text_changed), data);
 
   timestamp(data, 1, "GUI started");
 
