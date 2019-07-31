@@ -286,8 +286,8 @@ int read_serial_until(
 
 #endif
 
-  char ch[1];
-  int rx_bytes_count, n;
+  char ch[1] = {0};
+  int rx_bytes_count = 0, n = 0;
 
   do {
 #ifdef WINDOWS
