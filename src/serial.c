@@ -300,7 +300,7 @@ int read_serial_until(
       if (n < 0 || timeout == 0)
         return -1;
 
-      usleep(1000);
+      ptble_usleep(1000);
       timeout --;
 
     }
