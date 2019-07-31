@@ -63,20 +63,7 @@ int check_form(struct Data *data)
 
   // if tag contains spaces, periods, or underscores; they will be 
   // replaced with dashes
-
-  const char *tag = gtk_entry_get_text(GTK_ENTRY(data->tag_inp));
-  int taglen = strlen(tag);
-  char santag[taglen+1];
-  for (int i = 0; i < taglen; i++) {
-    if (tag[i] == ' ' || tag[i] == '_' || tag[i] == '.') {
-      santag[i] = '-';
-    }
-    else {
-      santag[i] = tag[i];
-    }
-  }
-  santag[taglen] = 0;
-  gtk_entry_set_text(GTK_ENTRY(data->tag_inp), santag);
+  // this is handled in the generate tag function.
 
   return rv;
 }
