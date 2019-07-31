@@ -29,7 +29,7 @@ void cb_lbl_size_changed(GObject *obj, GdkRectangle *allocation, struct Data *da
 void cb_begin_clicked(GObject *obj, struct Data *data)
 {
   // button "Begin!" clicked
-  connect(data);
+  connect_to(data);
 }
 
 
