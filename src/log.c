@@ -6,6 +6,7 @@
 #include "log.h"
 #include "error.h"
 #include "data.h"
+#include "form.h"
 #include "threads.h"
 #include "disconnect.h"
 #include "serial.h"
@@ -47,7 +48,7 @@ static void *log_worker(void *void_data)
   ms_span.tv_sec = 0;
   ms_span.tv_nsec = 1000*1000;
 
-  time_t prev_print = 0, prev_paint = 0, just_now;
+  time_t prev_print = 0, just_now;
 
   while (log_worker_status < THREAD_CANCELLED) {
     char received_text[512] = {0};
@@ -100,39 +101,24 @@ static void *log_worker(void *void_data)
     fclose(fp);
 
     time(&just_now);
-    
 
     if (difftime(just_now, prev_print) > 1.0) {
       timestamp(data, 0, "%s", received_text);
-
-      // using third column (position) to get progress
-      // char *position_s = strtok(received_text, ",");
-      // for (int i = 0; i < 2; i++) position_s = strtok(NULL, ",");
-
-      // if (position_s != NULL) {
-      //   double fraction = atof(position_s)/960.0;
-      //   gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(data->progress), fraction);
-      // }
-
       time(&prev_print);
-
     }
     else {
       timestamp(NULL, 0, "%s", received_text);
     }
 
-    if (difftime(just_now, prev_paint) > 2.0) {
+    // using third column (position) to get progress
+    // must be done last as strtok does funny things to strings
+    char *position_s = strtok(received_text, ",");
+    for (int i = 0; i < 2; i++) position_s = strtok(NULL, ",");
 
-      char plotcmd[1000] = {0};
-      sprintf(plotcmd, "gnuplot -e \"set terminal pngcairo; set output \\\"plot.png\\\"; set key off; set datafile separator comma; plot \\\"%s\\\" using 1:3\"", data->logpath);
-      system(plotcmd);
-
-      gtk_image_set_from_file(GTK_IMAGE(data->plot_img), "plot.png");
-
-      time(&prev_paint);
-
+    if (position_s != NULL) {
+      double fraction = atof(position_s)/960.0;
+      form_set_progress(data, fraction);
     }
-
 
   }
 

@@ -12,5 +12,7 @@ enum FORM_SENSITIVITIES {
 
 int check_form(struct Data *data);
 void form_set_sensitive(struct Data *data, int sensitivity_flag);
+void form_set_progress(struct Data *data, double fraction);
+void form_pulse_progress(struct Data *data);
 
 // vim: ft=c

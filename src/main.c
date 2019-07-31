@@ -147,6 +147,7 @@ int main (int argc, char **argv)
   // GUI :: other
   data->log_lbl = gtk_builder_get_object(builder, "lblLog");
   data->logname_lbl = gtk_builder_get_object(builder, "lblLogName");
+  data->progress = gtk_builder_get_object(builder, "progProgress");
   data->scroll = gtk_builder_get_object(builder, "scroll");
   data->serial_cmb = gtk_builder_get_object(builder, "cmbSerial");
   data->control_tab = gtk_builder_get_object(builder, "tabControl");

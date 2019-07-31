@@ -22,6 +22,7 @@
 #include "serial.h"
 #include "error.h"
 #include "data.h"
+#include "form.h"
 #include "threads.h"
 #include "data.h"
 #include "error.h"
@@ -79,6 +80,8 @@ int wait_for(struct Data *data, int is_gui, const char *trigger, int timeout_s, 
   int timeout_n = (1000 * 1000 * timeout_s) / delay_us;
 
   for (int time = 0; time < timeout_n; time++) {
+
+    form_pulse_progress(data);
 
     char buffer[512] = {0};
 

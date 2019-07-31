@@ -83,6 +83,40 @@ void form_set_cursor(struct Data *data, const char *name)
 }
 
 
+struct progress_callback_data {
+  struct Data *data;
+  double fraction;
+};
+
+gboolean prog_pulse_callback(struct Data *data)
+{
+  gtk_progress_bar_pulse(GTK_PROGRESS_BAR(data->progress));
+  return 0;
+}
+
+gboolean prog_set_callback(struct progress_callback_data *pcd)
+{
+  struct Data *data = pcd->data;
+  gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(data->progress), pcd->fraction);
+  free(pcd);
+  return 0;
+}
+
+
+void form_pulse_progress(struct Data *data)
+{
+  g_idle_add((GSourceFunc)prog_pulse_callback, data);
+}
+
+
+void form_set_progress(struct Data *data, double fraction)
+{
+  struct progress_callback_data *pcd = calloc(1, sizeof(struct progress_callback_data));
+  pcd->data = data;
+  pcd->fraction = fraction;
+  g_idle_add((GSourceFunc)prog_set_callback, pcd);
+}
+
 
 
 

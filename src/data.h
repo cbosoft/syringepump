@@ -35,6 +35,7 @@ struct Data {
   GObject *log_folder_fch;
   GObject *log_lbl;
   GObject *logname_lbl;
+  GObject *progress;
   GObject *scroll;
   GObject *serial_cmb;
   GObject *control_tab;
