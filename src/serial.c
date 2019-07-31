@@ -75,7 +75,7 @@ void send_data_packet(struct Data *data, int is_gui, const char *key, const char
 
 int wait_for(struct Data *data, int is_gui, const char *trigger, int timeout_s, int *flagaddr, int stopval) {
   
-  int delay_us = 100 * 1000; // half a second
+  int delay_us = 10 * 1000;
   int timeout_n = (1000 * 1000 * timeout_s) / delay_us;
 
   for (int time = 0; time < timeout_n; time++) {
