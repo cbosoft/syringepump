@@ -71,9 +71,14 @@ int check_form(struct Data *data)
 
 void form_set_cursor(struct Data *data, const char *name)
 {
+  GdkWindow *win = gtk_widget_get_window(GTK_WIDGET(data->main_win));
+
+  if (win == NULL)
+    return;
+
   GdkDisplay *display = gdk_display_get_default();
   GdkCursor *curs = gdk_cursor_new_from_name(display, name);
-  GdkWindow *win = gtk_widget_get_window(GTK_WIDGET(data->main_win));
+
   gdk_window_set_cursor(GDK_WINDOW(win), curs);
 }
 
