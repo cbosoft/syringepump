@@ -201,7 +201,7 @@ char *get_new_log_name(struct Data *data)
   free(date);
   
   data->logpath = logpath;
-  timestamp(data, "Generated log path \"%s\"", logpath);
+  gtk_label_set_text(GTK_LABEL(data->logname_lbl), logpath);
   return logpath;
 }
 

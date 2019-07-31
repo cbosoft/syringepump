@@ -59,3 +59,11 @@ void cb_refresh_clicked(GObject *obj, struct Data *data )
 {
   refresh(data);
 }
+
+
+
+
+void cb_tag_text_changed(GObject *obj, struct Data *data)
+{
+  get_new_log_name(data);
+}
