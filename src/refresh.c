@@ -19,6 +19,8 @@ static void *refresh_worker(void *vptr_data)
   struct Data *data = (struct Data *)vptr_data;
 
   refresh_worker_status = THREAD_STARTED;
+
+  // TODO do from callback
   form_set_sensitive(data, FORM_REFRESHING);
 
   timestamp(data, 0, "Searching for Arduino...");
@@ -28,6 +30,7 @@ static void *refresh_worker(void *vptr_data)
   ms300_span.tv_nsec = 300*1000*1000;
   nanosleep(&ms300_span, NULL);
 
+  // TODO do from callback
   gtk_combo_box_text_remove_all(
       GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
@@ -59,6 +62,7 @@ static void *refresh_worker(void *vptr_data)
   form_set_sensitive(data, FORM_DISCONNECTED);
   refresh_worker_status = THREAD_STOPPED;
 
+  // TODO do from callback
   gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
 
   return NULL;
