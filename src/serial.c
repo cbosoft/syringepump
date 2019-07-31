@@ -158,10 +158,6 @@ int open_serial(const char *serial_port_path, struct Data *data)
 
 
 
-int close_serial(HANDLE serial_handle)
-{
-  return !CloseHandle(serial_handle);
-}
 
 
 
@@ -237,8 +233,36 @@ int open_serial(const char *serial_port_path, struct Data *data)
 
 
 
-int close_serial(struct Data *data) {
-  return close(data->serial_fd);
+int is_serial_open(struct Data *data)
+{
+
+#ifdef WINDOWS
+
+  // TODO
+
+#else
+
+  return data->serial_fd > 0;
+
+#endif
+
+}
+
+
+
+int close_serial(struct Data *data)
+{
+
+#ifdef WINDOWS
+  int rv = !CloseHandle(data->serial_handle);
+#else
+  int rv = close(data->serial_fd);
+
+  if (!rv)
+    data->serial_fd = -1;
+#endif
+
+  return rv;
 }
 
 
