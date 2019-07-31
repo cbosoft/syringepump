@@ -306,12 +306,12 @@ int read_serial_until(
     }
 #endif
 
-    if (ch[0] == until)
-      return 0;
-    else
-      buf[rx_bytes_count] = ch[0];
+  if (ch[0] == until)
+    return 0;
+  else
+    buf[rx_bytes_count] = ch[0];
 
-    rx_bytes_count++;
+  rx_bytes_count++;
 
   } while(rx_bytes_count > 0 && rx_bytes_count < buf_max);
 
