@@ -207,10 +207,14 @@ char *get_new_log_name(struct Data *data)
 
 
 
-void cancel_log(struct Data *data)
+int cancel_log(struct Data *data)
 {
   if (log_worker_status < THREAD_CANCELLED) {
     log_worker_status = THREAD_CANCELLED;
     g_thread_join(log_worker_thread);
+    return 1;
   }
+
+  return 0;
+
 }

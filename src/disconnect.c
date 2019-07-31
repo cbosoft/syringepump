@@ -4,25 +4,33 @@
 #include "log.h"
 #include "serial.h"
 #include "error.h"
+#include "form.h"
 
 
 
 
 void disconnect(struct Data *data, int is_gui)
 {
-  cancel_connect(data);
-  cancel_log(data);
-  cancel_refresh(data);
 
-#ifndef WINDOWS
-  if (data->serial_fd > 0) {
+  if (cancel_connect(data))
+    timestamp(data, is_gui, "Stopped connecting");
+
+  if (cancel_log(data))
+    timestamp(data, is_gui, "Stopped logging");
+
+  if (cancel_refresh(data))
+    timestamp(data, is_gui, "Stopped refreshing");
+
+  if (is_serial_open(data)) {
+
     write_serial(data, "QUIT", 4);
-    close(data->serial_fd);
-  }
-#else
-  //TODO
-  // destroy HANDLE appropriately
-#endif
 
-  timestamp(data, "Stopped");
+    close_serial(data);
+
+    timestamp(data, is_gui, "Closed serial connection");
+
+  }
+
+  form_set_sensitive(data, FORM_DISCONNECTED);
+
 }
