@@ -1,3 +1,6 @@
+#include <gtk/gtk.h>
+#include <glob.h>
+
 #include "refresh.h"
 #include "threads.h"
 #include "error.h"
@@ -11,11 +14,11 @@ static GThread *refresh_worker_thread = NULL;
 
 
 
-// resource temporarily unavailable thrown here
 static void *refresh_worker(void *vptr_data)
 {
-  refresh_worker_status = THREAD_STARTED;
   struct Data *data = (struct Data *)vptr_data;
+
+  refresh_worker_status = THREAD_STARTED;
   form_set_sensitive(data, FORM_REFRESHING);
 
   timestamp(data, 0, "Searching for Arduino...");
@@ -28,67 +31,35 @@ static void *refresh_worker(void *vptr_data)
   gtk_combo_box_text_remove_all(
       GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
-  DIR *d;
-  struct dirent *dir;
-  d = opendir("/dev/.");
-  const char *dev = "/dev/*";
+  const char *dev = "/dev/ttyACM*";
+  glob_t glob_res = {0};
+  glob(dev, 0, NULL, &glob_res);
+  errno = 0; // clear accumulated access errors
 
-  if (d == NULL) {
-
-    g_thread_unref(refresh_worker_thread);
-    refresh_worker_status = THREAD_NULL;
+  if (glob_res.gl_pathc == 0) {
     timestamp_error(data, 0, "No Arduino found!");
     form_set_sensitive(data, FORM_NOSERIAL);
+    refresh_worker_status = THREAD_STOPPED;
     return NULL;
   }
 
-
-  int count = 0;
-
-  while ((dir = readdir(d)) != NULL) {
-
-    if (refresh_worker_status > THREAD_STARTED) {
-      refresh_worker_status = THREAD_NULL;
-      form_set_sensitive(data, FORM_NOSERIAL);
-      return NULL;
-    }
-
-    if (strstr(dir->d_name, "ttyACM") != NULL) {
-
-      char path[261] = {0};
-      sprintf(path, "/dev/%s", dir->d_name);
-
-      gtk_combo_box_text_append_text(
-          GTK_COMBO_BOX_TEXT(data->serial_cmb), 
-          path);
-
-      count ++;
-
-    }
+  for (int i = 0; i < glob_res.gl_pathc; i++) {
+    gtk_combo_box_text_append_text(
+        GTK_COMBO_BOX_TEXT(data->serial_cmb), 
+        glob_res.gl_pathv[i]);
   }
-
-  if (errno) {
-    timestamp_error(data, "Error reading contents of %s", dev);
+  
+  if (glob_res.gl_pathc == 1) {
+    timestamp(data, 0, "Arduino found!");
   }
-
-  if (!count) {
-    timestamp_error(data, "No Arduino found!");
-    form_set_sensitive(data, FORM_NOSERIAL);
-    refresh_worker_status = THREAD_NULL;
-    return NULL;
+  else {
+    timestamp(data, 0, "Multiple possible Arduino found.");
   }
 
   form_set_sensitive(data, FORM_DISCONNECTED);
-  refresh_worker_status = THREAD_NULL;
+  refresh_worker_status = THREAD_STOPPED;
 
   gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
-
-  if (count == 1) {
-    timestamp(data, "Arduino found!");
-  }
-  else {
-    timestamp(data, "Multiple possible Arduino found.");
-  }
 
   return NULL;
 }
