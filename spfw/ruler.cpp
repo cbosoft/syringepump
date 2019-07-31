@@ -10,7 +10,6 @@ double getPositionReadingMillimeter()
 
 
 
-
 unsigned long getPositionReading()
 {
   return analogRead(RULER_POSITION_PIN);
