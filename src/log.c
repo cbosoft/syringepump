@@ -39,6 +39,7 @@ static void *log_worker(void *void_data)
 
   get_new_log_name(data);
   FILE *fp = fopen(data->logpath, "w");
+  fclose(fp);
 
   int charno = 0, timeout = 1000;
   
@@ -92,6 +93,12 @@ static void *log_worker(void *void_data)
       break;
     }
 
+
+    // write to log file
+    fp = fopen(data->logpath, "a");
+    fprintf(fp, "%s\n", received_text);
+    fclose(fp);
+
     time(&just_now);
     
 
@@ -116,12 +123,10 @@ static void *log_worker(void *void_data)
 
     if (difftime(just_now, prev_paint) > 2.0) {
 
-  fclose(fp);
       char plotcmd[1000] = {0};
       sprintf(plotcmd, "gnuplot -e \"set terminal pngcairo; set output \\\"plot.png\\\"; set key off; set datafile separator comma; plot \\\"%s\\\" using 1:3\"", data->logpath);
       system(plotcmd);
 
-  disconnect(data);
       gtk_image_set_from_file(GTK_IMAGE(data->plot_img), "plot.png");
 
       time(&prev_paint);
@@ -130,6 +135,9 @@ static void *log_worker(void *void_data)
 
 
   }
+
+  if (log_worker_status > THREAD_CANCELLED)
+    disconnect(data, 0);
 
   return NULL;
 }
