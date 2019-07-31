@@ -35,16 +35,20 @@ CC    = gcc
 CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
 LINK   = $(shell pkg-config --libs gtk+-3.0)
 
+OSTR     =
 DEFS     :=
 ifeq ($(OS),Windows_NT)
  DEFS += -D WINDOWS
+ OSTR = win
 else
  UNAME_S := $(shell uname -s)
  ifeq ($(UNAME_S),Linux)
   DEFS += -D LINUX
+	OSTR = linux
 	LINK += "-lX11"
  else
   DEFS += -D OSX
+	OSTR = osx
  endif
 endif
 
@@ -75,3 +79,6 @@ syringepump: echodefs touchmain $(OBJ)
 
 touchmain:
 	touch src/main.c
+
+release: syringepump
+	zip syringepump_$(OSTR).zip syringepump gui/main.ui README.md
