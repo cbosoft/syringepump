@@ -20,11 +20,11 @@ static GThread *log_worker_thread;
 
 
 
+
 static void *log_worker(void *void_data)
 { 
   log_worker_status = THREAD_STARTED;
   struct Data *data = (struct Data *)void_data;
-  const int print_every = 10;
   
   timestamp(data, 0, "Waiting for Arduino...");
   switch (wait_for(data, 0, "START", 100, &log_worker_status, THREAD_CANCELLED)) {
@@ -40,11 +40,13 @@ static void *log_worker(void *void_data)
   get_new_log_name(data);
   FILE *fp = fopen(data->logpath, "w");
 
-  int lineno = 0, charno = 0, timeout = 1000;
+  int charno = 0, timeout = 1000;
   
   struct timespec ms_span;
   ms_span.tv_sec = 0;
   ms_span.tv_nsec = 1000*1000;
+
+  time_t prev_print = 0, prev_paint = 0, just_now;
 
   while (log_worker_status < THREAD_CANCELLED) {
     char received_text[512] = {0};
@@ -80,35 +82,54 @@ static void *log_worker(void *void_data)
 
     } while(b[0] != '\n' && charno < 512 && (log_worker_status < THREAD_CANCELLED));
 
-    received_text[charno-1] = 0;
 
-    if (received_text[0] == 'P') {
-      timestamp(NULL, " :: %s", received_text);
-    }
-    else {
-      timestamp( 
-          ((lineno % print_every) == 0) ? data : NULL,
-          "R: %s",
-          received_text);
-      lineno = 
-        (lineno % print_every == 0) ? (1) : (lineno + 1);
-    }
+    received_text[charno-1] = 0;
 
     if (strcmp(received_text, "STOP") == 0) {
       // arduino requests stop
       timestamp(data, 0, "Arduino finished!");
       log_worker_status = THREAD_STOPPED;
+      break;
+    }
+
+    time(&just_now);
+    
+
+    if (difftime(just_now, prev_print) > 1.0) {
+      timestamp(data, 0, "%s", received_text);
+
+      // using third column (position) to get progress
+      // char *position_s = strtok(received_text, ",");
+      // for (int i = 0; i < 2; i++) position_s = strtok(NULL, ",");
+
+      // if (position_s != NULL) {
+      //   double fraction = atof(position_s)/960.0;
+      //   gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(data->progress), fraction);
+      // }
+
+      time(&prev_print);
+
     }
     else {
-      // write to log file
-      fprintf(fp, "%s\n", received_text);
+      timestamp(NULL, 0, "%s", received_text);
     }
 
-  }
+    if (difftime(just_now, prev_paint) > 2.0) {
 
   fclose(fp);
+      char plotcmd[1000] = {0};
+      sprintf(plotcmd, "gnuplot -e \"set terminal pngcairo; set output \\\"plot.png\\\"; set key off; set datafile separator comma; plot \\\"%s\\\" using 1:3\"", data->logpath);
+      system(plotcmd);
 
   disconnect(data);
+      gtk_image_set_from_file(GTK_IMAGE(data->plot_img), "plot.png");
+
+      time(&prev_paint);
+
+    }
+
+
+  }
 
   return NULL;
 }
