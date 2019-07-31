@@ -209,7 +209,8 @@ char *get_new_log_name(struct Data *data)
 
 int cancel_log(struct Data *data)
 {
-  if (log_worker_status < THREAD_CANCELLED) {
+
+  if (log_worker_status < THREAD_CANCELLED && log_worker_status > THREAD_NULL) {
     log_worker_status = THREAD_CANCELLED;
     g_thread_join(log_worker_thread);
     return 1;

@@ -125,7 +125,8 @@ void connect_to(struct Data *data)
 
 int cancel_connect(struct Data *data)
 {
-  if (connect_worker_status < THREAD_CANCELLED) {
+
+  if (connect_worker_status < THREAD_CANCELLED && connect_worker_status > THREAD_NULL) {
     connect_worker_status = THREAD_CANCELLED;
     g_thread_join(connect_worker_thread);
     return 1;

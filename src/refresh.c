@@ -107,7 +107,8 @@ void refresh(struct Data* data)
 
 int cancel_refresh(struct Data *data)
 {
-  if (refresh_worker_status < THREAD_CANCELLED) {
+
+  if (refresh_worker_status < THREAD_CANCELLED && refresh_worker_status > THREAD_NULL) {
     refresh_worker_status = THREAD_CANCELLED;
     g_thread_join(refresh_worker_thread);
     return 1;
