@@ -156,6 +156,7 @@ void start_log(struct Data *data)
 void append_text_to_log(struct Data *data, const char *added_markup)
 {
 
+
   if (log_string == NULL) {
 
     log_string = calloc(
@@ -197,11 +198,30 @@ char *get_new_log_name(struct Data *data)
   timeinfo = localtime(&rawtime);
   strftime(date, 50, "%Y-%m-%d", timeinfo);
 
-  data->tag = (char *)gtk_entry_get_text(GTK_ENTRY(data->tag_inp));
+  const char *tag = gtk_entry_get_text(GTK_ENTRY(data->tag_inp));
+  int taglen = strlen(tag);
+  char santag[taglen+1];
+  for (int i = 0; i < taglen; i++) {
+    if (tag[i] == ' ' || tag[i] == '_' || tag[i] == '.') {
+      santag[i] = '-';
+    }
+    else {
+      santag[i] = tag[i];
+    }
+  }
+  santag[taglen] = 0;
+  
+  if (data->tag == NULL)
+    data->tag = malloc((taglen+1)*sizeof(char));
+  else
+    data->tag = realloc(data->tag, (taglen+1)*sizeof(char));
 
+  strcpy(data->tag, santag);
+
+  // TODO: what if not using PID control?
   char *pattern = calloc(256, sizeof(char));
   sprintf(pattern, 
-      "%s/%s_%s(*)_SP%f-KP%f-KI%f-KD%f_%s.csv", 
+      "%s/%s_%s(*)_SP%.3f-KP%.3f-KI%.3f-KD%.3f_%s.csv", 
       log_dir, 
       pref, 
       date, 
@@ -217,7 +237,7 @@ char *get_new_log_name(struct Data *data)
 
   char *logpath = calloc(256, sizeof(char));
   sprintf(logpath, 
-      "%s/%s_%s(%u)_SP%f-KP%f-KI%f-KD%f_%s.csv", 
+      "%s/%s_%s(%u)_SP%.3f-KP%.3f-KI%.3f-KD%.3f_%s.csv", 
       log_dir, 
       pref, 
       date, 
