@@ -40,10 +40,9 @@ For MacOS, you'll need the xcode toolchain:
 xcode-select --install
 ```
 
-and you'll need to install the `gtk+3.0` libraries. I used `homebrew` for this;
+and you'll need to install the `gtk+3.0` libraries. I used `homebrew` for this.
 
 ```bash
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install gtk+3.0
 ```
 
@@ -55,7 +54,7 @@ brew install pkg-config
 ```
 
 Finally, you will need to add the pkg-config directory for the installed libs to
-path. See this [stackoverflow post](https://stackoverflow.com/questions/20098862/how-to-install-gtk-on-osx-for-use-with-g-gcc-compiler)
+path. See this [stackoverflow post](https://stackoverflow.com/questions/20098862/how-to-install-gtk-on-osx-for-use-with-g-gcc-compiler).
 
 Add the following to your `.bashrc`:
 
