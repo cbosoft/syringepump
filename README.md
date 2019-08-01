@@ -1,6 +1,6 @@
 # Syringe pump v0.2 alpha
 
-![icon](https://github.com/cbosoft/syringepump/blob/master/icons/Adwaita/64x64/syringepump.png)
+![icon](https://github.com/cbosoft/syringepump/blob/master/icons/Adwaita/64x64/apps/syringepump.png?raw=true)
 
 This software controls a syringe pump (device used to push fluid through a
 channel at a closely controlled flow rate and stress). The device was originally
