@@ -70,11 +70,14 @@ echodefs:
 src/%.o: src/%.c $(HDRS)
 	$(CC) $(CFLAGS) $< -c -o $@ $(DEFS)
 
-syringepump: echodefs touchmain $(OBJ)
+syringepump: $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $@ $(DEFS) $(LINK)
-
-touchmain:
-	touch src/main.c
 
 release: syringepump
 	zip syringepump_$(shell gcc -dumpmachine).zip syringepump gui/main.ui README.md
+
+install: syringepump
+	cp syringepump /usr/bin/.
+	cp -r icons /usr/share/icons
+	cp -r applications /usr/share/applications
+
