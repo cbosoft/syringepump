@@ -1,4 +1,4 @@
-# Intro
+# Syringe pump v0.2 alpha
 
 This software controls a syringe pump (device used to push fluid through a
 channel at a closely controlled flow rate and stress). The device was originally
