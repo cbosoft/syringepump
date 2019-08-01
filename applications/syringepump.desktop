@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Syringepump
+Comment=
+GenericName=syringe pump control program
+Exec=/home/pi/gits/syringepump
+Terminal=false
+Icon=syringepump
+Type=Application
