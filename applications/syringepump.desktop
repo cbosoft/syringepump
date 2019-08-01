@@ -2,7 +2,7 @@
 Name=Syringepump
 Comment=
 GenericName=syringe pump control program
-Exec=/home/pi/gits/syringepump
+Exec=/usr/bin/syringepump
 Terminal=false
 Icon=syringepump
 Type=Application
