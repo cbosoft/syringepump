@@ -1,8 +1,10 @@
-# Syringe pump v0.2 alpha
+# ![icon](https://github.com/cbosoft/syringepump/blob/master/icons/Adwaita/64x64/apps/syringepump.png?raw=true) Syringe pump v0.2
 
 This software controls a syringe pump (device used to push fluid through a
 channel at a closely controlled flow rate and stress). The device was originally
 intended for medicine delivery, however it is now used for rheological testing.
+
+Icon is by [bqlqn](https://www.flaticon.com/authors/bqlqn) ([CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/))
 
 # Installation
 

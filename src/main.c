@@ -1,4 +1,6 @@
 #include <stdlib.h>
+#include <string.h>
+
 #include <gtk/gtk.h>
 
 #ifdef LINUX
@@ -101,10 +103,17 @@ int main (int argc, char **argv)
   }
 
   builder = gtk_builder_new();
-  if (gtk_builder_add_from_file(builder, "gui/main.ui", &error) == 0) {
+  if (gtk_builder_add_from_file(builder, "/usr/share/syringepump/main.ui", &error) == 0) {
     timestamp(NULL, 1, "Error loading layout file: %s\n", error->message);
     g_clear_error(&error);
-    return 1;
+    if (gtk_builder_add_from_file(builder, "gui/main.ui", &error) == 0) {
+      timestamp(NULL, 1, "Error loading layout file: %s\n", error->message);
+      g_clear_error(&error);
+      return 1;
+    }
+    else {
+      timestamp(NULL, 1, "Using local layout.");
+    }
   }
   timestamp(NULL, 1, "Layout loaded.");
 
