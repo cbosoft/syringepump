@@ -82,11 +82,16 @@ void timestamp_error(struct Data *data, int is_gui, const char *fmt, ...)
         "</span>"
         "</tt>", timestr, mesg);
     
-    if (errno && errno != 11) {
+    if (errno) {
+      
+      if (errno == 11)
+        return;
+
       char e[1000] = {0};
       sprintf(e, " (%d) %s", errno, strerror(errno));
       strcat(s, e);
       errno = 0;
+
     }
     
     if (is_gui)
