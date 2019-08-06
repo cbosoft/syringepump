@@ -8,6 +8,7 @@
 #define STRESS_C 0.0
 
 long getLoadCellReading();
+double getLoadCellReadingUnits();
 void loadCellInit();
 
 #endif
