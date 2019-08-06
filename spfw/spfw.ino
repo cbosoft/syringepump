@@ -8,10 +8,19 @@
 
 
 extern volatile unsigned long timer0_millis;
-unsigned long position = 0;
-double speed = 0.0;
-double control_action = 0;
-long load_cell_reading = 0;
+
+// TODO convert speed to ml/s
+
+long start_millis = 0;
+long time = 0;
+double diameter = 1.0; // mm
+double speed = 0.0; // mm/s
+double load_cell_reading = 0.0; // N
+unsigned long position_nounits = 0;
+double position = 0.0; // mm to end
+double diameter = 0.0; // mm
+
+double control_action = 0.0;
 void (*softReset)(void) = 0;
 
 
@@ -30,12 +39,13 @@ void setup ()
   
   delay(500);
 
-  // reset millis counter to zero
-  noInterrupts();
-  timer0_millis = 0;
-  interrupts();
-
   Serial.print("START\n");
+
+  delay(100);
+
+  logTitlesToSerial();
+
+  diameter = getInternalDiameterUnits();
 
 }
 
@@ -43,15 +53,24 @@ void setup ()
 
 void loop ()
 {
-  position = getPositionReading();
-  load_cell_reading = getLoadCellReading();
+  time = millis() - start_millis;
+
+  position_nounits = getPositionReading();
+  position = convertPositionReadingUnits(position_nounits);
+  
   load_cell_reading = getLoadCellReadingUnits();
 
   speed = getSpeedReading();
   control_action = getControlAction(control_action, speed);
   motorSetDC(int(control_action));
 
-  logToSerial(load_cell_reading, position, speed, control_action);
+  double current_diameter = getInternalDiameterUnits();
+
+  if ((current_diameter < (diameter - 1.0)) || (current_diameter > (diameter + 1.0)) ) {
+    Serial.print("STOP");
+    softReset();
+  }
+
   logToSerial(time, load_cell_reading, position, speed);
 
   if (getPositionReading() > RULER_POSITION_END) {
