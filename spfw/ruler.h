@@ -22,4 +22,4 @@ double getInternalDiameterUnits();
 
 #endif
 
-//vi:m ft=arduino
+// vim: ft=arduino
