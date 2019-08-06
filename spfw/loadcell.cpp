@@ -14,6 +14,14 @@ long getLoadCellReading()
 
 
 
+double getLoadCellReadingUnits()
+{
+  double bytes = (double)getDiameterReading();
+  return (STRESS_M * bytes) + STRESS_C;
+}
+
+
+
 
 void loadCellInit()
 {

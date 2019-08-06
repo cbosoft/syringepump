@@ -45,14 +45,17 @@ void loop ()
 {
   position = getPositionReading();
   load_cell_reading = getLoadCellReading();
+  load_cell_reading = getLoadCellReadingUnits();
 
   speed = getSpeedReading();
   control_action = getControlAction(control_action, speed);
   motorSetDC(int(control_action));
 
   logToSerial(load_cell_reading, position, speed, control_action);
+  logToSerial(time, load_cell_reading, position, speed);
 
   if (getPositionReading() > RULER_POSITION_END) {
+
     for (int i = 0; i < 6; i++) {
       motorSetDC(0);
       Serial.print("STOP\n");
