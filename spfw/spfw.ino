@@ -13,12 +13,11 @@ extern volatile unsigned long timer0_millis;
 
 long start_millis = 0;
 long time = 0;
-double diameter = 1.0; // mm
 double speed = 0.0; // mm/s
 double load_cell_reading = 0.0; // N
 unsigned long position_nounits = 0;
 double position = 0.0; // mm to end
-double diameter = 0.0; // mm
+double diameter = 1.0; // mm
 
 double control_action = 0.0;
 void (*softReset)(void) = 0;
