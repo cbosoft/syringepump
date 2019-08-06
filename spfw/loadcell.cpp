@@ -1,4 +1,5 @@
 #include "hx711.h"
+
 #include "loadcell.h"
 
 HX711 loadcell;
@@ -16,7 +17,7 @@ long getLoadCellReading()
 
 double getLoadCellReadingUnits()
 {
-  double bytes = (double)getDiameterReading();
+  double bytes = (double)getLoadCellReading();
   return (STRESS_M * bytes) + STRESS_C;
 }
 
