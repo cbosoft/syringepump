@@ -18,6 +18,14 @@ gui: syringepump
 bumpver:
 	touch src/version.h
 
+diacal_fw:
+	make -f diacal_Makefile firmware
+	touch $@
+
+lccal_fw:
+	make -f lccal_Makefile firmware
+	touch $@
+
 firmware: build upload
 
 build: $(TARGET)/$(TARGET).ino
