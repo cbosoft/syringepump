@@ -4,8 +4,8 @@
 #define LC_DOUT_PIN 6
 #define LC_CLK_PIN 7
 
-#define STRESS_M 1.0
-#define STRESS_C 0.0
+#define STRESS_M 2.47384526e-05
+#define STRESS_C -6.05960574e+00
 
 long getLoadCellReading();
 double getLoadCellReadingUnits();
