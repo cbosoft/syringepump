@@ -9,18 +9,25 @@
 
 extern volatile unsigned long timer0_millis;
 
-// TODO convert speed to ml/s
-
 long start_millis = 0;
 long time = 0;
 double speed = 0.0; // mm/s
+double flowrate = 0.0; // ml/s
 double load_cell_reading = 0.0; // N
 unsigned long position_nounits = 0;
 double position = 0.0; // mm to end
-double diameter = 1.0; // mm
+double diameter = 21.5; // mm
+double area = diameter * diameter * 0.25 * 3.1415926;
 
 double control_action = 0.0;
 void (*softReset)(void) = 0;
+
+
+
+double calculateFlowrate(double speed)
+{
+  return speed * area * 0.001 * 0.001 * 0.001; // in ml/s
+}
 
 
 
@@ -45,6 +52,7 @@ void setup ()
   logTitlesToSerial();
 
   diameter = getInternalDiameterUnits();
+  area = diameter * diameter * 0.25 * 3.1415926;
 
 }
 
@@ -60,7 +68,8 @@ void loop ()
   load_cell_reading = getLoadCellReadingUnits();
 
   speed = getSpeedReading();
-  control_action = getControlAction(control_action, speed);
+  flowrate = calculateFlowrate(speed);
+  control_action = getControlAction(control_action, flowrate);
   motorSetDC(int(control_action));
 
   double current_diameter = getInternalDiameterUnits();
@@ -70,7 +79,7 @@ void loop ()
     softReset();
   }
 
-  logToSerial(time, load_cell_reading, position, speed);
+  logToSerial(time, load_cell_reading, position, flowrate);
 
   if (getPositionReading() > RULER_POSITION_END) {
 

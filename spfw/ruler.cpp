@@ -7,9 +7,8 @@ const double diameters[10] = {5, 10, 20, 30, 40};
 
 double getInternalDiameterUnits()
 {
-  // TODO
-
-  return 1.0;
+  // TODO what if there are others?
+  return 21.5;
 }
 
 
