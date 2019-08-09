@@ -11,6 +11,7 @@
 #include "threads.h"
 #include "disconnect.h"
 #include "serial.h"
+#include "error.h"
 
 
 
@@ -39,7 +40,7 @@ static void *log_worker(void *void_data)
   }
   timestamp(data, 0, "Arduino ready, starting!");
 
-  get_new_log_name(data);
+  get_new_log_name(data, NULL);
   FILE *fp = fopen(data->logpath, "w");
   fclose(fp);
 
@@ -171,7 +172,7 @@ void append_text_to_log(struct Data *data, const char *added_markup)
 
 
 
-char *get_new_log_name(struct Data *data)
+char *get_new_log_name(struct Data *data, int *control_type_override)
 {
   char *log_dir = gtk_file_chooser_get_current_folder(
       GTK_FILE_CHOOSER(data->log_folder_fch));
@@ -205,35 +206,66 @@ char *get_new_log_name(struct Data *data)
 
   strcpy(data->tag, santag);
 
-  // TODO: what if not using PID control?
   char *pattern = calloc(256, sizeof(char));
-  sprintf(pattern, 
-      "%s/%s_%s(*)_SP%.3f-KP%.3f-KI%.3f-KD%.3f_%s.csv", 
-      log_dir, 
-      pref, 
-      date, 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)), NULL), 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->kp_inp)), NULL), 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->ki_inp)), NULL), 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->kd_inp)), NULL), 
-      data->tag);
+  int control_type = (control_type_override == NULL) ? (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) : (*control_type_override);
+  switch (control_type) {
+    case 0: // PID CONTROL
+      sprintf(pattern, 
+        "%s/%s_%s(*)_SP=%.3f-KP=%.3f-KI=%.3f-KD=%.3f_%s.csv", 
+        log_dir, 
+        pref, 
+        date, 
+        strtof(gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)), NULL), 
+        strtof(gtk_entry_get_text(GTK_ENTRY(data->kp_inp)), NULL), 
+        strtof(gtk_entry_get_text(GTK_ENTRY(data->ki_inp)), NULL), 
+        strtof(gtk_entry_get_text(GTK_ENTRY(data->kd_inp)), NULL), 
+        data->tag);
+      break;
+    case 1: // NO CONTROL
+      sprintf(pattern, 
+        "%s/%s_%s(*)_DC=%.3f_%s.csv", 
+        log_dir, 
+        pref, 
+        date, 
+        strtof(gtk_entry_get_text(GTK_ENTRY(data->dc_inp)), NULL), 
+        data->tag);
+      break;
+    default:
+      timestamp_error(data, 0, "get_new_log_name", "unrecognised control type");
+  }
 
   glob_t glob_res;
   glob((const char *)pattern, GLOB_NOSORT, NULL, &glob_res);
   free(pattern);
 
   char *logpath = calloc(256, sizeof(char));
-  sprintf(logpath, 
-      "%s/%s_%s(%u)_SP%.3f-KP%.3f-KI%.3f-KD%.3f_%s.csv", 
-      log_dir, 
-      pref, 
-      date, 
-      (unsigned int)glob_res.gl_pathc, 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)), NULL), 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->kp_inp)), NULL), 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->ki_inp)), NULL), 
-      strtof(gtk_entry_get_text(GTK_ENTRY(data->kd_inp)), NULL), 
-      data->tag);
+  switch (control_type) {
+    case 0: // PID CONTROL
+      sprintf(logpath, 
+          "%s/%s_%s(%u)_SP=%.3f-KP=%.3f-KI=%.3f-KD=%.3f_%s.csv", 
+          log_dir, 
+          pref, 
+          date, 
+          (unsigned int)glob_res.gl_pathc, 
+          strtof(gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)), NULL), 
+          strtof(gtk_entry_get_text(GTK_ENTRY(data->kp_inp)), NULL), 
+          strtof(gtk_entry_get_text(GTK_ENTRY(data->ki_inp)), NULL), 
+          strtof(gtk_entry_get_text(GTK_ENTRY(data->kd_inp)), NULL), 
+          data->tag);
+      break;
+    case 1: // NO CONTROL
+      sprintf(logpath, 
+          "%s/%s_%s(%u)_DC=%.3f_%s.csv", 
+          log_dir, 
+          pref, 
+          date, 
+          (unsigned int)glob_res.gl_pathc, 
+          strtof(gtk_entry_get_text(GTK_ENTRY(data->dc_inp)), NULL), 
+          data->tag);
+      break;
+    default:
+      timestamp_error(data, 0, "get_new_log_name", "unrecognised control type");
+  }
   free(date);
   
   data->logpath = logpath;
