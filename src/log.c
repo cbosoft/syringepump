@@ -117,14 +117,18 @@ static void *log_worker(void *void_data)
     for (int i = 0; i < 2; i++) position_s = strtok(NULL, ",");
 
     if (position_s != NULL) {
-      double fraction = 1.0 - (atof(position_s) / 112.0);
-      form_set_progress(data, fraction);
+      double prev = gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(data->progress));
+      double fraction = 1.0 - (atof(position_s) / 110.0);
+      if (fraction > prev || prev >= 1.0)
+        form_set_progress(data, fraction);
     }
 
   }
 
   if (data->log_worker_status > THREAD_CANCELLED)
     disconnect(data, 0);
+
+  form_set_progress(data, 1.0);
 
   return NULL;
 }
