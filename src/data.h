@@ -40,6 +40,11 @@ struct Data {
   GObject *serial_cmb;
   GObject *control_tab;
   GObject *dc_inp;
+
+  // worker status
+  int refresh_worker_status;
+  int log_worker_status;
+  int connect_worker_status;
 };
 
 // vim: ft=c

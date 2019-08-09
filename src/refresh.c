@@ -9,8 +9,8 @@
 
 
 
-extern int refresh_worker_status;
 static GThread *refresh_worker_thread = NULL;
+static int number_failed_attempts = 0;
 
 
 
@@ -18,7 +18,7 @@ static void *refresh_worker(void *vptr_data)
 {
   struct Data *data = (struct Data *)vptr_data;
 
-  refresh_worker_status = THREAD_STARTED;
+  data->refresh_worker_status = THREAD_STARTED;
 
   // TODO do from callback
   form_set_sensitive(data, FORM_REFRESHING);
@@ -40,13 +40,21 @@ static void *refresh_worker(void *vptr_data)
   errno = 0; // clear accumulated access errors
 
   if (glob_res.gl_pathc == 0) {
-    timestamp_error(data, 0, "No Arduino found!");
+    number_failed_attempts ++;
+
+    if (number_failed_attempts > 3) {
+      timestamp_error(data, 0, "No Arduino found! If its still not showing up, try rebooting.");
+    }
+    else {
+      timestamp_error(data, 0, "No Arduino found! Is it definitely plugged in?");
+    }
+
     form_set_sensitive(data, FORM_NOSERIAL);
-    refresh_worker_status = THREAD_STOPPED;
+    data->refresh_worker_status = THREAD_STOPPED;
     return NULL;
   }
 
-  for (int i = 0; i < glob_res.gl_pathc; i++) {
+  for (int i = 0; i < (int)glob_res.gl_pathc; i++) {
     gtk_combo_box_text_append_text(
         GTK_COMBO_BOX_TEXT(data->serial_cmb), 
         glob_res.gl_pathv[i]);
@@ -60,7 +68,7 @@ static void *refresh_worker(void *vptr_data)
   }
 
   form_set_sensitive(data, FORM_DISCONNECTED);
-  refresh_worker_status = THREAD_STOPPED;
+  data->refresh_worker_status = THREAD_STOPPED;
 
   // TODO do from callback
   gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
@@ -80,11 +88,13 @@ void refresh(struct Data* data)
 }
 
 
+
+
 int cancel_refresh(struct Data *data)
 {
 
-  if (refresh_worker_status < THREAD_CANCELLED && refresh_worker_status > THREAD_NULL) {
-    refresh_worker_status = THREAD_CANCELLED;
+  if (data->refresh_worker_status < THREAD_CANCELLED && data->refresh_worker_status > THREAD_NULL) {
+    data->refresh_worker_status = THREAD_CANCELLED;
     g_thread_join(refresh_worker_thread);
     return 1;
   }

@@ -9,14 +9,13 @@
 
 
 static GThread *connect_worker_thread;
-extern int connect_worker_status;
 
 
 
 static void *connect_worker(void *vptr_data)
 {
-  connect_worker_status = THREAD_STARTED;
   struct Data *data = (struct Data *)vptr_data;
+  data->connect_worker_status = THREAD_STARTED;
   data->serial_path = gtk_combo_box_text_get_active_text(
       GTK_COMBO_BOX_TEXT(data->serial_cmb));
 
@@ -39,7 +38,7 @@ static void *connect_worker(void *vptr_data)
   }
 
   timestamp(data, 0, "Waiting on Arduino...");
-  switch (wait_for(data, 0, "ON", 100, &connect_worker_status, THREAD_CANCELLED)) {
+  switch (wait_for(data, 0, "ON", 100, &data->connect_worker_status, THREAD_CANCELLED)) {
     case -1:
       timestamp_error(data, 0, "Cancelled by user.");
       return NULL;
@@ -54,7 +53,7 @@ static void *connect_worker(void *vptr_data)
   form_set_sensitive(data, FORM_CONNECTED);
 
   timestamp(data, 0, "Waiting on Arduino...");
-  switch (wait_for(data, 0, "WAIT", 100, &connect_worker_status, THREAD_CANCELLED)) {
+  switch (wait_for(data, 0, "WAIT", 100, &data->connect_worker_status, THREAD_CANCELLED)) {
     case -1:
       timestamp_error(data, 0, "Cancelled by user.");
       return NULL;
@@ -126,8 +125,8 @@ void connect_to(struct Data *data)
 int cancel_connect(struct Data *data)
 {
 
-  if (connect_worker_status < THREAD_CANCELLED && connect_worker_status > THREAD_NULL) {
-    connect_worker_status = THREAD_CANCELLED;
+  if (data->connect_worker_status < THREAD_CANCELLED && data->connect_worker_status > THREAD_NULL) {
+    data->connect_worker_status = THREAD_CANCELLED;
     g_thread_join(connect_worker_thread);
     return 1;
   }

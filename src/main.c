@@ -14,12 +14,10 @@
 #include "disconnect.h"
 #include "refresh.h"
 #include "threads.h"
+#include "log.h"
 
 
 
-int log_worker_status = THREAD_NULL;
-int refresh_worker_status = THREAD_NULL;
-int connect_worker_status = THREAD_NULL;
 struct Data *data;
 
 
@@ -134,6 +132,9 @@ int main (int argc, char **argv)
   // Logging
   data->tag = NULL;
   data->logpath = NULL;
+  data->log_worker_status = THREAD_NULL;
+  data->refresh_worker_status = THREAD_NULL;
+  data->connect_worker_status = THREAD_NULL;
 
   // GUI :: windows
   data->main_win = gtk_builder_get_object(builder, "winMain");

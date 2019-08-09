@@ -16,7 +16,6 @@
 
 
 
-extern int log_worker_status;
 static char *log_string = NULL;
 static GThread *log_worker_thread;
 
@@ -26,11 +25,11 @@ static GThread *log_worker_thread;
 
 static void *log_worker(void *void_data)
 { 
-  log_worker_status = THREAD_STARTED;
   struct Data *data = (struct Data *)void_data;
+  data->log_worker_status = THREAD_STARTED;
   
   timestamp(data, 0, "Waiting for Arduino...");
-  switch (wait_for(data, 0, "START", 100, &log_worker_status, THREAD_CANCELLED)) {
+  switch (wait_for(data, 0, "START", 100, &data->log_worker_status, THREAD_CANCELLED)) {
     case -1:
       timestamp_error(data, 0, "Cancelled by user.");
       return NULL;
@@ -52,7 +51,7 @@ static void *log_worker(void *void_data)
 
   time_t prev_print = 0, just_now;
 
-  while (log_worker_status < THREAD_CANCELLED) {
+  while (data->log_worker_status < THREAD_CANCELLED) {
     char received_text[512] = {0};
     char b[1];
     charno = 0;
@@ -84,7 +83,7 @@ static void *log_worker(void *void_data)
 
       charno++;
 
-    } while(b[0] != '\n' && charno < 512 && (log_worker_status < THREAD_CANCELLED));
+    } while(b[0] != '\n' && charno < 512 && (data->log_worker_status < THREAD_CANCELLED));
 
 
     received_text[charno-1] = 0;
@@ -92,7 +91,7 @@ static void *log_worker(void *void_data)
     if (strcmp(received_text, "STOP") == 0) {
       // arduino requests stop
       timestamp(data, 0, "Arduino finished!");
-      log_worker_status = THREAD_STOPPED;
+      data->log_worker_status = THREAD_STOPPED;
       break;
     }
 
@@ -124,7 +123,7 @@ static void *log_worker(void *void_data)
 
   }
 
-  if (log_worker_status > THREAD_CANCELLED)
+  if (data->log_worker_status > THREAD_CANCELLED)
     disconnect(data, 0);
 
   return NULL;
@@ -278,8 +277,8 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
 int cancel_log(struct Data *data)
 {
 
-  if (log_worker_status < THREAD_CANCELLED && log_worker_status > THREAD_NULL) {
-    log_worker_status = THREAD_CANCELLED;
+  if (data->log_worker_status < THREAD_CANCELLED && data->log_worker_status > THREAD_NULL) {
+    data->log_worker_status = THREAD_CANCELLED;
     g_thread_join(log_worker_thread);
     return 1;
   }
