@@ -86,7 +86,7 @@
                             <property name="tooltip_markup" translatable="yes">Set point is the goal for the control system to acheive/maintain. The actual speed is subtracted from the setpoint to give an Error value, which is used along with the control parameters defined below to find an appropriate control action to give in order to maintain the setpoint speed using the PID algorithm:
 
 CA = (K&lt;sub&gt;P&lt;/sub&gt; × Error) + (K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;∞&lt;/sub&gt;&lt;sup&gt;t&lt;/sup&gt; Error dt) + (K&lt;sub&gt;D&lt;/sub&gt; × dError/dt)</property>
-                            <property name="text" translatable="yes">10.0</property>
+                            <property name="text" translatable="yes">1.0</property>
                             <property name="placeholder_text" translatable="yes">set point</property>
                             <property name="input_purpose">number</property>
                           </object>
@@ -134,7 +134,7 @@ CA = K&lt;sub&gt;P&lt;/sub&gt; × Error
 High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with little/no overshoot.
 
 Set to zero to disable (not recommmended).</property>
-                            <property name="text" translatable="yes">0.2</property>
+                            <property name="text" translatable="yes">5.0</property>
                             <property name="placeholder_text" translatable="yes">proportional control gain</property>
                           </object>
                           <packing>
@@ -169,7 +169,7 @@ CA = K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;-∞&lt;/sub&gt;&lt;sup&gt;t&lt;
 High K&lt;sub&gt;I&lt;/sub&gt; means a strong dependence of the control action on past errors (long standing errors are eliminated), also guides against offset. Too high, and the controller will max out for the tiniest error.
 
 Set to zero to disable.</property>
-                            <property name="text" translatable="yes">0.0</property>
+                            <property name="text" translatable="yes">2.0</property>
                             <property name="placeholder_text" translatable="yes">integral control gain</property>
                           </object>
                           <packing>
