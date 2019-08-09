@@ -118,7 +118,7 @@ static void *log_worker(void *void_data)
     for (int i = 0; i < 2; i++) position_s = strtok(NULL, ",");
 
     if (position_s != NULL) {
-      double fraction = atof(position_s)/960.0;
+      double fraction = 112.0 - atof(position_s);
       form_set_progress(data, fraction);
     }
 
