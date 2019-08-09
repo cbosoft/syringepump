@@ -69,7 +69,7 @@ static void *connect_worker(void *vptr_data)
     send_data_packet(
         data, 
         0,
-        "DC",
+        "dc",
         gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
   }
   else {
