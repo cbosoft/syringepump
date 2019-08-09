@@ -1,4 +1,4 @@
-# ![icon](https://github.com/cbosoft/syringepump/blob/master/icons/Adwaita/64x64/apps/syringepump.png?raw=true) Syringe pump v0.2
+# ![icon](https://github.com/cbosoft/syringepump/blob/master/icons/Adwaita/64x64/apps/syringepump.png?raw=true) Syringe pump v0.3
 
 ![v0.3 screenshot](https://github.com/cbosoft/syringepump/blob/master/screenshots/v0.3.png?raw=true)
 
