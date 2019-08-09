@@ -24,9 +24,10 @@ void (*softReset)(void) = 0;
 
 
 
+
 double calculateFlowrate(double speed)
 {
-  return speed * area * 0.001 * 0.001 * 0.001; // in ml/s
+  return speed * area * 0.001; // in ml/s
 }
 
 
@@ -55,6 +56,7 @@ void setup ()
   area = diameter * diameter * 0.25 * 3.1415926;
 
 }
+
 
 
 
