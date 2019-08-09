@@ -5,7 +5,7 @@ double speed_set_point = 0;
 double kp = 0.2;
 double ki = 0.0;
 double kd = 0.0;
-int dc = 0.0;
+double dc = 0.0;
 enum controllers {
   CONTROL_UNSET,
   CONTROL_PID,
@@ -19,8 +19,10 @@ int control_type = CONTROL_UNSET;
 typedef struct ll_control_hist {
   struct ll_control_hist *next;
   double error;
+  double time;
 } ll_control_hist;
 ll_control_hist *control_hist = NULL;
+
 
 
 
@@ -33,10 +35,12 @@ ll_control_hist *remove_lru(ll_control_hist *start)
 
 
 
-ll_control_hist *append_to_max(ll_control_hist *start, double error)
+
+ll_control_hist *append_to_max(ll_control_hist *start, double error, double time)
 {
   ll_control_hist *new_item = calloc(1, sizeof(ll_control_hist));
   new_item->error = error;
+  new_item->time = time;
 
   if (start == NULL)
     return new_item;
@@ -53,6 +57,24 @@ ll_control_hist *append_to_max(ll_control_hist *start, double error)
   return start;
 }
 
+double integrate_hist(ll_control_hist *start)
+{
+  if (start->next == NULL) {
+    return 0.0;
+  }
+
+  double total = 0.0;
+  ll_control_hist *item = start, *next = start->next;
+  while (next->next != NULL) {
+    total += item->error * (next->time - item->time);
+    item = item->next;
+    next = next->next;
+  }
+  return total;
+}
+
+
+
 
 int ccntr = 0;
 double getControlAction(double pca, double speed)
@@ -62,16 +84,24 @@ double getControlAction(double pca, double speed)
     return dc;
   }
 
-  double error = speed_set_point - speed;
-  append_to_max(control_hist, error);
-  double dca = kp * error;
+  double dca = 0.0;
 
-  // TODO integral
+  // Calculate error
+  double error = speed_set_point - speed;
+  control_hist = append_to_max(control_hist, error, double(millis())*0.001 );
+
+  // proportional
+  dca += kp * error;
+
+  // integral
+  dca += ki * integrate_hist(control_hist);
 
   // TODO derivative control
 
   return pca + dca;
 }
+
+
 
 
 void controlInit(){
@@ -110,7 +140,7 @@ void controlInit(){
     }
     else if (strcmp(key, "dc") == 0) {
       control_type = CONTROL_NONE;
-      dc = atoi(val);
+      dc = atof(val);
     }
 
     params_got ++;
