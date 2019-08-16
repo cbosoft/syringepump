@@ -102,6 +102,14 @@ void cb_kd_text_changed(GObject *obj, struct Data *data)
 
 
 
+void cb_buflen_text_changed(GObject *obj, struct Data *data)
+{
+  get_new_log_name(data, NULL);
+}
+
+
+
+
 void cb_setpoint_text_changed(GObject *obj, struct Data *data)
 {
   get_new_log_name(data, NULL);

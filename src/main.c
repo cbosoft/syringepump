@@ -150,6 +150,7 @@ int main (int argc, char **argv)
   data->kp_inp = gtk_builder_get_object(builder, "inpKP");
   data->ki_inp = gtk_builder_get_object(builder, "inpKI");
   data->kd_inp = gtk_builder_get_object(builder, "inpKD");
+  data->buflen_inp = gtk_builder_get_object(builder, "inpBuffer");
   data->tag_inp = gtk_builder_get_object(builder, "inpTag");
   data->log_folder_fch = gtk_builder_get_object(builder, "fchLogFolder");
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(data->log_folder_fch), getenv("HOME"));
@@ -215,6 +216,7 @@ int main (int argc, char **argv)
   g_signal_connect(data->kp_inp, "changed", G_CALLBACK(cb_kp_text_changed), data);
   g_signal_connect(data->ki_inp, "changed", G_CALLBACK(cb_ki_text_changed), data);
   g_signal_connect(data->kd_inp, "changed", G_CALLBACK(cb_kd_text_changed), data);
+  g_signal_connect(data->buflen_inp, "changed", G_CALLBACK(cb_buflen_text_changed), data);
   g_signal_connect(data->setpoint_inp, "changed", G_CALLBACK(cb_setpoint_text_changed), data);
   g_signal_connect(data->control_tab, "switch-page", G_CALLBACK(cb_tab_page_changed), data);
 

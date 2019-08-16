@@ -6,6 +6,7 @@ double kp = 0.2;
 double ki = 0.0;
 double kd = 0.0;
 double dc = 0.0;
+double buflen = 0.0;
 enum controllers {
   CONTROL_UNSET,
   CONTROL_PID,
@@ -142,16 +143,19 @@ void controlInit(){
       control_type = CONTROL_NONE;
       dc = atof(val);
     }
+    else if (strcmp(key, "bl") == 0) {
+      buflen = atof(val);
+    }
 
     params_got ++;
 
     switch (control_type) {
       case CONTROL_PID:
-        params_needed = 4;
+        params_needed = 5;
         break;
       case CONTROL_UNSET:
       case CONTROL_NONE:
-        params_needed = 1;
+        params_needed = 2;
         break;
     }
     Serial.print("OK\n");

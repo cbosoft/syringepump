@@ -18,6 +18,7 @@ unsigned long position_nounits = 0;
 double position = 0.0; // mm to end
 double diameter = 21.5; // mm
 double area = diameter * diameter * 0.25 * 3.1415926;
+extern double buflen;
 
 double control_action = 0.0;
 void (*softReset)(void) = 0;
@@ -83,7 +84,7 @@ void loop ()
 
   logToSerial(time, load_cell_reading, position, flowrate);
 
-  if (getPositionReading() > RULER_POSITION_END) {
+  if (position < buflen) {
 
     for (int i = 0; i < 6; i++) {
       motorSetDC(0);

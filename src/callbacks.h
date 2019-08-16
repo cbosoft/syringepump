@@ -12,6 +12,7 @@ void cb_dc_text_changed(GObject *obj, struct Data *data);
 void cb_kp_text_changed(GObject *obj, struct Data *data);
 void cb_ki_text_changed(GObject *obj, struct Data *data);
 void cb_kd_text_changed(GObject *obj, struct Data *data);
+void cb_buflen_text_changed(GObject *obj, struct Data *data);
 void cb_setpoint_text_changed(GObject *obj, struct Data *data);
 void cb_tab_page_changed(GObject *obj, GtkWidget *page, guint page_num, struct Data *data);
 

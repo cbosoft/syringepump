@@ -57,6 +57,10 @@ int check_form(struct Data *data)
         "KD must be a number (containing only numbers 0-9 and decimal points "
         "('.').");
   }
+  CHECK_ENTRY_NUMBER(data->buflen_inp,
+      "Stop buffer length is a required field.",
+      "Buffer length must be a number (containing only numbers 0-9 and decimal points "
+      "('.').");
 
   if (IS_EMPTY_ENTRY(data->tag_inp)) {
     rv = 1;
@@ -194,6 +198,7 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       break;
     default:
       timestamp(NULL, 1, "Tried to set an unknown sensitivity");
+      // fall-through
     case FORM_ALL:
       gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
