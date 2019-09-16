@@ -56,7 +56,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="tab_pos">left</property>
-                <property name="show_border">False</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -322,7 +321,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">10</property>
+                <property name="padding">5</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -347,7 +346,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                   <object class="GtkEntry" id="inpBuffer">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Distance from the end which is close enough to stop. This prevents the pump trying to push the syring into itself. It's probably best to leave this at its default.</property>
+                    <property name="tooltip_text" translatable="yes">Distance from the end which is close enough to stop. This prevents the pump trying to push the syring into itself.</property>
                     <property name="text" translatable="yes">5.0</property>
                   </object>
                   <packing>
@@ -361,7 +360,51 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">5</property>
                 <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Syringe inner diameter (mm):</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="inpDiameter">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_markup" translatable="yes">Inner diameter of the syringe, or the diameter of the plunger. This is used to calculate the flowrate of the syringe pump:
+
+Q = v x A
+
+</property>
+                    <property name="text" translatable="yes">20.5</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -378,7 +421,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">3</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
@@ -435,8 +478,8 @@ The software will search for likely Arduino connections and display them here. I
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="padding">10</property>
-                <property name="position">4</property>
+                <property name="padding">5</property>
+                <property name="position">5</property>
               </packing>
             </child>
             <child>
@@ -453,7 +496,7 @@ The software will search for likely Arduino connections and display them here. I
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">5</property>
+                <property name="position">6</property>
               </packing>
             </child>
             <child>
@@ -523,8 +566,8 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">10</property>
-                <property name="position">6</property>
+                <property name="padding">5</property>
+                <property name="position">7</property>
               </packing>
             </child>
             <child>
@@ -565,7 +608,8 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">7</property>
+                <property name="padding">5</property>
+                <property name="position">8</property>
               </packing>
             </child>
           </object>
