@@ -16,9 +16,8 @@ double flowrate = 0.0; // ml/s
 double load_cell_reading = 0.0; // N
 unsigned long position_nounits = 0;
 double position = 0.0; // mm to end
-double diameter = 21.5; // mm
-double area = diameter * diameter * 0.25 * 3.1415926;
 extern double buflen;
+extern double inner_diameter;
 
 double control_action = 0.0;
 void (*softReset)(void) = 0;
@@ -28,7 +27,7 @@ void (*softReset)(void) = 0;
 
 double calculateFlowrate(double speed)
 {
-  return speed * area * 0.001; // in ml/s
+  return speed * inner_diameter * inner_diameter * 0.25 * 3.1415926 * 0.001; // in ml/s
 }
 
 
@@ -53,9 +52,6 @@ void setup ()
 
   logTitlesToSerial();
 
-  diameter = getInternalDiameterUnits();
-  area = diameter * diameter * 0.25 * 3.1415926;
-
 }
 
 
@@ -74,13 +70,6 @@ void loop ()
   flowrate = calculateFlowrate(speed);
   control_action = getControlAction(control_action, flowrate);
   motorSetDC(int(control_action));
-
-  double current_diameter = getInternalDiameterUnits();
-
-  if ((current_diameter < (diameter - 1.0)) || (current_diameter > (diameter + 1.0)) ) {
-    Serial.print("STOP");
-    softReset();
-  }
 
   logToSerial(time, load_cell_reading, position, flowrate);
 

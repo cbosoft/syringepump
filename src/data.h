@@ -41,6 +41,7 @@ struct Data {
   GObject *serial_cmb;
   GObject *control_tab;
   GObject *dc_inp;
+  GObject *dia_inp;
 
   // worker status
   int refresh_worker_status;

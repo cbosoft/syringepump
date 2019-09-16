@@ -7,6 +7,7 @@ double ki = 0.0;
 double kd = 0.0;
 double dc = 0.0;
 double buflen = 0.0;
+double inner_diameter = 0.0;
 enum controllers {
   CONTROL_UNSET,
   CONTROL_PID,
@@ -146,16 +147,19 @@ void controlInit(){
     else if (strcmp(key, "bl") == 0) {
       buflen = atof(val);
     }
+    else if (strcmp(key, "di") == 0) {
+      inner_diameter = atof(val);
+    }
 
     params_got ++;
 
     switch (control_type) {
       case CONTROL_PID:
-        params_needed = 5;
+        params_needed = 6;
         break;
       case CONTROL_UNSET:
       case CONTROL_NONE:
-        params_needed = 2;
+        params_needed = 3;
         break;
     }
     Serial.print("OK\n");

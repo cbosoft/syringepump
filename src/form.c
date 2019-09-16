@@ -61,6 +61,10 @@ int check_form(struct Data *data)
       "Stop buffer length is a required field.",
       "Buffer length must be a number (containing only numbers 0-9 and decimal points "
       "('.').");
+  CHECK_ENTRY_NUMBER(data->dia_inp,
+      "Syringe diameter is a required field.",
+      "Syringe diameter must be a number (containing only numbers 0-9 and decimal points "
+      "('.').");
 
   if (IS_EMPTY_ENTRY(data->tag_inp)) {
     rv = 1;

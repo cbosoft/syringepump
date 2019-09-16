@@ -101,6 +101,11 @@ static void *connect_worker(void *vptr_data)
       0,
       "bl", 
       gtk_entry_get_text(GTK_ENTRY(data->buflen_inp)));
+  send_data_packet(
+      data, 
+      0,
+      "di", 
+      gtk_entry_get_text(GTK_ENTRY(data->dia_inp)));
   timestamp(data, 0, "All parameters sent successfully!");
   
   start_log(data);

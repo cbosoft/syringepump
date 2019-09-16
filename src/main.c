@@ -165,6 +165,7 @@ int main (int argc, char **argv)
   data->ki_inp = get_object_safe(builder, "inpKI");
   data->kd_inp = get_object_safe(builder, "inpKD");
   data->buflen_inp = get_object_safe(builder, "inpBuffer");
+  data->dia_inp = get_object_safe(builder, "inpDiameter");
   data->tag_inp = get_object_safe(builder, "inpTag");
   data->log_folder_fch = get_object_safe(builder, "fchLogFolder");
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(data->log_folder_fch), getenv("HOME"));
