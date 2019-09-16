@@ -18,6 +18,7 @@
 
 
 
+
 struct Data *data;
 
 
@@ -73,6 +74,19 @@ void usage()
       "    filled out with the default value. If the same option is written multiple times,\n"
       "    the last value is the one that will be used.\n"
       "\n");
+}
+
+GObject * get_object_safe(GtkBuilder *builder, const char *name)
+{
+  GObject *rv = gtk_builder_get_object(builder, name);
+
+  if (rv == NULL) {
+    timestamp(NULL, 0, "GTK object not found in builder \"%s\"", name);
+    timestamp(NULL, 0, "Exiting...");
+    exit(1);
+  }
+
+  return rv;
 }
 
 
@@ -137,31 +151,31 @@ int main (int argc, char **argv)
   data->connect_worker_status = THREAD_NULL;
 
   // GUI :: windows
-  data->main_win = gtk_builder_get_object(builder, "winMain");
+  data->main_win = get_object_safe(builder, "winMain");
 
   // GUI :: buttons
-  data->conn_btn = gtk_builder_get_object(builder, "btnConnect");
-  data->disconn_btn = gtk_builder_get_object(builder, "btnDisconnect");
-  data->refresh_btn = gtk_builder_get_object(builder, "btnSerialRefresh");
+  data->conn_btn = get_object_safe(builder, "btnConnect");
+  data->disconn_btn = get_object_safe(builder, "btnDisconnect");
+  data->refresh_btn = get_object_safe(builder, "btnSerialRefresh");
 
   // GUI :: inputs
-  data->setpoint_inp = gtk_builder_get_object(builder, "inpSetPoint");
-  data->dc_inp = gtk_builder_get_object(builder, "inpDC");
-  data->kp_inp = gtk_builder_get_object(builder, "inpKP");
-  data->ki_inp = gtk_builder_get_object(builder, "inpKI");
-  data->kd_inp = gtk_builder_get_object(builder, "inpKD");
-  data->buflen_inp = gtk_builder_get_object(builder, "inpBuffer");
-  data->tag_inp = gtk_builder_get_object(builder, "inpTag");
-  data->log_folder_fch = gtk_builder_get_object(builder, "fchLogFolder");
+  data->setpoint_inp = get_object_safe(builder, "inpSetPoint");
+  data->dc_inp = get_object_safe(builder, "inpDC");
+  data->kp_inp = get_object_safe(builder, "inpKP");
+  data->ki_inp = get_object_safe(builder, "inpKI");
+  data->kd_inp = get_object_safe(builder, "inpKD");
+  data->buflen_inp = get_object_safe(builder, "inpBuffer");
+  data->tag_inp = get_object_safe(builder, "inpTag");
+  data->log_folder_fch = get_object_safe(builder, "fchLogFolder");
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(data->log_folder_fch), getenv("HOME"));
 
   // GUI :: other
-  data->log_lbl = gtk_builder_get_object(builder, "lblLog");
-  data->logname_lbl = gtk_builder_get_object(builder, "lblLogName");
-  data->progress = gtk_builder_get_object(builder, "progProgress");
-  data->scroll = gtk_builder_get_object(builder, "scroll");
-  data->serial_cmb = gtk_builder_get_object(builder, "cmbSerial");
-  data->control_tab = gtk_builder_get_object(builder, "tabControl");
+  data->log_lbl = get_object_safe(builder, "lblLog");
+  data->logname_lbl = get_object_safe(builder, "lblLogName");
+  data->progress = get_object_safe(builder, "progProgress");
+  data->scroll = get_object_safe(builder, "scroll");
+  data->serial_cmb = get_object_safe(builder, "cmbSerial");
+  data->control_tab = get_object_safe(builder, "tabControl");
 
   // SET UP
   gtk_window_set_title(GTK_WINDOW(data->main_win), "Syringepump ("LONG_VERSION")");
