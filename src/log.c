@@ -19,7 +19,38 @@
 static char *log_string = NULL;
 static GThread *log_worker_thread;
 
+void write_run_params(struct Data *data)
+{
+  FILE *fp = fopen(data->logpath, "w");
+  int control_type = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab));
 
+  switch (control_type) {
+    case 0:
+      fprintf(fp, "Set point (flow) (ml/s), %s\n", gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)));
+      fprintf(fp, "KP (flow), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kp_inp)));
+      fprintf(fp, "KI (flow), %s\n", gtk_entry_get_text(GTK_ENTRY(data->ki_inp)));
+      fprintf(fp, "KD (flow), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kd_inp)));
+      break;
+    case 1:
+      fprintf(fp, "Set point (force) (ml/s), %s\n", gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp_force)));
+      fprintf(fp, "KP (force), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kp_inp_force)));
+      fprintf(fp, "KI (force), %s\n", gtk_entry_get_text(GTK_ENTRY(data->ki_inp_force)));
+      fprintf(fp, "KD (force), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kd_inp_force)));
+      break;
+    case 2:
+      fprintf(fp, "DC (0-255), %s\n", gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
+      break;
+    default:
+      timestamp_error(data, 0, "unknown control type encountered in 'write_run_params'");
+      break;
+  }
+
+  fprintf(fp, "Stop buffer (mm), %s\n", gtk_entry_get_text(GTK_ENTRY(data->buflen_inp)));
+  fprintf(fp, "Syringe diameter (mm), %s\n", gtk_entry_get_text(GTK_ENTRY(data->dia_inp)));
+
+  fprintf(fp, "\n");
+  fclose(fp);
+}
 
 
 
@@ -40,8 +71,7 @@ static void *log_worker(void *void_data)
   timestamp(data, 0, "Arduino ready, starting!");
 
   get_new_log_name(data, NULL);
-  FILE *fp = fopen(data->logpath, "w");
-  fclose(fp);
+  write_run_params(data);
 
   int charno = 0, timeout = 1000;
   
@@ -97,7 +127,7 @@ static void *log_worker(void *void_data)
 
 
     // write to log file
-    fp = fopen(data->logpath, "a");
+    FILE *fp = fopen(data->logpath, "a");
     fprintf(fp, "%s\n", received_text);
     fclose(fp);
 
@@ -210,65 +240,25 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
   strcpy(data->tag, santag);
 
   char *pattern = calloc(256, sizeof(char));
-  int control_type = (control_type_override == NULL) ? (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) : (*control_type_override);
-  switch (control_type) {
-    case 0: // PID CONTROL
-      sprintf(pattern, 
-        "%s/%s_%s(*)_SP=%.3f-KP=%.3f-KI=%.3f-KD=%.3f_%s.csv", 
-        log_dir, 
-        pref, 
-        date, 
-        strtof(gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)), NULL), 
-        strtof(gtk_entry_get_text(GTK_ENTRY(data->kp_inp)), NULL), 
-        strtof(gtk_entry_get_text(GTK_ENTRY(data->ki_inp)), NULL), 
-        strtof(gtk_entry_get_text(GTK_ENTRY(data->kd_inp)), NULL), 
-        data->tag);
-      break;
-    case 1: // NO CONTROL
-      sprintf(pattern, 
-        "%s/%s_%s(*)_DC=%.3f_%s.csv", 
-        log_dir, 
-        pref, 
-        date, 
-        strtof(gtk_entry_get_text(GTK_ENTRY(data->dc_inp)), NULL), 
-        data->tag);
-      break;
-    default:
-      timestamp_error(data, 0, "get_new_log_name", "unrecognised control type");
-  }
+  sprintf(pattern, 
+    "%s/%s_%s(*)_%s.csv", 
+    log_dir, 
+    pref, 
+    date, 
+    data->tag);
 
   glob_t glob_res;
   glob((const char *)pattern, GLOB_NOSORT, NULL, &glob_res);
   free(pattern);
 
   char *logpath = calloc(256, sizeof(char));
-  switch (control_type) {
-    case 0: // PID CONTROL
-      sprintf(logpath, 
-          "%s/%s_%s(%u)_SP=%.3f-KP=%.3f-KI=%.3f-KD=%.3f_%s.csv", 
-          log_dir, 
-          pref, 
-          date, 
-          (unsigned int)glob_res.gl_pathc, 
-          strtof(gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)), NULL), 
-          strtof(gtk_entry_get_text(GTK_ENTRY(data->kp_inp)), NULL), 
-          strtof(gtk_entry_get_text(GTK_ENTRY(data->ki_inp)), NULL), 
-          strtof(gtk_entry_get_text(GTK_ENTRY(data->kd_inp)), NULL), 
-          data->tag);
-      break;
-    case 1: // NO CONTROL
-      sprintf(logpath, 
-          "%s/%s_%s(%u)_DC=%.3f_%s.csv", 
-          log_dir, 
-          pref, 
-          date, 
-          (unsigned int)glob_res.gl_pathc, 
-          strtof(gtk_entry_get_text(GTK_ENTRY(data->dc_inp)), NULL), 
-          data->tag);
-      break;
-    default:
-      timestamp_error(data, 0, "get_new_log_name", "unrecognised control type");
-  }
+  sprintf(logpath, 
+      "%s/%s_%s(%u)_%s.csv", 
+      log_dir, 
+      pref, 
+      date, 
+      (unsigned int)glob_res.gl_pathc, 
+      data->tag);
   free(date);
   
   data->logpath = logpath;
