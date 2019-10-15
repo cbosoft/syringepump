@@ -64,38 +64,79 @@ static void *connect_worker(void *vptr_data)
 
   timestamp(data, 0, "Sending run parameters to Arduino");
 
-  if (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
-    send_data_packet(
+
+  switch (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
+
+    case 2: // NO CONTROL: DC ONLY
+      send_data_packet(
         data, 
         0,
         "dc",
         gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
-  }
-  else {
-    send_data_packet(
+      break;
+
+    case 1: // PID (FORCE) CONTROL
+      send_data_packet(
+        data, 
+        0,
+        "var", "force");
+
+      send_data_packet(
+        data, 
+        0,
+        "setpoint", 
+        gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp_force)));
+
+      send_data_packet(
+        data, 
+        0,
+        "kp", 
+        (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp_force)));
+
+      send_data_packet(
+        data, 
+        0,
+        "ki", 
+        gtk_entry_get_text(GTK_ENTRY(data->ki_inp_force)));
+
+      send_data_packet(
+        data, 
+        0,
+        "kd", 
+        gtk_entry_get_text(GTK_ENTRY(data->kd_inp_force)));
+      break;
+    case 0:
+      send_data_packet(
+        data, 
+        0,
+        "var", "flow");
+      send_data_packet(
         data, 
         0,
         "setpoint", 
         gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)));
 
-    send_data_packet(
+      send_data_packet(
         data, 
         0,
         "kp", 
         (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)));
 
-    send_data_packet(
+      send_data_packet(
         data, 
         0,
         "ki", 
         gtk_entry_get_text(GTK_ENTRY(data->ki_inp)));
 
-    send_data_packet(
+      send_data_packet(
         data, 
         0,
         "kd", 
         gtk_entry_get_text(GTK_ENTRY(data->kd_inp)));
+      break;
   }
+
+
   send_data_packet(
       data, 
       0,
@@ -121,6 +162,8 @@ void connect_to(struct Data *data)
 
   if (check_form(data))
     return;
+
+  puts("AFTER CHECK FORM");
 
   form_set_sensitive(data, FORM_BUSY);
 

@@ -33,13 +33,33 @@ int check_form(struct Data *data)
   // (enforced by gtk, but can be overridden using cli args, so do need to 
   // check here)
 
-  if (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
+  // TODO: change to switch case
+  int pageno = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab));
+  if (pageno == 2) {
     CHECK_ENTRY_NUMBER(data->dc_inp,
         "Duty cycle is a required field for this control scheme.", 
         "Duty cycle must be a number (containing only numbers 0-9 and decimal "
         "points ('.').");
   }
-  else {
+  else if (pageno == 1) {
+    CHECK_ENTRY_NUMBER(data->setpoint_inp_force, 
+        "Set point is a required field for PID control.", 
+        "Set point must be a number (containing only numbers 0-9 and decimal "
+        "points ('.').");
+    CHECK_ENTRY_NUMBER(data->kp_inp_force,
+        "KP is a required field for PID control.",
+        "KP must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+    CHECK_ENTRY_NUMBER(data->ki_inp_force,
+        "KI is a required field for PID control.",
+        "KI must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+    CHECK_ENTRY_NUMBER(data->kd_inp_force,
+        "KD is a required field for PID control.",
+        "KD must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+  }
+  else if (pageno == 0) {
     CHECK_ENTRY_NUMBER(data->setpoint_inp, 
         "Set point is a required field for PID control.", 
         "Set point must be a number (containing only numbers 0-9 and decimal "
@@ -57,6 +77,7 @@ int check_form(struct Data *data)
         "KD must be a number (containing only numbers 0-9 and decimal points "
         "('.').");
   }
+
   CHECK_ENTRY_NUMBER(data->buflen_inp,
       "Stop buffer length is a required field.",
       "Buffer length must be a number (containing only numbers 0-9 and decimal points "
@@ -143,6 +164,10 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
@@ -156,6 +181,10 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
@@ -169,6 +198,10 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 1);
@@ -182,6 +215,10 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
@@ -195,6 +232,10 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
       gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
@@ -211,6 +252,10 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
       gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 1);

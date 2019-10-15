@@ -159,11 +159,15 @@ int main (int argc, char **argv)
   data->refresh_btn = get_object_safe(builder, "btnSerialRefresh");
 
   // GUI :: inputs
-  data->setpoint_inp = get_object_safe(builder, "inpSetPoint");
   data->dc_inp = get_object_safe(builder, "inpDC");
+  data->setpoint_inp = get_object_safe(builder, "inpSetPoint");
   data->kp_inp = get_object_safe(builder, "inpKP");
   data->ki_inp = get_object_safe(builder, "inpKI");
   data->kd_inp = get_object_safe(builder, "inpKD");
+  data->setpoint_inp_force = get_object_safe(builder, "inpSetPoint_force");
+  data->kp_inp_force = get_object_safe(builder, "inpKP_force");
+  data->ki_inp_force = get_object_safe(builder, "inpKI_force");
+  data->kd_inp_force = get_object_safe(builder, "inpKD_force");
   data->buflen_inp = get_object_safe(builder, "inpBuffer");
   data->dia_inp = get_object_safe(builder, "inpDiameter");
   data->tag_inp = get_object_safe(builder, "inpTag");

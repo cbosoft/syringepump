@@ -31,6 +31,10 @@ struct Data {
   GObject *kp_inp;
   GObject *ki_inp;
   GObject *kd_inp;
+  GObject *setpoint_inp_force;
+  GObject *kp_inp_force;
+  GObject *ki_inp_force;
+  GObject *kd_inp_force;
   GObject *buflen_inp;
   GObject *tag_inp;
   GObject *log_folder_fch;

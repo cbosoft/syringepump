@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "control.h"
 
-double speed_set_point = 0;
+double set_point = 0;
 double kp = 0.2;
 double ki = 0.0;
 double kd = 0.0;
@@ -14,6 +14,7 @@ enum controllers {
   CONTROL_NONE
 };
 int control_type = CONTROL_UNSET;
+int controlled_var = 0;
 
 
 
@@ -79,7 +80,7 @@ double integrate_hist(ll_control_hist *start)
 
 
 int ccntr = 0;
-double getControlAction(double pca, double speed)
+double getControlAction(double pca, double speed, double force)
 {
 
   if (control_type == CONTROL_NONE) {
@@ -89,7 +90,8 @@ double getControlAction(double pca, double speed)
   double dca = 0.0;
 
   // Calculate error
-  double error = speed_set_point - speed;
+  double input = controlled_var ? speed : force;
+  double error = set_point - input;
   control_hist = append_to_max(control_hist, error, double(millis())*0.001 );
 
   // proportional
@@ -126,7 +128,11 @@ void controlInit(){
 
     if (strcmp(key, "setpoint") == 0) {
       control_type = CONTROL_PID;
-      speed_set_point = atof(val);
+      set_point = atof(val);
+    }
+    else if (strcmp(key, "var") == 0) {
+      control_type = CONTROL_PID;
+      controlled_var = strcmp(val, "force") != 0;
     }
     else if (strcmp(key, "kp") == 0) {
       control_type = CONTROL_PID;
@@ -155,7 +161,7 @@ void controlInit(){
 
     switch (control_type) {
       case CONTROL_PID:
-        params_needed = 6;
+        params_needed = 7;
         break;
       case CONTROL_UNSET:
       case CONTROL_NONE:

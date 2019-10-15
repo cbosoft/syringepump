@@ -68,7 +68,7 @@ void loop ()
 
   speed = getSpeedReading();
   flowrate = calculateFlowrate(speed);
-  control_action = getControlAction(control_action, flowrate);
+  control_action = getControlAction(control_action, flowrate, load_cell_reading);
   motorSetDC(int(control_action));
 
   logToSerial(time, load_cell_reading, position, flowrate);
