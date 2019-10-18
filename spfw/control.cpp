@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include "control.h"
 
-double set_point = 0;
+double setpoint = 0;
 double kp = 0.2;
 double ki = 0.0;
 double kd = 0.0;
+unsigned long ptime = 0;
 double dc = 0.0;
 double buflen = 0.0;
 double inner_diameter = 0.0;
@@ -15,66 +16,12 @@ enum controllers {
 };
 int control_type = CONTROL_UNSET;
 int controlled_var = 0;
+double err1 = 0.0;
+double err2 = 0.0;
 
 
 
 
-typedef struct ll_control_hist {
-  struct ll_control_hist *next;
-  double error;
-  double time;
-} ll_control_hist;
-ll_control_hist *control_hist = NULL;
-
-
-
-
-ll_control_hist *remove_lru(ll_control_hist *start)
-{
-  ll_control_hist *rv = start->next;
-  free(start);
-  return rv;
-}
-
-
-
-
-ll_control_hist *append_to_max(ll_control_hist *start, double error, double time)
-{
-  ll_control_hist *new_item = calloc(1, sizeof(ll_control_hist));
-  new_item->error = error;
-  new_item->time = time;
-
-  if (start == NULL)
-    return new_item;
-
-  int i = 0;
-  ll_control_hist *last;
-  for (last = start; last->next != NULL; last = last->next, i++);
-  last->next = new_item;
-
-  if (i >= ERR_HIST_LEN) {
-    return remove_lru(start);
-  }
-  
-  return start;
-}
-
-double integrate_hist(ll_control_hist *start)
-{
-  if (start->next == NULL) {
-    return 0.0;
-  }
-
-  double total = 0.0;
-  ll_control_hist *item = start, *next = start->next;
-  while (next->next != NULL) {
-    total += item->error * (next->time - item->time);
-    item = item->next;
-    next = next->next;
-  }
-  return total;
-}
 
 
 
@@ -87,20 +34,27 @@ double getControlAction(double pca, double speed, double force)
     return dc;
   }
 
+  unsigned long timenow = millis();
+  double delta_t = (double)(timenow - ptime);
+
   double dca = 0.0;
 
   // Calculate error
   double input = controlled_var ? speed : force;
-  double error = set_point - input;
-  control_hist = append_to_max(control_hist, error, double(millis())*0.001 );
+  double err = setpoint - input;
 
-  // proportional
-  dca += kp * error;
+  // Proportional control
+  dca += kp * (err - err1);
 
-  // integral
-  dca += ki * integrate_hist(control_hist);
+  // Integral control
+  dca += ki * err * delta_t;
 
-  // TODO derivative control
+  // Derivative control
+  dca += kd * (err - (2*err1) + err2) / delta_t;
+
+  // Update Error history
+  err2 = err1;
+  err1 = err;
 
   return pca + dca;
 }
@@ -128,7 +82,7 @@ void controlInit(){
 
     if (strcmp(key, "setpoint") == 0) {
       control_type = CONTROL_PID;
-      set_point = atof(val);
+      setpoint = atof(val);
     }
     else if (strcmp(key, "var") == 0) {
       control_type = CONTROL_PID;
