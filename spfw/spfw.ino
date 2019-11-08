@@ -18,6 +18,7 @@ unsigned long position_nounits = 0;
 double position = 0.0; // mm to end
 extern double buflen;
 extern double inner_diameter;
+extern int raw_lc;
 
 double control_action = 0.0;
 void (*softReset)(void) = 0;
@@ -64,7 +65,7 @@ void loop ()
   position_nounits = getPositionReading();
   position = convertPositionReadingUnits(position_nounits);
   
-  load_cell_reading = getLoadCellReadingUnits();
+  load_cell_reading = raw_lc ? ((double)getLoadCellReading()) : getLoadCellReadingUnits();
 
   speed = getSpeedReading();
   flowrate = calculateFlowrate(speed);

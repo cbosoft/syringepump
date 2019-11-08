@@ -16,6 +16,7 @@ enum controllers {
 };
 int control_type = CONTROL_UNSET;
 int controlled_var = 0;
+int raw_lc = 0;
 double err1 = 0.0;
 double err2 = 0.0;
 
@@ -110,16 +111,19 @@ void controlInit(){
     else if (strcmp(key, "di") == 0) {
       inner_diameter = atof(val);
     }
+    else if (strcmp(key, "raw") == 0) {
+      raw_lc = atoi(val);
+    }
 
     params_got ++;
 
     switch (control_type) {
       case CONTROL_PID:
-        params_needed = 7;
+        params_needed = 8;
         break;
       case CONTROL_UNSET:
       case CONTROL_NONE:
-        params_needed = 3;
+        params_needed = 4;
         break;
     }
     Serial.print("OK\n");

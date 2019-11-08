@@ -17,6 +17,7 @@ struct Data {
 
   // ??
   int res;
+  char *cal; // flag for sending to arduino
 
   // logging
   char *tag;

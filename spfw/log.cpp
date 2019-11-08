@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "log.h"
 
+extern int raw_lc;
+
 void logToSerial(long time, double load_cell_reading, double position, double flowRate)
 {
   Serial.print(time);
@@ -20,7 +22,10 @@ void logTitlesToSerial()
 {
   Serial.print("Time (ms),");
 
-  Serial.print("Load Cell (N),");
+  if (raw_lc)
+    Serial.print("Load Cell (b)");
+  else
+    Serial.print("Load Cell (N),");
 
   Serial.print("Distance to end (mm),");
 

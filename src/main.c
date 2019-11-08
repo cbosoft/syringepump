@@ -105,12 +105,16 @@ int main (int argc, char **argv)
   gtk_init(&argc, &argv);
 
   timestamp(NULL, 1, "GTK initialised.");
+  char *cal = "0";
 
   // preliminary arg check
   for (int i = 0; i < argc; i++) {
     if ((strcmp(argv[i], "--help") == 0) || (strcmp(argv[i], "-h") == 0)) {
       usage();
       exit(0);
+    }
+    else if ((strcmp(argv[i], "--calibration") == 0) || (strcmp(argv[i], "-c") == 0)) {
+      cal = "1";
     }
   }
 
@@ -142,6 +146,7 @@ int main (int argc, char **argv)
 
   // ??
   data->res = 0;
+  data->cal = cal; // flag for calibration or nah
 
   // Logging
   data->tag = NULL;

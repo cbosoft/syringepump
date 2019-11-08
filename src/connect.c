@@ -147,6 +147,11 @@ static void *connect_worker(void *vptr_data)
       0,
       "di", 
       gtk_entry_get_text(GTK_ENTRY(data->dia_inp)));
+  send_data_packet(
+      data, 
+      0,
+      "raw", 
+      data->cal);
   timestamp(data, 0, "All parameters sent successfully!");
   
   start_log(data);
