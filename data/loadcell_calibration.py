@@ -8,7 +8,8 @@ def read_csv(path):
         data = list(zip(*[[float(cell) for cell in l.split(',')] for l in csvf.readlines()[1:]]))
     return data
 
-volumes, readings = read_csv("loadcell_data.csv")
+#volumes, readings = read_csv("loadcell_data.csv")
+volumes, readings = read_csv("nov8.csv")
 
 volumes = np.array(volumes)
 volumes = np.multiply(volumes, 1E-6)
