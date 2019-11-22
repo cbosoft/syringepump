@@ -33,8 +33,17 @@
 
 void send_data_packet(struct Data *data, int is_gui, const char *key, const char *value)
 {
-  int len;
+  if (key == NULL) {
+    timestamp_error(data, is_gui, "key to send was null. PLEASE LET CHRIS KNOW IF THIS ERROR POPS UP!");
+    return;
+  }
 
+  if (value == NULL) {
+    timestamp_error(data, is_gui, "value to send was null. PLEASE LET CHRIS KNOW IF THIS ERROR POPS UP!");
+    return;
+  }
+
+  int len;
   if ((len = strlen(key)) > ARDUINO_MESG_LEN/2) {
     timestamp_error(data, is_gui,
         "KEY TOO LARGE TO SEND (must be < %d chars, is %lu chars)", 
