@@ -1,35 +1,87 @@
 #include <Arduino.h>
 #include "log.h"
 
-extern int raw_lc;
+extern int log_options;
 
-void logToSerial(long time, double load_cell_reading, double position, double flowRate)
+const int log_time = 1 << 5;
+const int log_force = 1 << 4;
+const int log_flow = 1 << 3;
+const int log_control_action = 1 << 2;
+const int log_loadcell = 1 << 1;
+const int log_ticks = 1;
+
+void logToSerial(long time, double flowrate, double force, double control_action, long load_cell_reading, long ticks)
 {
-  Serial.print(time);
-  Serial.print(",");
+  int ncols = 0;
 
-  Serial.print(load_cell_reading, 5);
-  Serial.print(",");
+  if (log_options & log_time) {
+    Serial.print(time);
+    ncols ++;
+  }
 
-  Serial.print(position, 5);
-  Serial.print(",");
+  if (log_options & log_force) {
+    if (ncols) Serial.print(",");
+    Serial.print(force, 5);
+  }
 
-  Serial.print(flowRate, 5);
+  if (log_options & log_flow) {
+    if (ncols) Serial.print(",");
+    Serial.print(flowrate, 5);
+  }
+
+  if (log_options & log_control_action) {
+    if (ncols) Serial.print(",");
+    Serial.print(control_action, 5);
+  }
+
+  if (log_options & log_loadcell) {
+    if (ncols) Serial.print(",");
+    Serial.print(load_cell_reading);
+  }
+
+  if (log_options & log_ticks) {
+    if (ncols) Serial.print(",");
+    Serial.print(ticks);
+  }
+
   Serial.print("\n");
 }
 
 void logTitlesToSerial()
 {
-  Serial.print("Time (ms),");
+  int ncols = 0;
 
-  if (raw_lc)
-    Serial.print("Load Cell (b)");
-  else
-    Serial.print("Load Cell (N),");
+  if (log_options & log_time) {
+    Serial.print("Time (ms)");
+    ncols ++;
+  }
 
-  Serial.print("Distance to end (mm),");
+  if (log_options & log_force) {
+    if (ncols) Serial.print(",");
+    Serial.print("Force (N)");
+  }
 
-  Serial.print("Flowrate (ml/s)\n");
+  if (log_options & log_flow) {
+    if (ncols) Serial.print(",");
+    Serial.print("Flowrate (ml/s)");
+  }
+
+  if (log_options & log_control_action) {
+    if (ncols) Serial.print(",");
+    Serial.print("Control action (8 bit)");
+  }
+
+  if (log_options & log_loadcell) {
+    if (ncols) Serial.print(",");
+    Serial.print("Loadcell (24 bit)");
+  }
+
+  if (log_options & log_ticks) {
+    if (ncols) Serial.print(",");
+    Serial.print("Ticks (rotations)");
+  }
+
+  Serial.print("\n");
 }
 
 // vim: ft=arduino
