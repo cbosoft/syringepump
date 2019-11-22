@@ -35,13 +35,18 @@ int check_form(struct Data *data)
 
   // TODO: change to switch case
   int pageno = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab));
-  if (pageno == 2) {
+
+  switch (pageno) {
+    
+  case PAGE_NO_CONTROL:
     CHECK_ENTRY_NUMBER(data->dc_inp,
         "Duty cycle is a required field for this control scheme.", 
         "Duty cycle must be a number (containing only numbers 0-9 and decimal "
         "points ('.').");
-  }
-  else if (pageno == 1) {
+    break;
+    
+  case PAGE_PID_FLOW:
+  case PAGE_PID_FORCE:
     CHECK_ENTRY_NUMBER(data->setpoint_inp_force, 
         "Set point is a required field for PID control.", 
         "Set point must be a number (containing only numbers 0-9 and decimal "
@@ -58,24 +63,12 @@ int check_form(struct Data *data)
         "KD is a required field for PID control.",
         "KD must be a number (containing only numbers 0-9 and decimal points "
         "('.').");
-  }
-  else if (pageno == 0) {
-    CHECK_ENTRY_NUMBER(data->setpoint_inp, 
-        "Set point is a required field for PID control.", 
-        "Set point must be a number (containing only numbers 0-9 and decimal "
-        "points ('.').");
-    CHECK_ENTRY_NUMBER(data->kp_inp,
-        "KP is a required field for PID control.",
-        "KP must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
-    CHECK_ENTRY_NUMBER(data->ki_inp,
-        "KI is a required field for PID control.",
-        "KI must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
-    CHECK_ENTRY_NUMBER(data->kd_inp,
-        "KD is a required field for PID control.",
-        "KD must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+    break;
+
+  default:
+    timestamp_error(data, 1,
+        "Oops! Something went wrong. Please let chris know this happened!");
+    break;
   }
 
   CHECK_ENTRY_NUMBER(data->buflen_inp,
@@ -101,6 +94,9 @@ int check_form(struct Data *data)
 }
 
 
+
+
+// Set cursor to a specific type
 void form_set_cursor(struct Data *data, const char *name)
 {
   GdkWindow *win = gtk_widget_get_window(GTK_WIDGET(data->main_win));
@@ -115,6 +111,9 @@ void form_set_cursor(struct Data *data, const char *name)
 }
 
 
+
+
+// Progress bar functions and data
 struct progress_callback_data {
   struct Data *data;
   double fraction;
@@ -152,114 +151,75 @@ void form_set_progress(struct Data *data, double fraction)
 
 
 
+
+// Depending on the situation, different parts of the form should be turned off or on
 void form_set_sensitive(struct Data *data, int sensitivity_flag)
 {
+  // parts
+  int 
+    control = 0, 
+    connection = 0,
+    logging = 0, 
+    connected = 0, 
+    cursor_normal = 1;
+
   switch (sensitivity_flag){
-    case FORM_BUSY:
-      // everything insensitive
-      gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
-      form_set_cursor(data, "wait");
-      break;
-    case FORM_CONNECTED:
-      gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
-      form_set_cursor(data, "normal");
-      break;
-    case FORM_DISCONNECTED:
-      gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 1);
-      form_set_cursor(data, "normal");
-      break;
-    case FORM_REFRESHING:
-      gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
-      form_set_cursor(data, "wait");
-      break;
-    case FORM_NOSERIAL:
-      gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 0);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 0);
-      form_set_cursor(data, "normal");
-      break;
-    default:
-      timestamp(NULL, 1, "Tried to set an unknown sensitivity");
-      // fall-through
-    case FORM_ALL:
-      gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), 1);
-      gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), 1);
-      form_set_cursor(data, "normal");
-      break;
+
+  case FORM_ALL:
+    control = 1;
+    connection = 1;
+    logging = 1;
+    break;
+      
+  case FORM_BUSY:
+  case FORM_REFRESHING:
+    cursor_normal = 0;
+    break;
+
+  case FORM_CONNECTED:
+    connected = 1;
+    break;
+
+  case FORM_DISCONNECTED:
+    control = 1;
+    connection = 1;
+    logging = 1;
+    break;
+
+  case FORM_NOSERIAL:
+    connection = 1;
+    break;
+      
   }
+
+  // control
+  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), control);
+
+  // connection
+  gtk_widget_set_sensitive(GTK_WIDGET(data->serial_cmb), connection);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), connection);
+
+  // logging
+  gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->log_time_chk), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->log_force_chk), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->log_flow_chk), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->log_ca_chk), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->log_loadcell_chk), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->log_ticks_chk), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->log_folder_fch), logging);
+
+  gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), connected);
+  gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), !connected);
+
+  form_set_cursor(data, cursor_normal ? "normal" : "wait");
 }
