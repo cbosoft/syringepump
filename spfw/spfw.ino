@@ -4,6 +4,7 @@
 #include "loadcell.h"
 #include "optenc.h"
 #include "log.h"
+#include "setter.h"
 
 
 
@@ -20,6 +21,7 @@ double position = 0.0; // mm to end
 extern double buflen;
 extern double inner_diameter;
 extern int log_options;
+extern double setpoint;
 
 double control_action = 0.0;
 void (*softReset)(void) = 0;
@@ -73,6 +75,7 @@ void loop ()
   speed = getSpeedReading();
   flowrate = calculateFlowrate(speed);
 
+  setpoint = get_setpoint(time);
   control_action = getControlAction(control_action, flowrate, force);
   motorSetDC(int(control_action));
 

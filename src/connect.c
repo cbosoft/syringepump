@@ -84,9 +84,11 @@ static void *connect_worker(void *vptr_data)
       controlled_var = pageno == PAGE_PID_FORCE ? 'F' : 'Q';
 
       txtbx = pageno == PAGE_PID_FORCE ? gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp_force)) : gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp));
-      setpoint = malloc((strlen(txtbx) + 2)*sizeof(char));
+      setpoint = malloc((strlen(txtbx) + 3)*sizeof(char));
       setpoint[0] = controlled_var;
-      setpoint[1] = '\0';
+      setpoint[1] = 'C';
+      setpoint[2] = '\0';
+      // TODO: setpoint setter func
       strcat(setpoint, txtbx);
       send_data_packet( data, 0, "SP", setpoint);
       free(setpoint);

@@ -1,5 +1,6 @@
-#include <Arduino.h>
+#include "Arduino.h"
 #include "control.h"
+#include "setter.h"
 
 double setpoint = 0;
 double kp = 0.2;
@@ -22,6 +23,14 @@ double err2 = 0.0;
 
 const double max_ca = 255.0;
 const double min_ca = 0.0;
+
+extern setter_func setter;
+extern double sine_frequency;
+extern double sine_mean;
+extern double sine_magnitude;
+extern double ramp_gradient;
+extern double ramp_intercept;
+extern double constant_val;
 
 
 
@@ -103,7 +112,40 @@ void controlInit(){
       controlled_var = val[0] != 'F';
       val++;
 
-      setpoint = atof(val);
+      // TODO: need to split rest to get the params for each setter
+      char setter_ch = val[0];
+      char *param;
+      val++;
+      switch (setter_ch) {
+      case 'S':
+        setter = &sine;
+
+        param = strtok(val, ",");
+        sine_frequency = atof(param);
+
+        param = strtok(0, ",");
+        sine_magnitude = atof(param);
+
+        param = strtok(0, ",");
+        sine_mean = atof(param);
+        break;
+
+      case 'R':
+        setter = &ramp;
+
+        param = strtok(val, ",");
+        ramp_gradient = atof(param);
+
+        param = strtok(0, ",");
+        ramp_intercept = atof(param);
+        break;
+
+      default:
+      case 'C':
+        setter = &constant;
+        constant_val = atof(val);
+        break;
+      }
 
       sp_recvd = 1;
     }
