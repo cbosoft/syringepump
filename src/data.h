@@ -17,7 +17,6 @@ struct Data {
 
   // ??
   int res;
-  char *cal; // flag for sending to arduino
 
   // logging
   char *tag;
@@ -47,6 +46,14 @@ struct Data {
   GObject *control_tab;
   GObject *dc_inp;
   GObject *dia_inp;
+
+  // GUI :: logging options
+  GObject *log_time_chk;
+  GObject *log_force_chk;
+  GObject *log_flow_chk;
+  GObject *log_ca_chk;
+  GObject *log_loadcell_chk;
+  GObject *log_ticks_chk;
 
   // worker status
   int refresh_worker_status;

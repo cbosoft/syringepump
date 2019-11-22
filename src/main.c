@@ -146,7 +146,6 @@ int main (int argc, char **argv)
 
   // ??
   data->res = 0;
-  data->cal = cal; // flag for calibration or nah
 
   // Logging
   data->tag = NULL;
@@ -178,6 +177,14 @@ int main (int argc, char **argv)
   data->tag_inp = get_object_safe(builder, "inpTag");
   data->log_folder_fch = get_object_safe(builder, "fchLogFolder");
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(data->log_folder_fch), getenv("HOME"));
+
+  // GUI :: logging options
+  data->log_time_chk = get_object_safe(builder, "chkTime");
+  data->log_force_chk = get_object_safe(builder, "chkForce");
+  data->log_flow_chk = get_object_safe(builder, "chkFlowrate");
+  data->log_ca_chk = get_object_safe(builder, "chkCA");
+  data->log_loadcell_chk = get_object_safe(builder, "chkLoadcell");
+  data->log_ticks_chk = get_object_safe(builder, "chkTicks");
 
   // GUI :: other
   data->log_lbl = get_object_safe(builder, "lblLog");
