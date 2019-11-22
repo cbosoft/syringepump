@@ -15,9 +15,8 @@ long getLoadCellReading()
 
 
 
-double getLoadCellReadingUnits()
+double getLoadCellReadingUnits(long bytes)
 {
-  double bytes = (double)getLoadCellReading();
   return (STRESS_M * bytes) + STRESS_C;
 }
 

@@ -12,7 +12,7 @@
 #define STRESS_C 4.48866159e-02
 
 long getLoadCellReading();
-double getLoadCellReadingUnits();
+double getLoadCellReadingUnits(long bytes);
 void loadCellInit();
 
 #endif
