@@ -133,7 +133,7 @@ CA = K&lt;sub&gt;P&lt;/sub&gt; × Error
 High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with little/no overshoot.
 
 Set to zero to disable (not recommmended).</property>
-                            <property name="text" translatable="yes">5.0</property>
+                            <property name="text" translatable="yes">0.0</property>
                             <property name="placeholder_text" translatable="yes">proportional control gain</property>
                           </object>
                           <packing>
@@ -168,7 +168,7 @@ CA = K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;-∞&lt;/sub&gt;&lt;sup&gt;t&lt;
 High K&lt;sub&gt;I&lt;/sub&gt; means a strong dependence of the control action on past errors (long standing errors are eliminated), also guides against offset. Too high, and the controller will max out for the tiniest error.
 
 Set to zero to disable.</property>
-                            <property name="text" translatable="yes">2.0</property>
+                            <property name="text" translatable="yes">0.01</property>
                             <property name="placeholder_text" translatable="yes">integral control gain</property>
                           </object>
                           <packing>
@@ -438,7 +438,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Motor duty cycle (number, 0-255):</property>
+                            <property name="label" translatable="yes">Motor duty cycle (8 bit):</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -791,6 +791,141 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="fill">True</property>
                 <property name="padding">5</property>
                 <property name="position">8</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Data to be logged:</property>
+                <attributes>
+                  <attribute name="weight" value="normal"/>
+                  <attribute name="scale" value="1.1000000000000001"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="padding">5</property>
+                <property name="position">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkCheckButton" id="chkTime">
+                    <property name="label" translatable="yes">Time
+(ms)</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_markup" translatable="yes">Check this to have time logged in the output. 
+
+&lt;b&gt;Recommended!&lt;/b&gt;</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="chkForce">
+                    <property name="label" translatable="yes">Force
+(N)</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_markup" translatable="yes">Check this to have force logged in the output. 
+
+&lt;b&gt;Recommended!&lt;/b&gt;</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="chkFlowrate">
+                    <property name="label" translatable="yes">Flow rate
+(ml)</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_markup" translatable="yes">Check this to have flow rate logged in the output. 
+
+&lt;b&gt;Recommended!&lt;/b&gt;</property>
+                    <property name="active">True</property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="chkCA">
+                    <property name="label" translatable="yes">Control Action
+(8 bit)</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_markup" translatable="yes">Check this to have control action (motor duty cycle, as an 8 bit number) logged in the output. </property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="chkLoadcell">
+                    <property name="label" translatable="yes">Raw Loadcell
+(24 bit)</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_markup" translatable="yes">Check this to have raw loadcell data (as a 24 bit number) logged in the output. </property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="chkTicks">
+                    <property name="label" translatable="yes">Ticks
+(rotations)</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="tooltip_markup" translatable="yes">Check this to have ticks (number of rotations of optical encoder) logged in the output. </property>
+                    <property name="draw_indicator">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">False</property>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">10</property>
               </packing>
             </child>
           </object>
