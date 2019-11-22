@@ -66,7 +66,7 @@ void send_data_packet(struct Data *data, int is_gui, const char *key, const char
   timestamp(NULL, is_gui, "sending k/v pair: %s", mesg);
   write(data->serial_fd, mesg, ARDUINO_MESG_LEN);
 
-  switch (wait_for(data, is_gui, "OK", 10, NULL, THREAD_CANCELLED)) {
+  switch (wait_for(data, is_gui, "OK", 10, &data->connect_worker_status, THREAD_CANCELLED)) {
   case -1:
     timestamp_error(NULL, is_gui, "Cancelled by user.");
     return;
