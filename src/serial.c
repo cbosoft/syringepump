@@ -107,8 +107,7 @@ int wait_for(struct Data *data, int is_gui, const char *trigger, int timeout_s, 
     if (strcmp(buffer, trigger) == 0)
       return 0;
 
-
-    ptble_usleep(delay_us);
+    //ptble_usleep(delay_us);
 
     if ((*flagaddr) == stopval)
       return -1;
@@ -320,7 +319,7 @@ int read_serial_until(
       if (n < 0 || timeout == 0)
         return -1;
 
-      ptble_usleep(1000);
+      //ptble_usleep(10);
       timeout --;
 
     }
