@@ -65,74 +65,46 @@ static void *connect_worker(void *vptr_data)
   timestamp(data, 0, "Sending run parameters to Arduino");
 
 
-  switch (gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab))) {
+  int pageno = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab));
+  char controlled_var, *setpoint = NULL, *tuning = NULL;
+  const char *txtbx = NULL;
+  switch (pageno) {
 
-    case 2: // NO CONTROL: DC ONLY
+    case PAGE_NO_CONTROL:
       send_data_packet(
         data, 
         0,
-        "dc",
+        "DC",
         gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
       break;
 
-    case 1: // PID (FORCE) CONTROL
-      send_data_packet(
-        data, 
-        0,
-        "var", "force");
+    case PAGE_PID_FLOW:
+    case PAGE_PID_FORCE:
+
+      controlled_var = pageno == PAGE_PID_FORCE ? 'F' : 'Q';
+
+      txtbx = pageno == PAGE_PID_FORCE ? gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp_force)) : gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp));
+      setpoint = malloc((strlen(txtbx) + 2)*sizeof(char));
+      setpoint[0] = controlled_var;
+      setpoint[1] = '\0';
+      strcat(setpoint, txtbx);
+      send_data_packet( data, 0, "SP", setpoint);
+      free(setpoint);
+
+      tuning = malloc(60*sizeof(char));
+      tuning[0] = '\0';
+      strcat(tuning, gtk_entry_get_text(GTK_ENTRY(data->kp_inp_force)));
+      strcat(tuning, ",");
+      strcat(tuning, gtk_entry_get_text(GTK_ENTRY(data->ki_inp_force)));
+      strcat(tuning, ",");
+      strcat(tuning, gtk_entry_get_text(GTK_ENTRY(data->kd_inp_force)));
 
       send_data_packet(
         data, 
         0,
-        "setpoint", 
-        gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp_force)));
-
-      send_data_packet(
-        data, 
-        0,
-        "kp", 
-        (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp_force)));
-
-      send_data_packet(
-        data, 
-        0,
-        "ki", 
-        gtk_entry_get_text(GTK_ENTRY(data->ki_inp_force)));
-
-      send_data_packet(
-        data, 
-        0,
-        "kd", 
-        gtk_entry_get_text(GTK_ENTRY(data->kd_inp_force)));
-      break;
-    case 0:
-      send_data_packet(
-        data, 
-        0,
-        "var", "flow");
-      send_data_packet(
-        data, 
-        0,
-        "setpoint", 
-        gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)));
-
-      send_data_packet(
-        data, 
-        0,
-        "kp", 
-        (void *)gtk_entry_get_text(GTK_ENTRY(data->kp_inp)));
-
-      send_data_packet(
-        data, 
-        0,
-        "ki", 
-        gtk_entry_get_text(GTK_ENTRY(data->ki_inp)));
-
-      send_data_packet(
-        data, 
-        0,
-        "kd", 
-        gtk_entry_get_text(GTK_ENTRY(data->kd_inp)));
+        "TP", 
+        tuning);
+      free(tuning);
       break;
   }
 
@@ -140,19 +112,35 @@ static void *connect_worker(void *vptr_data)
   send_data_packet(
       data, 
       0,
-      "bl", 
+      "BF", 
       gtk_entry_get_text(GTK_ENTRY(data->buflen_inp)));
   send_data_packet(
       data, 
       0,
-      "di", 
+      "DI", 
       gtk_entry_get_text(GTK_ENTRY(data->dia_inp)));
+
+
+  int log_time = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_time_chk)), 
+      log_force = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_force_chk)), 
+      log_flow = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_flow_chk)), 
+      log_ca = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_ca_chk)), 
+      log_loadcell = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_loadcell_chk)), 
+      log_ticks = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_ticks_chk));
+
+  char *log_options = malloc(100*sizeof(char));
+  sprintf(log_options, "%d", (log_time << 5) + (log_force << 4) + (log_flow << 3) + (log_ca << 2) + (log_loadcell << 1) + log_ticks);
+
   send_data_packet(
       data, 
       0,
-      "raw", 
-      data->cal);
+      "LO", 
+      log_options);
+
+  // TODO send infor about what user wants logged
   timestamp(data, 0, "All parameters sent successfully!");
+
+  free(log_options);
   
   start_log(data);
 
