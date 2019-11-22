@@ -20,6 +20,10 @@ int raw_lc = 0;
 double err1 = 0.0;
 double err2 = 0.0;
 
+const double max_ca = 255.0;
+const double min_ca = 0.0;
+
+
 
 
 
@@ -57,7 +61,13 @@ double getControlAction(double pca, double speed, double force)
   err2 = err1;
   err1 = err;
 
-  return pca + dca;
+  double ca = pca + dca;
+  if (ca > max_ca)
+    ca = max_ca;
+  else if (ca < min_ca)
+    ca = min_ca;
+
+  return ca;
 }
 
 
