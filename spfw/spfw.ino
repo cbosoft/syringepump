@@ -13,12 +13,13 @@ long start_millis = 0;
 long time = 0;
 double speed = 0.0; // mm/s
 double flowrate = 0.0; // ml/s
-double load_cell_reading = 0.0; // N
+long load_cell = 0.0; // 24b
+double force = 0; // N
 unsigned long position_nounits = 0;
 double position = 0.0; // mm to end
 extern double buflen;
 extern double inner_diameter;
-extern int raw_lc;
+extern int log_options;
 
 double control_action = 0.0;
 void (*softReset)(void) = 0;
@@ -65,14 +66,17 @@ void loop ()
   position_nounits = getPositionReading();
   position = convertPositionReadingUnits(position_nounits);
   
-  load_cell_reading = raw_lc ? ((double)getLoadCellReading()) : getLoadCellReadingUnits();
+  load_cell = getLoadCellReading();
+  
+  force = getLoadCellReadingUnits(load_cell);
 
   speed = getSpeedReading();
   flowrate = calculateFlowrate(speed);
-  control_action = getControlAction(control_action, flowrate, load_cell_reading);
+
+  control_action = getControlAction(control_action, flowrate, force);
   motorSetDC(int(control_action));
 
-  logToSerial(time, load_cell_reading, position, flowrate);
+  logToSerial(time, force, flowrate, control_action, load_cell, -1);
 
   if (position < buflen) {
 
