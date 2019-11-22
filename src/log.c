@@ -230,13 +230,9 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
       santag[i] = tag[i];
     }
   }
-  santag[taglen] = 0;
+  santag[taglen] = '\0';
   
-  if (data->tag == NULL)
-    data->tag = malloc((taglen+1)*sizeof(char));
-  else
-    data->tag = realloc(data->tag, (taglen+1)*sizeof(char));
-
+  data->tag = realloc(data->tag, (taglen+1)*sizeof(char));
   strcpy(data->tag, santag);
 
   char *pattern = calloc(256, sizeof(char));
