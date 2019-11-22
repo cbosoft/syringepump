@@ -88,6 +88,14 @@ int wait_for(struct Data *data, int is_gui, const char *trigger, int timeout_s, 
   int delay_us = 10 * 1000;
   int timeout_n = (1000 * 1000 * timeout_s) / delay_us;
 
+  if (trigger == NULL) {
+    timestamp(NULL, 0, "NULL TRIGGER");
+  }
+
+  if (flagaddr == NULL) {
+    timestamp(NULL, 0, "NULL FLAGADDR");
+  }
+
   for (int time = 0; time < timeout_n; time++) {
 
     form_pulse_progress(data);
