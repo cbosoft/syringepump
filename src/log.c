@@ -71,6 +71,8 @@ void write_run_params(struct Data *data)
 
 
 
+
+//
 static void *log_worker(void *void_data)
 { 
   struct Data *data = (struct Data *)void_data;
@@ -226,6 +228,8 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
 {
   char *log_dir = gtk_file_chooser_get_current_folder(
       GTK_FILE_CHOOSER(get_object_safe(data, "fchLogFolder")));
+
+  (void) control_type_override;
 
   const char *pref = "syrpu";
 
