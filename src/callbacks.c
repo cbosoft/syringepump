@@ -16,9 +16,11 @@
 
 void cb_lbl_size_changed(GObject *obj, GdkRectangle *allocation, struct Data *data)
 {
-  // log_lbl size is changed
+  (void) obj;
+  (void) allocation;
+
   GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(
-      GTK_SCROLLED_WINDOW(data->scroll));
+      GTK_SCROLLED_WINDOW(get_object_safe(data, "scroll")));
 
   gtk_adjustment_set_value(vadj, gtk_adjustment_get_upper(vadj));
 }
@@ -28,7 +30,8 @@ void cb_lbl_size_changed(GObject *obj, GdkRectangle *allocation, struct Data *da
 
 void cb_begin_clicked(GObject *obj, struct Data *data)
 {
-  // button "Begin!" clicked
+  (void) obj;
+
   connect_to(data);
 }
 
@@ -37,7 +40,8 @@ void cb_begin_clicked(GObject *obj, struct Data *data)
 
 void cb_stop_clicked(GObject *obj, struct Data *data)
 {
-  // button "Stop" clicked
+  (void) obj;
+
   disconnect(data, 1);
 }
 
@@ -46,6 +50,7 @@ void cb_stop_clicked(GObject *obj, struct Data *data)
 
 void cb_quit_clicked(GObject *obj, struct Data *data)
 {
+  (void) obj;
 
   disconnect(data, 1);
   timestamp(data, 1, "Closing...");
@@ -57,6 +62,7 @@ void cb_quit_clicked(GObject *obj, struct Data *data)
 
 void cb_refresh_clicked(GObject *obj, struct Data *data )
 {
+  (void) obj;
   refresh(data);
 }
 
@@ -65,6 +71,7 @@ void cb_refresh_clicked(GObject *obj, struct Data *data )
 
 void cb_tag_text_changed(GObject *obj, struct Data *data)
 {
+  (void) obj;
   get_new_log_name(data, NULL);
 }
 
