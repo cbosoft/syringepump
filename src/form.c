@@ -33,54 +33,52 @@ int check_form(struct Data *data)
   // (enforced by gtk, but can be overridden using cli args, so do need to 
   // check here)
 
-  // TODO: change to switch case
-  int pageno = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab));
+  switch (form_get_setter_type(data)) {
+    case FORM_SETTER_CONSTANT:
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
+        "C is a required parameter for constant setter",
+        "C must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+      break;
 
-  switch (pageno) {
-    
-  case PAGE_NO_CONTROL:
-    CHECK_ENTRY_NUMBER(data->dc_inp,
-        "Duty cycle is a required field for this control scheme.", 
-        "Duty cycle must be a number (containing only numbers 0-9 and decimal "
-        "points ('.').");
-    break;
-    
-  case PAGE_PID_FLOW:
-  case PAGE_PID_FORCE:
-    CHECK_ENTRY_NUMBER(data->setpoint_inp_force, 
-        "Set point is a required field for PID control.", 
-        "Set point must be a number (containing only numbers 0-9 and decimal "
-        "points ('.').");
-    CHECK_ENTRY_NUMBER(data->kp_inp_force,
-        "KP is a required field for PID control.",
-        "KP must be a number (containing only numbers 0-9 and decimal points "
+    case FORM_SETTER_RAMP:
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
+        "Gradient (M) is a required parameter for ramp setter",
+        "Gradient (M) must be a number (containing only numbers 0-9 and decimal points "
         "('.').");
-    CHECK_ENTRY_NUMBER(data->ki_inp_force,
-        "KI is a required field for PID control.",
-        "KI must be a number (containing only numbers 0-9 and decimal points "
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entB"),
+        "Intercept (C) is a required parameter for ramp setter",
+        "Intercept (C) must be a number (containing only numbers 0-9 and decimal points "
         "('.').");
-    CHECK_ENTRY_NUMBER(data->kd_inp_force,
-        "KD is a required field for PID control.",
-        "KD must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
-    break;
+      break;
 
-  default:
-    timestamp_error(data, 1,
-        "Oops! Something went wrong. Please let chris know this happened!");
-    break;
+    case FORM_SETTER_SINE:
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
+        "Frequency (ω) is a required parameter for sine wave setter",
+        "Frequency (ω) must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entB"),
+        "Magnitude (M) is a required parameter for sine wave setter",
+        "Magnitude (M) must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entC"),
+        "Mean (A) is a required parameter for sine wave setter",
+        "Mean (A) must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+      break;
   }
 
-  CHECK_ENTRY_NUMBER(data->buflen_inp,
-      "Stop buffer length is a required field.",
-      "Buffer length must be a number (containing only numbers 0-9 and decimal points "
-      "('.').");
-  CHECK_ENTRY_NUMBER(data->dia_inp,
+  CHECK_ENTRY_NUMBER(get_object_safe(data, "entDI"),
       "Syringe diameter is a required field.",
       "Syringe diameter must be a number (containing only numbers 0-9 and decimal points "
       "('.').");
 
-  if (IS_EMPTY_ENTRY(data->tag_inp)) {
+  CHECK_ENTRY_NUMBER(get_object_safe(data, "entBL"),
+      "Stop buffer length is a required field.",
+      "Buffer length must be a number (containing only numbers 0-9 and decimal points "
+      "('.').");
+
+  if (IS_EMPTY_ENTRY(get_object_safe(data, "entTag"))) {
     rv = 1;
     timestamp_error(data, 1,
         "Tag should not be empty; use it to describe the run in a few words.");
@@ -99,7 +97,7 @@ int check_form(struct Data *data)
 // Set cursor to a specific type
 void form_set_cursor(struct Data *data, const char *name)
 {
-  GdkWindow *win = gtk_widget_get_window(GTK_WIDGET(data->main_win));
+  GdkWindow *win = gtk_widget_get_window(GTK_WIDGET(get_object_safe(data, "winMain")));
 
   if (win == NULL)
     return;
@@ -121,25 +119,31 @@ struct progress_callback_data {
 
 gboolean prog_pulse_callback(struct Data *data)
 {
-  gtk_progress_bar_pulse(GTK_PROGRESS_BAR(data->progress));
+  gtk_progress_bar_pulse(GTK_PROGRESS_BAR(get_object_safe(data, "progProgress")));
   return 0;
 }
 
 gboolean prog_set_callback(struct progress_callback_data *pcd)
 {
   struct Data *data = pcd->data;
-  gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(data->progress), pcd->fraction);
+  gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(get_object_safe(data, "progProgress")), pcd->fraction);
   free(pcd);
   return 0;
 }
 
 
+
+
+// make progress bar jiggle a bit to indicate stuff is happening
 void form_pulse_progress(struct Data *data)
 {
   g_idle_add((GSourceFunc)prog_pulse_callback, data);
 }
 
 
+
+
+// set progress absolute value
 void form_set_progress(struct Data *data, double fraction)
 {
   struct progress_callback_data *pcd = calloc(1, sizeof(struct progress_callback_data));
@@ -193,33 +197,265 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
   }
 
   // control
-  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->setpoint_inp_force), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->kp_inp_force), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->ki_inp_force), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->kd_inp_force), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->dc_inp), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->control_tab), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radPID")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radNoControl")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnTuning")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radFlowControl")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radForceControl")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radConst")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radRamp")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radSine")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entA")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entB")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entC")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entBL")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entDI")), control);
 
   // connection
-  gtk_widget_set_sensitive(GTK_WIDGET(data->serial_cmb), connection);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->refresh_btn), connection);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "cmbSerial")), connection);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnSerialRefresh")), connection);
 
   // logging
-  gtk_widget_set_sensitive(GTK_WIDGET(data->tag_inp), logging);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->log_time_chk), logging);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->log_force_chk), logging);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->log_flow_chk), logging);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->log_ca_chk), logging);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->log_loadcell_chk), logging);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->log_ticks_chk), logging);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->log_folder_fch), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entTag")), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "chkTime")), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "chkForce")), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "chkFlowrate")), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "chkCA")), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "chkLoadcell")), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "chkTicks")), logging);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "fchLogFolder")), logging);
 
-  gtk_widget_set_sensitive(GTK_WIDGET(data->disconn_btn), connected);
-  gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), !connected);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnDisconnect")), connected);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnConnect")), !connected);
 
   form_set_cursor(data, cursor_normal ? "normal" : "wait");
+}
+
+
+
+
+// safely retrieve gtkobject from GUI
+GObject * get_object_safe(struct Data *data, const char *name)
+{
+  GObject *rv = gtk_builder_get_object(data->builder, name);
+
+  if (rv == NULL) {
+    timestamp_error(data, 1, "GTK object not found in builder \"%s\"", name);
+    timestamp_error(data, 1, "This should only happen if Chris has been a numpty and mispelled something.", name);
+    timestamp_error(data, 1, "Let him know ASAP so he can fix it.", name);
+    sleep(100);
+    exit(1);
+  }
+
+  return rv;
+}
+
+
+
+
+// Get control option from the GUI
+int form_get_control_type(struct Data *data)
+{
+  GObject *rad_pid = get_object_safe(data, "radPID");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_pid))) {
+    return FORM_CONTROL_PID;
+  }
+  else {
+    return FORM_CONTROL_NONE;
+  }
+}
+
+
+
+
+// get setter option from GUI
+int form_get_setter_type(struct Data *data)
+{
+  GObject *rad_const = get_object_safe(data, "radConst");
+  GObject *rad_ramp = get_object_safe(data, "radRamp");
+
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_const))) {
+    return FORM_SETTER_CONSTANT;
+  }
+  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_ramp))) {
+    return FORM_SETTER_RAMP;
+  }
+  else {
+    return FORM_SETTER_SINE;
+  }
+}
+
+
+
+
+// get controlled variable from GUI
+int form_get_controlled_var(struct Data *data)
+{
+  GObject *rad_flow = get_object_safe(data, "radFlowControl");
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_flow))) {
+    return FORM_VAR_FLOW;
+  }
+  else {
+    return FORM_VAR_FORCE;
+  }
+}
+
+
+
+
+// Called when a setpoint radio button is toggled
+void form_setter_update(struct Data *data) 
+{
+  GObject 
+    *lblA = get_object_safe(data, "lblA"), 
+    *lblB = get_object_safe(data, "lblB"), 
+    *lblC = get_object_safe(data, "lblC"),
+    *entA = get_object_safe(data, "entA"),
+    *entB = get_object_safe(data, "entB"),
+    *entC = get_object_safe(data, "entC"),
+    *lblTitle = get_object_safe(data, "lblSetterTitle"),
+    *lblDesc = get_object_safe(data, "lblSetterDesc"),
+    *lblFormula = get_object_safe(data, "lblSetterFormula");
+
+  int controlled = form_get_control_type(data) == FORM_CONTROL_PID;
+  int flow_control = form_get_controlled_var(data) == FORM_VAR_FLOW;
+
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnTuning")), controlled);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radFlowControl")), controlled);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radForceControl")), controlled);
+
+  switch (form_get_setter_type(data)) {
+
+    case FORM_SETTER_CONSTANT:
+      gtk_label_set_text(GTK_LABEL(lblTitle), "Constant setter");
+      gtk_label_set_text(GTK_LABEL(lblDesc), "Constant value for setpoint.");
+      gtk_label_set_markup(GTK_LABEL(lblFormula), !controlled ? "DC = <b>C</b>" : (flow_control ? "Q<sub>SP</sub> = <b>C</b>" : "F<sub>SP</sub> = <b>C</b>")   );
+
+      gtk_label_set_markup(GTK_LABEL(lblA), !controlled ? "<b>C</b> (8 bit):" : (flow_control ? "<b>C</b> (ml/s):" : "<b>C</b> (N):"));
+      gtk_label_set_markup(GTK_LABEL(lblB), "<i>n/a</i>:");
+      gtk_label_set_markup(GTK_LABEL(lblC), "<i>n/a</i>:");
+
+      gtk_widget_set_sensitive(GTK_WIDGET(entA), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(entB), 0);
+      gtk_widget_set_sensitive(GTK_WIDGET(entC), 0);
+      break;
+
+    case FORM_SETTER_RAMP:
+      gtk_label_set_text(GTK_LABEL(lblTitle), "Ramp setter");
+      gtk_label_set_text(GTK_LABEL(lblDesc), "Setpoint increases linearly with time.");
+      gtk_label_set_markup(GTK_LABEL(lblFormula), !controlled ? "DC = <b>M</b> t + <b>C</b>" : (flow_control ? "Q<sub>SP</sub> = <b>M</b> t + <b>C</b>" : "F<sub>SP</sub> = <b>M</b> t + <b>C</b>"));
+
+      gtk_label_set_markup(GTK_LABEL(lblA), !controlled ? "<b>M</b> (8 bit/s):" : (flow_control ? "<b>M</b> (ml/s<sup>2</sup>):" : "<b>M</b> (N/s):"));
+      gtk_label_set_markup(GTK_LABEL(lblB), !controlled ? "<b>C</b> (8 bit):" : (flow_control ? "<b>C</b> (ml/s):" : "<b>C</b> (N):"));
+      gtk_label_set_markup(GTK_LABEL(lblC), "<i>n/a</i>:");
+
+      gtk_widget_set_sensitive(GTK_WIDGET(entA), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(entB), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(entC), 0);
+      break;
+
+    case FORM_SETTER_SINE:
+      gtk_label_set_text(GTK_LABEL(lblTitle), "Sine wave setter");
+      gtk_label_set_text(GTK_LABEL(lblDesc), "Setpoint is an offset sine wave.");
+      gtk_label_set_markup(GTK_LABEL(lblFormula), !controlled ? "DC = s<b>M</b> in(π <b>ω</b> t) + <b>A</b>" : (flow_control ? "Q<sub>SP</sub> = <b>M</b> sine(π <b>ω</b> t) + <b>A</b>" : "F<sub>SP</sub> = <b>M</b> sin(π <b>ω</b> t) + <b>A</b>"));
+
+      gtk_label_set_markup(GTK_LABEL(lblA), "<b>ω</b> (Hz):");
+      gtk_label_set_markup(GTK_LABEL(lblB), !controlled ? "<i>M</i> (8 bit/s):" : (flow_control ? "<i>M</i> (ml/s):" : "<i>M</i> (N):"));
+      gtk_label_set_markup(GTK_LABEL(lblC), !controlled ? "<i>A</i> (8 bit/s):" : (flow_control ? "<i>A</i> (ml/s):" : "<i>A</i> (N):"));
+
+      gtk_widget_set_sensitive(GTK_WIDGET(entA), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(entB), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(entC), 1);
+      break;
+
+  }
+}
+
+
+
+
+// get what logging options are set
+int form_get_log_options(struct Data *data)
+{
+
+  GObject 
+    *log_time_chk = get_object_safe(data, "chkTime"),
+    *log_force_chk = get_object_safe(data, "chkForce"),
+    *log_flow_chk = get_object_safe(data, "chkFlowrate"),
+    *log_ca_chk = get_object_safe(data, "chkCA"),
+    *log_loadcell_chk = get_object_safe(data, "chkLoadcell"),
+    *log_ticks_chk = get_object_safe(data, "chkTicks");
+
+  int log_time = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(log_time_chk)), 
+      log_force = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(log_force_chk)), 
+      log_flow = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(log_flow_chk)), 
+      log_ca = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(log_ca_chk)), 
+      log_loadcell = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(log_loadcell_chk)), 
+      log_ticks = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(log_ticks_chk));
+
+  return (log_time << 5) + (log_force << 4) + (log_flow << 3) + (log_ca << 2) + (log_loadcell << 1) + log_ticks;
+}
+
+
+
+
+// get setter params, formatted into string.
+char *form_get_const_setter_params(struct Data *data)
+{
+  GObject *ent_A = get_object_safe(data, "entA");
+  return (char *)gtk_entry_get_text(GTK_ENTRY(ent_A));
+}
+
+
+
+
+// get setter params, formatted into string.
+char *form_get_ramp_setter_params(struct Data *data)
+{
+  GObject *ent_A = get_object_safe(data, "entA");
+  GObject *ent_B = get_object_safe(data, "entB");
+  char *rv = malloc(70*sizeof(char));
+  sprintf(rv, "%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_A)), gtk_entry_get_text(GTK_ENTRY(ent_B)));
+  return rv;
+}
+
+
+
+
+// get setter params, formatted into string.
+char *form_get_sine_setter_params(struct Data *data)
+{
+  GObject *ent_A = get_object_safe(data, "entA");
+  GObject *ent_B = get_object_safe(data, "entB");
+  GObject *ent_C = get_object_safe(data, "entC");
+  char *rv = malloc(70*sizeof(char));
+  sprintf(rv, "%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_A)), gtk_entry_get_text(GTK_ENTRY(ent_B)), gtk_entry_get_text(GTK_ENTRY(ent_C)));
+  return rv;
+}
+
+
+
+
+// get PID tuning params from dialog
+char *form_get_pid_params(struct Data *data)
+{
+  GObject *ent_KP = get_object_safe(data, "entKP");
+  GObject *ent_KI = get_object_safe(data, "entKI");
+  GObject *ent_KD = get_object_safe(data, "entKD");
+  char *rv = malloc(70*sizeof(char));
+  sprintf(rv, "%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_KP)), gtk_entry_get_text(GTK_ENTRY(ent_KI)), gtk_entry_get_text(GTK_ENTRY(ent_KD)));
+  return rv;
+}
+
+
+
+
+// get bufflen, dia from GUI
+char *form_get_bldi_data(struct Data *data)
+{
+  GObject *ent_bl = get_object_safe(data, "entBL");
+  GObject *ent_di = get_object_safe(data, "entDI");
+  char *rv = malloc(70*sizeof(char));
+  sprintf(rv, "%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_bl)), gtk_entry_get_text(GTK_ENTRY(ent_di)));
+  return rv;
 }
