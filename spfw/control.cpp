@@ -45,7 +45,7 @@ double getControlAction(double pca, double speed, double force)
 {
 
   if (control_type == CONTROL_NONE) {
-    return dc;
+    return setpoint;
   }
 
   unsigned long timenow = millis();
@@ -87,9 +87,7 @@ void controlInit(){
   int done = 0,
     sp_recvd = 0,
     tp_recvd = 0,
-    dc_recvd = 0,
-    bf_recvd = 0,
-    di_recvd = 0,
+    bd_recvd = 0,
     lo_recvd = 0;
 
   Serial.print("WAIT\n");
@@ -107,12 +105,16 @@ void controlInit(){
     if (key == 0) continue;
 
     if (strcmp(key, "SP") == 0) {
-      control_type = CONTROL_PID;
 
-      controlled_var = val[0] != 'F';
+      if ((val[0] == 'F') || (val[0] == 'Q')) {
+        controlled_var = val[0] != 'F';
+        control_type = CONTROL_PID;
+      }
+      else {
+        control_type = CONTROL_NONE;
+      }
       val++;
 
-      // TODO: need to split rest to get the params for each setter
       char setter_ch = val[0];
       char *param;
       val++;
@@ -161,21 +163,13 @@ void controlInit(){
 
       tp_recvd = 1;
     }
-    else if (strcmp(key, "DC") == 0) {
-      control_type = CONTROL_NONE;
-      dc = atof(val);
+    else if (strcmp(key, "BD") == 0) {
+      char *data = strtok(val, ",");
+      buflen = atof(data);
+      data = strtok(0, ",");
+      inner_diameter = atof(data);
 
-      dc_recvd = 1;
-    }
-    else if (strcmp(key, "BF") == 0) {
-      buflen = atof(val);
-
-      bf_recvd = 1;
-    }
-    else if (strcmp(key, "DI") == 0) {
-      inner_diameter = atof(val);
-
-      di_recvd = 1;
+      bd_recvd = 1;
     }
     else if (strcmp(key, "LO") == 0) {
       log_options = atoi(val);
@@ -186,12 +180,12 @@ void controlInit(){
     switch (control_type) {
 
     case CONTROL_PID:
-      if (sp_recvd && tp_recvd && lo_recvd && di_recvd && bf_recvd)
+      if (sp_recvd && tp_recvd && lo_recvd && bd_recvd)
         done = 1;
       break;
 
     case CONTROL_NONE:
-      if (dc_recvd && lo_recvd && di_recvd && bf_recvd)
+      if (sp_recvd && lo_recvd && bd_recvd)
         done = 1;
       break;
 
