@@ -39,60 +39,6 @@ void catch(int signal)
 
 
 
-void usage()
-{
-  fprintf(stderr, 
-      "\n"
-      "  Syringepump ("LONG_VERSION")\n"
-      "\n"
-      "  Syringe pump control software.\n"
-      "\n"
-      "          └────┰──────────┐\n"
-      "       →   ────┫          ├──────\n"
-      "          ┌────┸──────────┘\n"
-      "\n"
-         ////////////////////////////////////////////////////////////////////////////////
-      "    An Arduino is used to control the speed and logging of data from a syringe\n"
-      "    pump. The GUI should be fairly self explanatory, and I don't want to write\n"
-      "    too much here as it may go out of date fairly quickly. Log an issue on \n"
-      "    github (https://github.com/cbosoft/syringepump) if there's something wrong,\n"
-      "    or if you want to request anything.\n"
-      "\n"
-      "  Command line\n"
-      "\n"
-      "    Control settings can be pre-loaded from the command line. Use the arguments as\n"
-      "    below to pre-fill the form on the GUI.\n"
-      "\n"
-      "    syringepump [--set-point <set point>] \n"
-      "                [--kp <kp>] \n"
-      "                [--ki <ki>] \n"
-      "                [--kd <kd>] \n"
-      "                [--dc <dc>] \n"
-      "                [--tag <tag>]"
-      "\n"
-      "    Square brackets indicate optional arguments (they all are). You can use as many\n"
-      "    as few as you like. If a setting is not set on the commandline, the form will be\n"
-      "    filled out with the default value. If the same option is written multiple times,\n"
-      "    the last value is the one that will be used.\n"
-      "\n");
-}
-
-GObject * get_object_safe(GtkBuilder *builder, const char *name)
-{
-  GObject *rv = gtk_builder_get_object(builder, name);
-
-  if (rv == NULL) {
-    timestamp(NULL, 0, "GTK object not found in builder \"%s\"", name);
-    timestamp(NULL, 0, "Exiting...");
-    exit(1);
-  }
-
-  return rv;
-}
-
-
-
-
 int main (int argc, char **argv)
 {
   GtkBuilder *builder;
@@ -106,18 +52,6 @@ int main (int argc, char **argv)
   gtk_init(&argc, &argv);
 
   timestamp(NULL, 1, "GTK initialised.");
-  char *cal = "0";
-
-  // preliminary arg check
-  for (int i = 0; i < argc; i++) {
-    if ((strcmp(argv[i], "--help") == 0) || (strcmp(argv[i], "-h") == 0)) {
-      usage();
-      exit(0);
-    }
-    else if ((strcmp(argv[i], "--calibration") == 0) || (strcmp(argv[i], "-c") == 0)) {
-      cal = "1";
-    }
-  }
 
   builder = gtk_builder_new();
   if (gtk_builder_add_from_file(builder, "/usr/share/syringepump/main.ui", &error) == 0) {
@@ -144,9 +78,6 @@ int main (int argc, char **argv)
   data->serial_fd = -1;
 #endif
   data->serial_path = "/dev/ttyACM0";
-
-  // ??
-  data->res = 0;
 
   // Logging
   data->tag = NULL;
