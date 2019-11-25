@@ -78,55 +78,21 @@ void cb_tag_text_changed(GObject *obj, struct Data *data)
 
 
 
-void cb_dc_text_changed(GObject *obj, struct Data *data)
+void cb_setter_radio_changed(GObject *obj, struct Data *data)
 {
-  get_new_log_name(data, NULL);
-}
-
-
-
-void cb_kp_text_changed(GObject *obj, struct Data *data)
-{
-  get_new_log_name(data, NULL);
+  (void) obj;
+  form_setter_update(data);
 }
 
 
 
 
-void cb_ki_text_changed(GObject *obj, struct Data *data)
+//
+void cb_tuning_clicked(GObject *obj, struct Data *data)
 {
-  get_new_log_name(data, NULL);
-}
-
-
-
-
-void cb_kd_text_changed(GObject *obj, struct Data *data)
-{
-  get_new_log_name(data, NULL);
-}
-
-
-
-
-void cb_buflen_text_changed(GObject *obj, struct Data *data)
-{
-  get_new_log_name(data, NULL);
-}
-
-
-
-
-void cb_setpoint_text_changed(GObject *obj, struct Data *data)
-{
-  get_new_log_name(data, NULL);
-}
-
-
-
-
-void cb_tab_page_changed(GObject *obj, GtkWidget *page, guint page_num, struct Data *data)
-{
-  int n = (int)page_num;
-  get_new_log_name(data, &n);
+  (void) obj;
+  // char *kp = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKP")));
+  // char *ki = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKI")));
+  // char *kd = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKD")));
+  gtk_dialog_run(GTK_DIALOG(get_object_safe(data, "winTuningDialog")));
 }

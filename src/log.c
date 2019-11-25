@@ -22,31 +22,48 @@ static GThread *log_worker_thread;
 void write_run_params(struct Data *data)
 {
   FILE *fp = fopen(data->logpath, "w");
-  int control_type = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab));
+  int control_type = form_get_control_type(data);
+  int setter_type = form_get_setter_type(data);
 
-  switch (control_type) {
-    case 0:
-      fprintf(fp, "Set point (flow) (ml/s), %s\n", gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp)));
-      fprintf(fp, "KP (flow), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kp_inp)));
-      fprintf(fp, "KI (flow), %s\n", gtk_entry_get_text(GTK_ENTRY(data->ki_inp)));
-      fprintf(fp, "KD (flow), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kd_inp)));
-      break;
-    case 1:
-      fprintf(fp, "Set point (force) (ml/s), %s\n", gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp_force)));
-      fprintf(fp, "KP (force), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kp_inp_force)));
-      fprintf(fp, "KI (force), %s\n", gtk_entry_get_text(GTK_ENTRY(data->ki_inp_force)));
-      fprintf(fp, "KD (force), %s\n", gtk_entry_get_text(GTK_ENTRY(data->kd_inp_force)));
-      break;
-    case 2:
-      fprintf(fp, "DC (0-255), %s\n", gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
-      break;
-    default:
-      timestamp_error(data, 0, "unknown control type encountered in 'write_run_params'");
-      break;
+  if (control_type == FORM_CONTROL_PID) {
+    fprintf(fp, "KP, KI, KD\n");
+    fprintf(fp, "%s\n\n", form_get_pid_params(data));
   }
 
-  fprintf(fp, "Stop buffer (mm), %s\n", gtk_entry_get_text(GTK_ENTRY(data->buflen_inp)));
-  fprintf(fp, "Syringe diameter (mm), %s\n", gtk_entry_get_text(GTK_ENTRY(data->dia_inp)));
+  char *s;
+
+  switch (setter_type) {
+
+    case FORM_SETTER_CONSTANT:
+      fprintf(fp, "Constant setpoint\n");
+      fprintf(fp, "Value\n");
+      fprintf(fp, "%s\n", form_get_const_setter_params(data));
+      break;
+
+    case FORM_SETTER_RAMP:
+      fprintf(fp, "Linearly changing setpoint\n");
+      fprintf(fp, "Gradient,Intercept\n");
+      s = form_get_ramp_setter_params(data);
+      fprintf(fp, "%s\n", s);
+      free(s);
+      s = NULL;
+      break;
+
+    case FORM_SETTER_SINE:
+      fprintf(fp, "Sine wave setpoint\n");
+      fprintf(fp, "Frequency,Magnitude,Mean\n");
+      s = form_get_sine_setter_params(data);
+      fprintf(fp, "%s\n", s);
+      free(s);
+      s = NULL;
+      break;
+
+  }
+
+  fprintf(fp, "Stop buffer (mm), Syringe diameter (mm)\n");
+  s = form_get_bldi_data(data);
+  fprintf(fp, "%s\n", s);
+  free(s);
 
   fprintf(fp, "\n");
   fclose(fp);
@@ -147,7 +164,7 @@ static void *log_worker(void *void_data)
     for (int i = 0; i < 2; i++) position_s = strtok(NULL, ",");
 
     if (position_s != NULL) {
-      double prev = gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(data->progress));
+      double prev = gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(get_object_safe(data, "progProgress")));
       double fraction = 1.0 - (atof(position_s) / 110.0);
       if (fraction > prev || prev >= 1.0)
         form_set_progress(data, fraction);
@@ -198,7 +215,7 @@ void append_text_to_log(struct Data *data, const char *added_markup)
 
   }
 
-  gtk_label_set_markup(GTK_LABEL(data->log_lbl), log_string);
+  gtk_label_set_markup(GTK_LABEL(get_object_safe(data, "lblLog")), log_string);
 
 }
 
@@ -208,7 +225,7 @@ void append_text_to_log(struct Data *data, const char *added_markup)
 char *get_new_log_name(struct Data *data, int *control_type_override)
 {
   char *log_dir = gtk_file_chooser_get_current_folder(
-      GTK_FILE_CHOOSER(data->log_folder_fch));
+      GTK_FILE_CHOOSER(get_object_safe(data, "fchLogFolder")));
 
   const char *pref = "syrpu";
 
@@ -219,7 +236,7 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
   timeinfo = localtime(&rawtime);
   strftime(date, 50, "%Y-%m-%d", timeinfo);
 
-  const char *tag = gtk_entry_get_text(GTK_ENTRY(data->tag_inp));
+  const char *tag = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entTag")));
   int taglen = strlen(tag);
   char santag[taglen+1];
   for (int i = 0; i < taglen; i++) {
@@ -258,7 +275,7 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
   free(date);
   
   data->logpath = logpath;
-  gtk_label_set_text(GTK_LABEL(data->logname_lbl), logpath);
+  gtk_label_set_text(GTK_LABEL(get_object_safe(data, "lblLogName")), logpath);
   return logpath;
 }
 

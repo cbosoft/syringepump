@@ -17,7 +17,7 @@ static void *connect_worker(void *vptr_data)
   struct Data *data = (struct Data *)vptr_data;
   data->connect_worker_status = THREAD_STARTED;
   data->serial_path = gtk_combo_box_text_get_active_text(
-      GTK_COMBO_BOX_TEXT(data->serial_cmb));
+      GTK_COMBO_BOX_TEXT(get_object_safe(data, "cmbSerial")));
 
   timestamp(data, 0, "connecting to \"%s\"", data->serial_path);
 
@@ -32,7 +32,7 @@ static void *connect_worker(void *vptr_data)
         timestamp_error(data, 0, "Failed to apply serial settings");
         break;
     }
-    gtk_widget_set_sensitive(GTK_WIDGET(data->conn_btn), 1);
+    gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnConnect")), 1);
     g_thread_unref(connect_worker_thread);
     return NULL;
   }
@@ -64,88 +64,71 @@ static void *connect_worker(void *vptr_data)
 
   timestamp(data, 0, "Sending run parameters to Arduino");
 
+  int 
+    controlled_var = form_get_controlled_var(data), 
+    controller_type = form_get_control_type(data), 
+    setpoint_type = form_get_setter_type(data);
 
-  int pageno = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->control_tab));
-  char controlled_var, *setpoint = NULL, *tuning = NULL;
-  const char *txtbx = NULL;
-  switch (pageno) {
+  char *setpoint = NULL, controlled_var_ch, *setter_params, setter_ch;
 
-    case PAGE_NO_CONTROL:
-      send_data_packet(
-        data, 
-        0,
-        "DC",
-        gtk_entry_get_text(GTK_ENTRY(data->dc_inp)));
-      break;
-
-    case PAGE_PID_FLOW:
-    case PAGE_PID_FORCE:
-
-      controlled_var = pageno == PAGE_PID_FORCE ? 'F' : 'Q';
-
-      txtbx = pageno == PAGE_PID_FORCE ? gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp_force)) : gtk_entry_get_text(GTK_ENTRY(data->setpoint_inp));
-      setpoint = malloc((strlen(txtbx) + 3)*sizeof(char));
-      setpoint[0] = controlled_var;
-      setpoint[1] = 'C';
-      setpoint[2] = '\0';
-      // TODO: setpoint setter func
-      strcat(setpoint, txtbx);
-      send_data_packet( data, 0, "SP", setpoint);
-      free(setpoint);
-
-      tuning = malloc(60*sizeof(char));
-      tuning[0] = '\0';
-      strcat(tuning, gtk_entry_get_text(GTK_ENTRY(data->kp_inp_force)));
-      strcat(tuning, ",");
-      strcat(tuning, gtk_entry_get_text(GTK_ENTRY(data->ki_inp_force)));
-      strcat(tuning, ",");
-      strcat(tuning, gtk_entry_get_text(GTK_ENTRY(data->kd_inp_force)));
-
-      send_data_packet(
-        data, 
-        0,
-        "TP", 
-        tuning);
-      free(tuning);
-      break;
+  // get character representing controlled var
+  if (controller_type != FORM_CONTROL_NONE) {
+    if (controlled_var == FORM_VAR_FLOW) {
+      controlled_var_ch = 'Q'; // Flowrate
+    }
+    else {
+      controlled_var_ch = 'F'; // Force
+    }
+  }
+  else {
+    controlled_var_ch = 'D'; // DC
   }
 
+  setpoint = calloc(70, sizeof(char));
 
-  send_data_packet(
-      data, 
-      0,
-      "BF", 
-      gtk_entry_get_text(GTK_ENTRY(data->buflen_inp)));
-  send_data_packet(
-      data, 
-      0,
-      "DI", 
-      gtk_entry_get_text(GTK_ENTRY(data->dia_inp)));
+  switch (setpoint_type) {
 
+    case FORM_SETTER_CONSTANT:
+      setter_ch = 'C';
+      setter_params = form_get_const_setter_params(data);
+      break;
 
-  int log_time = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_time_chk)), 
-      log_force = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_force_chk)), 
-      log_flow = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_flow_chk)), 
-      log_ca = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_ca_chk)), 
-      log_loadcell = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_loadcell_chk)), 
-      log_ticks = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->log_ticks_chk));
+    case FORM_SETTER_RAMP:
+      setter_ch = 'R';
+      setter_params = form_get_ramp_setter_params(data);
+      break;
 
-  char *log_options = malloc(100*sizeof(char));
-  sprintf(log_options, "%d", (log_time << 5) + (log_force << 4) + (log_flow << 3) + (log_ca << 2) + (log_loadcell << 1) + log_ticks);
+    case FORM_SETTER_SINE:
+      setter_ch = 'S';
+      setter_params = form_get_sine_setter_params(data);
+      break;
 
-  send_data_packet(
-      data, 
-      0,
-      "LO", 
-      log_options);
+  }
 
-  // TODO send infor about what user wants logged
-  timestamp(data, 0, "All parameters sent successfully!");
+  sprintf(setpoint, "%c%c%s", controlled_var_ch, setter_ch, setter_params);
+  if (setpoint_type != FORM_SETTER_CONSTANT) {
+    free(setter_params);
+  }
+  send_data_packet(data, 0, "SP", setpoint);
+  free(setpoint);
 
+  if (controller_type == FORM_CONTROL_PID) {
+    char *pid_tuning = form_get_pid_params(data);
+    send_data_packet(data, 0, "TP", pid_tuning);
+    free(pid_tuning);
+  }
+
+  char *bldi_data = form_get_bldi_data(data);
+  send_data_packet(data, 0, "BD", bldi_data);
+  free(bldi_data);
+
+  char *log_options = malloc(70*sizeof(char));
+  sprintf(log_options, "%d", form_get_log_options(data));
+  send_data_packet(data, 0, "LO", log_options);
   free(log_options);
-  
-  start_log(data);
 
+  timestamp(data, 0, "All parameters sent successfully!");
+  start_log(data);
   return NULL;
 }
 

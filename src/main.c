@@ -15,6 +15,7 @@
 #include "refresh.h"
 #include "threads.h"
 #include "log.h"
+#include "form.h"
 
 
 
@@ -154,48 +155,11 @@ int main (int argc, char **argv)
   data->refresh_worker_status = THREAD_NULL;
   data->connect_worker_status = THREAD_NULL;
 
-  // GUI :: windows
-  data->main_win = get_object_safe(builder, "winMain");
-
-  // GUI :: buttons
-  data->conn_btn = get_object_safe(builder, "btnConnect");
-  data->disconn_btn = get_object_safe(builder, "btnDisconnect");
-  data->refresh_btn = get_object_safe(builder, "btnSerialRefresh");
-
-  // GUI :: inputs
-  data->dc_inp = get_object_safe(builder, "inpDC");
-  data->setpoint_inp = get_object_safe(builder, "inpSetPoint");
-  data->kp_inp = get_object_safe(builder, "inpKP");
-  data->ki_inp = get_object_safe(builder, "inpKI");
-  data->kd_inp = get_object_safe(builder, "inpKD");
-  data->setpoint_inp_force = get_object_safe(builder, "inpSetPoint_force");
-  data->kp_inp_force = get_object_safe(builder, "inpKP_force");
-  data->ki_inp_force = get_object_safe(builder, "inpKI_force");
-  data->kd_inp_force = get_object_safe(builder, "inpKD_force");
-  data->buflen_inp = get_object_safe(builder, "inpBuffer");
-  data->dia_inp = get_object_safe(builder, "inpDiameter");
-  data->tag_inp = get_object_safe(builder, "inpTag");
-  data->log_folder_fch = get_object_safe(builder, "fchLogFolder");
-  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(data->log_folder_fch), getenv("HOME"));
-
-  // GUI :: logging options
-  data->log_time_chk = get_object_safe(builder, "chkTime");
-  data->log_force_chk = get_object_safe(builder, "chkForce");
-  data->log_flow_chk = get_object_safe(builder, "chkFlowrate");
-  data->log_ca_chk = get_object_safe(builder, "chkCA");
-  data->log_loadcell_chk = get_object_safe(builder, "chkLoadcell");
-  data->log_ticks_chk = get_object_safe(builder, "chkTicks");
-
-  // GUI :: other
-  data->log_lbl = get_object_safe(builder, "lblLog");
-  data->logname_lbl = get_object_safe(builder, "lblLogName");
-  data->progress = get_object_safe(builder, "progProgress");
-  data->scroll = get_object_safe(builder, "scroll");
-  data->serial_cmb = get_object_safe(builder, "cmbSerial");
-  data->control_tab = get_object_safe(builder, "tabControl");
+  data->builder = builder;
+  gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(get_object_safe(data, "fchLogFolder")), getenv("HOME"));
 
   // SET UP
-  gtk_window_set_title(GTK_WINDOW(data->main_win), "Syringepump ("LONG_VERSION")");
+  gtk_window_set_title(GTK_WINDOW(get_object_safe(data, "winMain")), "Syringepump ("LONG_VERSION")");
   timestamp(data, 1, "Starting Syringepump (%s)", LONG_VERSION);
   
 #ifndef WINDOWS
@@ -206,50 +170,27 @@ int main (int argc, char **argv)
 #endif
 
   for (int i = 0; i < argc; i++) {
-    if (strcmp(argv[i], "--set-point") == 0) {
-      i++;
-      gtk_entry_set_text(GTK_ENTRY(data->setpoint_inp), argv[i]);
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
-    }
-    if (strcmp(argv[i], "--kp") == 0) {
-      i++;
-      gtk_entry_set_text(GTK_ENTRY(data->kp_inp), argv[i]);
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
-    }
-    if (strcmp(argv[i], "--ki") == 0) {
-      i++;
-      gtk_entry_set_text(GTK_ENTRY(data->ki_inp), argv[i]);
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
-    }
-    if (strcmp(argv[i], "--kd") == 0) {
-      i++;
-      gtk_entry_set_text(GTK_ENTRY(data->kd_inp), argv[i]);
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 0);
-    }
-    if (strcmp(argv[i], "--dc") == 0) {
-      i++;
-      gtk_entry_set_text(GTK_ENTRY(data->dc_inp), argv[i]);
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(data->control_tab), 1);
-    }
     if (strcmp(argv[i], "--tag") == 0) {
       i++;
-      gtk_entry_set_text(GTK_ENTRY(data->tag_inp), argv[i]);
+      gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entTag")), argv[i]);
     }
   }
 
-  g_signal_connect(data->main_win, "destroy", G_CALLBACK(cb_quit_clicked), data);
-  g_signal_connect(data->conn_btn, "clicked", G_CALLBACK(cb_begin_clicked), data);
-  g_signal_connect(data->disconn_btn, "clicked", G_CALLBACK(cb_stop_clicked), data);
-  g_signal_connect(data->refresh_btn, "clicked", G_CALLBACK(cb_refresh_clicked), data);
-  g_signal_connect(data->log_lbl, "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
-  g_signal_connect(data->tag_inp, "changed", G_CALLBACK(cb_tag_text_changed), data);
-  g_signal_connect(data->dc_inp, "changed", G_CALLBACK(cb_dc_text_changed), data);
-  g_signal_connect(data->kp_inp, "changed", G_CALLBACK(cb_kp_text_changed), data);
-  g_signal_connect(data->ki_inp, "changed", G_CALLBACK(cb_ki_text_changed), data);
-  g_signal_connect(data->kd_inp, "changed", G_CALLBACK(cb_kd_text_changed), data);
-  g_signal_connect(data->buflen_inp, "changed", G_CALLBACK(cb_buflen_text_changed), data);
-  g_signal_connect(data->setpoint_inp, "changed", G_CALLBACK(cb_setpoint_text_changed), data);
-  g_signal_connect(data->control_tab, "switch-page", G_CALLBACK(cb_tab_page_changed), data);
+  g_signal_connect(get_object_safe(data, "winMain"), "destroy", G_CALLBACK(cb_quit_clicked), data);
+  g_signal_connect(get_object_safe(data, "btnConnect"), "clicked", G_CALLBACK(cb_begin_clicked), data);
+  g_signal_connect(get_object_safe(data, "btnDisconnect"), "clicked", G_CALLBACK(cb_stop_clicked), data);
+  g_signal_connect(get_object_safe(data, "btnSerialRefresh"), "clicked", G_CALLBACK(cb_refresh_clicked), data);
+  g_signal_connect(get_object_safe(data, "lblLog"), "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
+  g_signal_connect(get_object_safe(data, "entTag"), "changed", G_CALLBACK(cb_tag_text_changed), data);
+  g_signal_connect(get_object_safe(data, "btnTuning"), "clicked", G_CALLBACK(cb_tuning_clicked), data);
+
+  g_signal_connect(get_object_safe(data, "radConst"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "radRamp"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "radSine"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "radFlowControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "radPID"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "radNoControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  form_setter_update(data);
 
   timestamp(data, 1, "GUI started");
 

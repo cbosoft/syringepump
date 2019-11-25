@@ -32,7 +32,7 @@ static void *refresh_worker(void *vptr_data)
 
   // TODO do from callback
   gtk_combo_box_text_remove_all(
-      GTK_COMBO_BOX_TEXT(data->serial_cmb));
+      GTK_COMBO_BOX_TEXT(get_object_safe(data, "cmbSerial")));
 
   const char *dev = "/dev/ttyACM*";
   glob_t glob_res = {0};
@@ -56,7 +56,7 @@ static void *refresh_worker(void *vptr_data)
 
   for (int i = 0; i < (int)glob_res.gl_pathc; i++) {
     gtk_combo_box_text_append_text(
-        GTK_COMBO_BOX_TEXT(data->serial_cmb), 
+        GTK_COMBO_BOX_TEXT(get_object_safe(data, "cmbSerial")), 
         glob_res.gl_pathv[i]);
   }
   
@@ -71,7 +71,7 @@ static void *refresh_worker(void *vptr_data)
   data->refresh_worker_status = THREAD_STOPPED;
 
   // TODO do from callback
-  gtk_combo_box_set_active(GTK_COMBO_BOX(data->serial_cmb), 0);
+  gtk_combo_box_set_active(GTK_COMBO_BOX(get_object_safe(data, "cmbSerial")), 0);
 
   return NULL;
 }
