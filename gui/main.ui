@@ -969,6 +969,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
   <object class="GtkDialog" id="winTuningDialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">PID Tuning</property>
+    <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
     <child>
       <placeholder/>
@@ -1024,14 +1025,12 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Here you can alter the tuning parameters for the PID controller. Hover over the textboxes below to learn more about each parameter.
-
-Just close this window when you're done, changes will be saved.</property>
+                <property name="label" translatable="yes">Here you can alter the tuning parameters for the PID controller. Hover over the textboxes below to learn more about each parameter.</property>
                 <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -1185,5 +1184,9 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
         </child>
       </object>
     </child>
+    <action-widgets>
+      <action-widget response="-3">btnOkay</action-widget>
+      <action-widget response="-6">btnCancel</action-widget>
+    </action-widgets>
   </object>
 </interface>
