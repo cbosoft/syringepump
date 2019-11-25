@@ -6,7 +6,7 @@ setter_func setter;
 // setter properties
 double sine_magnitude = 1.0;
 double sine_mean = 0.0;
-double sine_frequency = 1.0*0.001; // mHz
+double sine_frequency = 1.0; // Hz
 
 double constant_val = 120.0;
 
@@ -16,13 +16,13 @@ double ramp_intercept = 0; // positive
 
 double sine(long time)
 {
-  double dtime = (double)time;
-  return (sin(time*TWO_PI*sine_frequency) * sine_magnitude) + sine_mean;
+  double dtime = ((double)time)*0.001;
+  return (sin(dtime*PI*sine_frequency) * sine_magnitude) + sine_mean;
 }
 
 double ramp(long time)
 {
-  double dtime = (double)time;
+  double dtime = ((double)time)*0.001;
   return (ramp_gradient*dtime) + ramp_intercept;
 }
 
