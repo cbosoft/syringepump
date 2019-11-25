@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include <errno.h>
 #include <string.h>
 #include <time.h>
@@ -92,20 +93,16 @@ void cb_tuning_clicked(GObject *obj, struct Data *data)
 {
   (void) obj;
 
-  const char *kp = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKP")));
-  const char *ki = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKI")));
-  const char *kd = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKD")));
+  char *kp = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKP"))));
+  char *ki = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKI"))));
+  char *kd = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKD"))));
+
   int response = gtk_dialog_run(GTK_DIALOG(get_object_safe(data, "winTuningDialog")));
 
-  switch (response) {
-
-    case GTK_RESPONSE_CLOSE:
-    case GTK_RESPONSE_CANCEL:
+  if (response != GTK_RESPONSE_ACCEPT) {
       gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKP")), kp);
       gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKI")), ki);
       gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKD")), kd);
-      break;
-
   }
 
   gtk_widget_hide(GTK_WIDGET(get_object_safe(data, "winTuningDialog")));
