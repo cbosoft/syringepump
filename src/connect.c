@@ -98,6 +98,11 @@ static void *connect_worker(void *vptr_data)
       setter_params = form_get_ramp_setter_params(data);
       break;
 
+    case FORM_SETTER_STEP:
+      setter_ch = 'T';
+      setter_params = form_get_step_setter_params(data);
+      break;
+
     case FORM_SETTER_SINE:
       setter_ch = 'S';
       setter_params = form_get_sine_setter_params(data);
