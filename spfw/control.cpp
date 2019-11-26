@@ -25,12 +25,19 @@ const double max_ca = 255.0;
 const double min_ca = 0.0;
 
 extern setter_func setter;
+
 extern double sine_frequency;
 extern double sine_mean;
 extern double sine_magnitude;
+
 extern double ramp_gradient;
 extern double ramp_intercept;
+
 extern double constant_val;
+
+extern double step_initial;
+extern double step_time;
+extern double step_final;
 
 
 
@@ -140,6 +147,19 @@ void controlInit(){
 
         param = strtok(0, ",");
         ramp_intercept = atof(param);
+        break;
+
+      case 'T':
+        setter = &step;
+
+        param = strtok(val, ",");
+        step_initial = atof(param);
+
+        param = strtok(0, ",");
+        step_time = atof(param);
+
+        param = strtok(0, ",");
+        step_final = atof(param);
         break;
 
       default:
