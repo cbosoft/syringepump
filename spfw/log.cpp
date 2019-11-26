@@ -33,7 +33,7 @@ void logToSerial(
 
   if (log_options & log_control_action) {
     if (ncols) Serial.print(",");
-    Serial.print(control_action, 5);
+    Serial.print(long(control_action));
   }
 
   if (log_options & log_loadcell) {
