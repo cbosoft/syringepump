@@ -52,6 +52,21 @@ int check_form(struct Data *data)
         "('.').");
       break;
 
+    case FORM_SETTER_STEP:
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
+        "Initial value (I) is a required parameter for step setter",
+        "Initial value (I) must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entB"),
+        "Time of change (tc) is a required parameter for step setter",
+        "Time of change (tc) must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+      CHECK_ENTRY_NUMBER(get_object_safe(data, "entC"),
+        "Final value (F) is a required parameter for step setter",
+        "Final value (F) must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+      break;
+
     case FORM_SETTER_SINE:
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
         "Frequency (ω) is a required parameter for sine wave setter",
@@ -204,6 +219,7 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radForceControl")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radConst")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radRamp")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radStep")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radSine")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entA")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entB")), control);
@@ -273,12 +289,16 @@ int form_get_setter_type(struct Data *data)
 {
   GObject *rad_const = get_object_safe(data, "radConst");
   GObject *rad_ramp = get_object_safe(data, "radRamp");
+  GObject *rad_step = get_object_safe(data, "radStep");
 
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_const))) {
     return FORM_SETTER_CONSTANT;
   }
   else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_ramp))) {
     return FORM_SETTER_RAMP;
+  }
+  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_step))) {
+    return FORM_SETTER_STEP;
   }
   else {
     return FORM_SETTER_SINE;
@@ -298,6 +318,7 @@ int form_get_controlled_var(struct Data *data)
   else {
     return FORM_VAR_FORCE;
   }
+  // or none?
 }
 
 
@@ -352,6 +373,29 @@ void form_setter_update(struct Data *data)
       gtk_widget_set_sensitive(GTK_WIDGET(entA), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(entB), 1);
       gtk_widget_set_sensitive(GTK_WIDGET(entC), 0);
+      break;
+
+    case FORM_SETTER_STEP:
+      gtk_label_set_text(GTK_LABEL(lblTitle), "Step setter");
+      gtk_label_set_text(GTK_LABEL(lblDesc), "Constant setpoint until a time when jumps up to another constant. Useful for process modelling.");
+      gtk_label_set_markup(GTK_LABEL(lblFormula), 
+          !controlled ? "DC = <b>I</b> if t &lt; t<sub>c</sub> otherwise <b>F</b>" : 
+          (flow_control ? "Q<sub>SP</sub> = <b>I</b> if t &lt; t<sub>c</sub> otherwise <b>F</b>" : 
+           "F<sub>SP</sub> = <b>I</b> if t &lt; t<sub>c</sub> otherwise <b>F</b>"));
+
+      gtk_label_set_markup(GTK_LABEL(lblA), 
+          !controlled ? "<b>I</b> (8 bit):" : 
+          (flow_control ? "<b>I</b> (ml/s):" : 
+           "<b>I</b> (N):"));
+      gtk_label_set_markup(GTK_LABEL(lblB), "<b>t<sub>c</sub></b> (s):");
+      gtk_label_set_markup(GTK_LABEL(lblC), 
+          !controlled ? "<b>F</b> (8 bit):" : 
+          (flow_control ? "<b>F</b> (ml/s):" : 
+           "<b>F</b> (N):"));
+
+      gtk_widget_set_sensitive(GTK_WIDGET(entA), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(entB), 1);
+      gtk_widget_set_sensitive(GTK_WIDGET(entC), 1);
       break;
 
     case FORM_SETTER_SINE:
@@ -416,6 +460,20 @@ char *form_get_ramp_setter_params(struct Data *data)
   GObject *ent_B = get_object_safe(data, "entB");
   char *rv = malloc(70*sizeof(char));
   sprintf(rv, "%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_A)), gtk_entry_get_text(GTK_ENTRY(ent_B)));
+  return rv;
+}
+
+
+
+
+// get setter params, formatted into string.
+char *form_get_step_setter_params(struct Data *data)
+{
+  GObject *ent_A = get_object_safe(data, "entA");
+  GObject *ent_B = get_object_safe(data, "entB");
+  GObject *ent_C = get_object_safe(data, "entC");
+  char *rv = malloc(70*sizeof(char));
+  sprintf(rv, "%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_A)), gtk_entry_get_text(GTK_ENTRY(ent_B)), gtk_entry_get_text(GTK_ENTRY(ent_C)));
   return rv;
 }
 

@@ -21,6 +21,7 @@ enum FORM_SETTER_SELECTION
 {
   FORM_SETTER_CONSTANT,
   FORM_SETTER_RAMP,
+  FORM_SETTER_STEP,
   FORM_SETTER_SINE
 };
 
@@ -41,6 +42,7 @@ void form_setter_update(struct Data *data);
 int form_get_log_options(struct Data *data);
 char *form_get_const_setter_params(struct Data *data);
 char *form_get_ramp_setter_params(struct Data *data);
+char *form_get_step_setter_params(struct Data *data);
 char *form_get_sine_setter_params(struct Data *data);
 char *form_get_pid_params(struct Data *data);
 char *form_get_bldi_data(struct Data *data);
