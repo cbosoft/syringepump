@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "connect.h"
 #include "error.h"
 #include "serial.h"
