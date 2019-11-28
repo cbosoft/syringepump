@@ -10,7 +10,9 @@ const int log_control_action = 1 << 2;
 const int log_loadcell = 1 << 1;
 const int log_ticks = 1;
 
-void logToSerial(long time, double flowrate, double force, double control_action, long load_cell_reading, long ticks)
+void logToSerial(
+    long time, double force, double flowrate, 
+    double control_action, long load_cell_reading, long ticks)
 {
   int ncols = 0;
 
@@ -31,7 +33,7 @@ void logToSerial(long time, double flowrate, double force, double control_action
 
   if (log_options & log_control_action) {
     if (ncols) Serial.print(",");
-    Serial.print(control_action, 5);
+    Serial.print(long(control_action));
   }
 
   if (log_options & log_loadcell) {

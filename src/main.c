@@ -117,6 +117,7 @@ int main (int argc, char **argv)
 
   g_signal_connect(get_object_safe(data, "radConst"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radRamp"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "radStep"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radSine"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radFlowControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radPID"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);

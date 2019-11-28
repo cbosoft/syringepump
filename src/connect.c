@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "connect.h"
 #include "error.h"
 #include "serial.h"
@@ -96,6 +98,11 @@ static void *connect_worker(void *vptr_data)
     case FORM_SETTER_RAMP:
       setter_ch = 'R';
       setter_params = form_get_ramp_setter_params(data);
+      break;
+
+    case FORM_SETTER_STEP:
+      setter_ch = 'T';
+      setter_params = form_get_step_setter_params(data);
       break;
 
     case FORM_SETTER_SINE:

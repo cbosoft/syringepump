@@ -9,7 +9,7 @@ def read_csv(path):
     return data
 
 #volumes, readings = read_csv("loadcell_data.csv")
-volumes, readings = read_csv("nov8.csv")
+volumes, readings = read_csv("loadcell_data_nov8.csv")
 
 volumes = np.array(volumes)
 volumes = np.multiply(volumes, 1E-6)
@@ -48,8 +48,14 @@ coefs = np.polyfit(readings, forces, 1)
 print(coefs)
 fit_forces = np.add(np.multiply(coefs[0], readings), coefs[1])
 
-plt.plot(readings, forces, 'x')
+plt.plot(np.multiply(volumes, 1e6), forces, 'x')
+plt.xlabel("Volume (ml)")
+plt.ylabel("Force (N)")
+plt.show()
+plt.close()
+
+plt.figure()
 plt.plot(readings, fit_forces, '--')
-plt.xlabel("Reading (0-2^24)")
+plt.xlabel("Reading (24 bit)")
 plt.ylabel("Force (N)")
 plt.show()
