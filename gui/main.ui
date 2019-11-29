@@ -89,8 +89,25 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="padding">10</property>
+                        <property name="padding">5</property>
                         <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkRadioButton" id="radPassive">
+                        <property name="label" translatable="yes">Passive control</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="active">True</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="group">radPID</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">5</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -105,8 +122,8 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">1</property>
+                        <property name="padding">5</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
@@ -124,8 +141,8 @@
                     <property name="orientation">vertical</property>
                     <property name="layout_style">center</property>
                     <child>
-                      <object class="GtkButton" id="btnTuning">
-                        <property name="label" translatable="yes">Tuning</property>
+                      <object class="GtkButton" id="btnSettings">
+                        <property name="label" translatable="yes">Settings</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -149,7 +166,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Controlled varibale:</property>
+                    <property name="label" translatable="yes">Controlled variable:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -276,22 +293,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkRadioButton" id="radStep">
-                        <property name="label" translatable="yes">Step</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">radConst</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="padding">10</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkRadioButton" id="radSine">
                         <property name="label" translatable="yes">Sine</property>
                         <property name="visible">True</property>
@@ -304,7 +305,7 @@
                         <property name="expand">True</property>
                         <property name="fill">True</property>
                         <property name="padding">10</property>
-                        <property name="position">3</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
@@ -319,7 +320,6 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="valign">center</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkLabel" id="lblSetterTitle">
@@ -345,7 +345,6 @@
                         <property name="halign">start</property>
                         <property name="valign">center</property>
                         <property name="label" translatable="yes">Constant value for setpoint.</property>
-                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -381,7 +380,6 @@
                   <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="valign">center</property>
                     <property name="row_spacing">10</property>
                     <property name="column_spacing">10</property>
                     <child>
@@ -985,10 +983,149 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
       </object>
     </child>
   </object>
+  <object class="GtkDialog" id="winPassiveSettings">
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">PID Tuning</property>
+    <property name="modal">True</property>
+    <property name="default_width">250</property>
+    <property name="default_height">200</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="btnOkay1">
+                <property name="label" translatable="yes">Update tuning</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="btnCancel1">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Here you can alter the parameters for the &lt;b&gt;Passive controller&lt;/b&gt;. 
+
+This controller works taking a bit of time to measure how supply voltage affects the controlled parameter, then sets a constant value based upon that for the remainder of the run. If data is noisy (i.e. jumping about a lot), then a longer measurement period will give a more accurate result, however this will eat into the "actual" run time.</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="tooltip_markup" translatable="yes">t&lt;sub&gt;m&lt;/sub&gt; is the time the controller spends measuring before it starts controlling.</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">t&lt;sub&gt;M&lt;/sub&gt;:</property>
+                    <property name="use_markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="ent">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_markup" translatable="yes">How "strong" the proportional gain is.
+
+CA = K&lt;sub&gt;P&lt;/sub&gt; × Error
+
+High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with little/no overshoot.
+
+Set to zero to disable (not recommmended).</property>
+                    <property name="text" translatable="yes">0.1</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="padding">10</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-3">btnOkay1</action-widget>
+      <action-widget response="-6">btnCancel1</action-widget>
+    </action-widgets>
+  </object>
   <object class="GtkDialog" id="winTuningDialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">PID Tuning</property>
-    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="default_width">250</property>
+    <property name="default_height">200</property>
+    <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <child>
       <placeholder/>
@@ -1044,7 +1181,10 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Here you can alter the tuning parameters for the PID controller. Hover over the textboxes below to learn more about each parameter.</property>
+                <property name="label" translatable="yes">Here you can alter the tuning parameters for the &lt;b&gt;PID controller&lt;/b&gt;. 
+
+Hover over the textboxes below to learn more about each parameter.</property>
+                <property name="use_markup">True</property>
                 <property name="wrap">True</property>
               </object>
               <packing>
