@@ -1,3 +1,4 @@
+// -*- mode: c++ -*-
 #include "motor.h"
 #include "control.h"
 #include "ruler.h"
@@ -23,8 +24,9 @@ extern double inner_diameter;
 extern int log_options;
 extern double setpoint;
 
-double control_action = 0.0;
 void (*softReset)(void) = 0;
+
+Controller *controller;
 
 
 
@@ -46,7 +48,7 @@ void setup ()
   loadCellInit();
   motorInit();
   optencInit();
-  controlInit();
+  controller = controlInit();
   
   delay(500);
 
@@ -70,13 +72,14 @@ void loop ()
   
   load_cell = getLoadCellReading();
   
-  force = getLoadCellReadingUnits(load_cell);
+  double force = getLoadCellReadingUnits(load_cell);
 
-  speed = getSpeedReading();
-  flowrate = calculateFlowrate(speed);
+  double speed = getSpeedReading();
+  double flowrate = calculateFlowrate(speed);
 
-  setpoint = get_setpoint(time);
-  control_action = getControlAction(control_action, flowrate, force);
+  double setpoint = get_setpoint(time);
+  //control_action = getControlAction(control_action, flowrate, force);
+  double control_action = controller->get_action(setpoint, flowrate, force);
   motorSetDC(int(control_action));
 
   logToSerial(time, force, flowrate, control_action, load_cell, -1);
