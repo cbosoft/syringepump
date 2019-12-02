@@ -27,6 +27,7 @@ extern double setpoint;
 void (*softReset)(void) = 0;
 
 Controller *controller;
+int start_millis_set = 0;
 
 
 
@@ -57,7 +58,8 @@ void setup ()
   delay(100);
 
   logTitlesToSerial();
-
+  
+  start_millis = millis();
 }
 
 
@@ -65,6 +67,7 @@ void setup ()
 
 void loop ()
 {
+
   time = millis() - start_millis;
 
   position_nounits = getPositionReading();
