@@ -102,11 +102,13 @@ double MeasureController::get_action(double setpoint, double flowrate, double fo
   }
 
   if (input < setpoint) {
-    this->ca += 1.0;
+    this->ca += 1;
   }
   else if (input > setpoint) {
-    this->ca -= 1.0;
+    this->ca -= 1;
   }
+
+  delay(100);
 
   return this->ca;
 }
