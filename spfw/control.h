@@ -54,11 +54,14 @@ public:
 
 
 class MeasureController : public Controller {
-public:
-  MeasureController(unsigned long measure_time) {
-    this->measure_time = measure_time;
-  }
-  double get_action(double setpoint, double flowrate, double force);
+  private:
+    int passive;
+  public:
+    MeasureController(unsigned long measure_time) {
+      this->measure_time = measure_time;
+      this->passive = 0;
+    }
+    double get_action(double setpoint, double flowrate, double force);
 };
 
 
