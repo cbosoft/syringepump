@@ -70,8 +70,8 @@ double PIDController::get_action(double setpoint, double flowrate, double force)
   this->ca = this->previous_ca + dca;
   if (this->ca > MAX_DC)
     this->ca = MAX_DC;
-  else if (this->ca < MAX_DC)
-    this->ca = MAX_DC;
+  else if (this->ca < MIN_DC)
+    this->ca = MIN_DC;
 
   return this->ca;
 }
