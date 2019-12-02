@@ -17,7 +17,7 @@ private:
   double pid_kd;
   double err1 = 0.0, err2 = 0.0;
   
-  double ca = -1;
+  double ca = -1.0;
   double previous_ca = 0.0;
 
   unsigned long measure_time;
@@ -37,10 +37,11 @@ public:
 class PIDController : public Controller {
 public:
   PIDController(double kp, double ki, double kd) {
-    this->controlled_variable = controlled_variable;
     this->pid_kp = kp;
     this->pid_ki = ki;
     this->pid_kd = kd;
+    this->ca = 0.0;
+    this->previous_ca = 0.0;
   }
   double get_action(double setpoint, double flowrate, double force);
 };
