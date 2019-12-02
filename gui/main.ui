@@ -83,8 +83,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="active">True</property>
                         <property name="draw_indicator">True</property>
+                        <property name="group">radPassive</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -101,7 +101,6 @@
                         <property name="receives_default">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">radPID</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -117,7 +116,7 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="draw_indicator">True</property>
-                        <property name="group">radPID</property>
+                        <property name="group">radPassive</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -141,7 +140,7 @@
                     <property name="orientation">vertical</property>
                     <property name="layout_style">center</property>
                     <child>
-                      <object class="GtkButton" id="btnSettings">
+                      <object class="GtkButton" id="btnTuning">
                         <property name="label" translatable="yes">Settings</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -293,6 +292,22 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkRadioButton" id="radStep">
+                        <property name="label" translatable="yes">Step</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="group">radConst</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkRadioButton" id="radSine">
                         <property name="label" translatable="yes">Sine</property>
                         <property name="visible">True</property>
@@ -305,7 +320,7 @@
                         <property name="expand">True</property>
                         <property name="fill">True</property>
                         <property name="padding">10</property>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -423,6 +438,7 @@
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
+                        <property name="text" translatable="yes">0.5</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -694,6 +710,7 @@ The software will search for likely Arduino connections and display them here. I
                     <property name="tooltip_text" translatable="yes">Log names are generated according to the time they were created, the control parameters, and this user defined "tag".
 
 Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will be converted to dashes ('-') before use.</property>
+                    <property name="text" translatable="yes">delme</property>
                     <property name="placeholder_text" translatable="yes">tag to identify the logged data</property>
                   </object>
                   <packing>
@@ -1078,7 +1095,7 @@ This controller works taking a bit of time to measure how supply voltage affects
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="ent">
+                  <object class="GtkEntry" id="entMeasTime">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="tooltip_markup" translatable="yes">How "strong" the proportional gain is.
@@ -1088,7 +1105,7 @@ CA = K&lt;sub&gt;P&lt;/sub&gt; × Error
 High K&lt;sub&gt;P&lt;/sub&gt; means quick, overshooting response to error, low K&lt;sub&gt;P&lt;/sub&gt; means slow response with little/no overshoot.
 
 Set to zero to disable (not recommmended).</property>
-                    <property name="text" translatable="yes">0.1</property>
+                    <property name="text" translatable="yes">10</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
