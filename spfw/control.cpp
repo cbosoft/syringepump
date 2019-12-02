@@ -54,13 +54,13 @@ double PIDController::get_action(double setpoint, double flowrate, double force)
   double err = setpoint - input;
 
   // Proportional control
-  dca += this->pid_kp * (err - err1);
+  dca += this->pid_kp * (err - this->err1);
 
   // Integral control
   dca += this->pid_ki * err * delta_t;
 
   // Derivative control
-  dca += this->pid_kd * (err - (2*err1) + err2) / delta_t;
+  dca += this->pid_kd * (err - (2*this->err1) + this->err2) / delta_t;
 
   // Update Error history
   this->err2 = err1;
