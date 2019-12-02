@@ -93,17 +93,40 @@ void cb_tuning_clicked(GObject *obj, struct Data *data)
 {
   (void) obj;
 
-  char *kp = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKP"))));
-  char *ki = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKI"))));
-  char *kd = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKD"))));
+  int control_type = form_get_control_type(data), response = 1;
+  char *kp = NULL;
+  char *ki = NULL;
+  char *kd = NULL;
+  char *mt = NULL;
 
-  int response = gtk_dialog_run(GTK_DIALOG(get_object_safe(data, "winTuningDialog")));
+  switch (control_type) {
+    case FORM_CONTROL_NONE:
+      timestamp_error(data, 0, "this should never happen.");
+      return;
 
-  if (response != GTK_RESPONSE_ACCEPT) {
-      gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKP")), kp);
-      gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKI")), ki);
-      gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKD")), kd);
+    case FORM_CONTROL_PID:
+      kp = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKP"))));
+      ki = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKI"))));
+      kd = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKD"))));
+      response = gtk_dialog_run(GTK_DIALOG(get_object_safe(data, "winTuningDialog")));
+      if (response != GTK_RESPONSE_ACCEPT) {
+          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKP")), kp);
+          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKI")), ki);
+          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKD")), kd);
+      }
+      gtk_widget_hide(GTK_WIDGET(get_object_safe(data, "winTuningDialog")));
+      break;
+
+    case FORM_CONTROL_MEAS:
+      mt = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entMeasTime"))));
+      response = gtk_dialog_run(GTK_DIALOG(get_object_safe(data, "winPassiveSettings")));
+      if (response != GTK_RESPONSE_ACCEPT) {
+          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entMeasTime")), mt);
+      }
+      gtk_widget_hide(GTK_WIDGET(get_object_safe(data, "winPassiveSettings")));
+      break;
   }
 
-  gtk_widget_hide(GTK_WIDGET(get_object_safe(data, "winTuningDialog")));
+
+
 }
