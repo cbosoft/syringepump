@@ -54,13 +54,16 @@ double PIDController::get_action(double setpoint, double flowrate, double force)
   double err = setpoint - input;
 
   // Proportional control
-  dca += this->pid_kp * (err - this->err1);
+  if (this->pid_kp)
+    dca += this->pid_kp * (err - this->err1);
 
   // Integral control
-  dca += this->pid_ki * err * delta_t;
+  if (this->pid_ki)
+    dca += this->pid_ki * err * delta_t;
 
   // Derivative control
-  dca += this->pid_kd * (err - (2*this->err1) + this->err2) / delta_t;
+  if ((this->pid_kd) && (delta_t != 0.0))
+    dca += this->pid_kd * (err - (2*this->err1) + this->err2) / delta_t;
 
   // Update Error history
   this->err2 = err1;
@@ -100,6 +103,36 @@ double MeasureController::get_action(double setpoint, double flowrate, double fo
     break;
     
   }
+
+  // // moving average of window length n
+  // if (!this->filled) {
+  //   this->inputs = realloc(this->inputs, (++this->n)*sizeof(char));
+  //   this->inputs[this->n] = input;
+  //   if (this->n == this->max_n-1) {
+  //     this->filled = 1;
+  //   }
+  // }
+  // else {
+  //   this->n = (++this->n) % this->max_n;
+  //   this->inputs[this->n] = input;
+  // }
+  // double total = 0.0;
+  // Serial.print("   INPUT: ");
+  // Serial.print(input);
+
+  // if (!this->filled) {
+  //   for (int i = 0; i < this->n; i++) total += this->inputs[i];
+  //   input = total / ((double)this->n);
+  // }
+  // else {
+  //   for (int i = 0; i < this->max_n; i++) total += this->inputs[i];
+  //   input = total / ((double)this->max_n);
+  // }
+  // Serial.print("   AVINPUT: ");
+  // Serial.print(input);
+  // Serial.print("\n");
+
+
 
   if (input < setpoint) {
     this->ca += 1;
