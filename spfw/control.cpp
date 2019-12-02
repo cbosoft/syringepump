@@ -82,8 +82,10 @@ double PIDController::get_action(double setpoint, double flowrate, double force)
 double MeasureController::get_action(double setpoint, double flowrate, double force)
 {
   // if measure period is over, just return a constant.
-  if (time > this->measure_time)
+  if (((time*0.001) > this->measure_time) || (this->passive--))
     return this->ca;
+
+  this->passive = 5;
 
   // otherwise, measure how control affects the controlled variable.
   double input = 0.0;
