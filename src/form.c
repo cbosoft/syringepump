@@ -27,11 +27,9 @@ int check_form(struct Data *data)
   int rv = 0;
 
   // check over the form, pre connection.
-  // none of the inputs should be empty (setpoint, kp, ki, kd, tag)
+  // none of the inputs should be empty
 
-  // setpoint, kp, ki, kd should be numbers
-  // (enforced by gtk, but can be overridden using cli args, so do need to 
-  // check here)
+  // TODO check tuning parameters and meas time input
 
   switch (form_get_setter_type(data)) {
     case FORM_SETTER_CONSTANT:
@@ -214,6 +212,7 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
   // control
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radPID")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radNoControl")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radPassive")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnTuning")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radFlowControl")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radForceControl")), control);
@@ -272,9 +271,11 @@ GObject * get_object_safe(struct Data *data, const char *name)
 // Get control option from the GUI
 int form_get_control_type(struct Data *data)
 {
-  GObject *rad_pid = get_object_safe(data, "radPID");
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_pid))) {
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, "radPID")))) {
     return FORM_CONTROL_PID;
+  }
+  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, "radPassive")))) {
+    return FORM_CONTROL_MEAS;
   }
   else {
     return FORM_CONTROL_NONE;
@@ -338,7 +339,7 @@ void form_setter_update(struct Data *data)
     *lblDesc = get_object_safe(data, "lblSetterDesc"),
     *lblFormula = get_object_safe(data, "lblSetterFormula");
 
-  int controlled = form_get_control_type(data) == FORM_CONTROL_PID;
+  int controlled = form_get_control_type(data) != FORM_CONTROL_NONE;
   int flow_control = form_get_controlled_var(data) == FORM_VAR_FLOW;
 
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnTuning")), controlled);
@@ -501,7 +502,19 @@ char *form_get_pid_params(struct Data *data)
   GObject *ent_KI = get_object_safe(data, "entKI");
   GObject *ent_KD = get_object_safe(data, "entKD");
   char *rv = malloc(70*sizeof(char));
-  sprintf(rv, "%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_KP)), gtk_entry_get_text(GTK_ENTRY(ent_KI)), gtk_entry_get_text(GTK_ENTRY(ent_KD)));
+  sprintf(rv, "P%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_KP)), gtk_entry_get_text(GTK_ENTRY(ent_KI)), gtk_entry_get_text(GTK_ENTRY(ent_KD)));
+  return rv;
+}
+
+
+
+
+// get MEAS tuning params from dialog
+char *form_get_meas_params(struct Data *data)
+{
+  GObject *ent_meas_time = get_object_safe(data, "entMeasTime");
+  char *rv = malloc(70*sizeof(char));
+  sprintf(rv, "M%s", gtk_entry_get_text(GTK_ENTRY(ent_meas_time)));
   return rv;
 }
 

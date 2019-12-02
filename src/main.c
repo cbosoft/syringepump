@@ -122,6 +122,7 @@ int main (int argc, char **argv)
   g_signal_connect(get_object_safe(data, "radFlowControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radPID"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radNoControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "radPassive"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   form_setter_update(data);
 
   timestamp(data, 1, "GUI started");

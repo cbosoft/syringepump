@@ -14,6 +14,7 @@ enum FORM_SENSITIVITIES
 enum FORM_CONTROL_SELECTION
 {
   FORM_CONTROL_NONE,
+  FORM_CONTROL_MEAS,
   FORM_CONTROL_PID
 };
 
@@ -45,6 +46,7 @@ char *form_get_ramp_setter_params(struct Data *data);
 char *form_get_step_setter_params(struct Data *data);
 char *form_get_sine_setter_params(struct Data *data);
 char *form_get_pid_params(struct Data *data);
+char *form_get_meas_params(struct Data *data);
 char *form_get_bldi_data(struct Data *data);
 GObject * get_object_safe(struct Data *data, const char *name);
 
