@@ -33,7 +33,7 @@ extern double step_final;
 
 double PIDController::get_action(double setpoint, double flowrate, double force)
 {
-  double delta_t = (double)(time - ptime);
+  double delta_t = (double)(time - ptime)*0.001; // in s
   ptime = time;
 
   double dca = 0.0;
