@@ -43,11 +43,11 @@ double PIDController::get_action(double setpoint, double flowrate, double force)
   switch (this->controlled_variable) {
     
   case CONTROLLED_FLOWRATE:
-    input = force;
+    input = flowrate;
     break;
     
   case CONTROLLED_FORCE:
-    input = flowrate;
+    input = force;
     break;
     
   }
