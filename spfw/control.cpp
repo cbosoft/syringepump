@@ -127,7 +127,7 @@ Controller *controlInit(){
   Serial.print("WAIT\n");
   Controller *rv = NULL;
 
-  for (int i = 0; i < 100 && !done; i++) {
+  for (int i = 0; i < 10 && !done; i++) {
 
     while (!Serial.available()) delay(100);
 
