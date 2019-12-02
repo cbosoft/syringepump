@@ -65,7 +65,8 @@ static void *connect_worker(void *vptr_data)
   }
 
   timestamp(data, 0, "Sending run parameters to Arduino");
-
+  
+  // TODO migrate setpoint get params stuff to form.c
   int 
     controlled_var = form_get_controlled_var(data), 
     controller_type = form_get_control_type(data), 
@@ -123,6 +124,11 @@ static void *connect_worker(void *vptr_data)
     char *pid_tuning = form_get_pid_params(data);
     send_data_packet(data, 0, "TP", pid_tuning);
     free(pid_tuning);
+  }
+  else if (controller_type == FORM_CONTROL_MEAS) {
+    char *meas_params = form_get_meas_params(data);
+    send_data_packet(data, 0, "TP", meas_params);
+    free(meas_params);
   }
 
   char *bldi_data = form_get_bldi_data(data);
