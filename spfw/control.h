@@ -25,7 +25,7 @@ private:
 public:
   Controller() { this->ca = 0.0; this->previous_ca = 0.0; };
 
-  double get_action(double setpoint, double flowrate, double force) { return setpoint; };
+  virtual double get_action(double setpoint, double flowrate, double force);
   void set_controlled_variable(int controlled_variable) {this->controlled_variable = controlled_variable;}
 
   friend class PIDController;
