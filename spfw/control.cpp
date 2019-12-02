@@ -122,7 +122,7 @@ Controller *controlInit(){
     bd_recvd = 0,
     lo_recvd = 0,
     controlled_var = 0,
-    control_type = 0;
+    control_type = CONTROL_NONE;
 
   Serial.print("WAIT\n");
   Controller *rv = NULL;
