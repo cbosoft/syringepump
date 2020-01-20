@@ -46,8 +46,9 @@ class ArduinoIOP:
         self.reset()
 
     def disconnect(self):
-        self._connection.close()
-        self.connected = False
+        if self.connected:
+            self._connection.close()
+            self.connected = False
 
     @needs_connection
     def send_data(self, data):
