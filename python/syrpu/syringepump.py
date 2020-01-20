@@ -1,6 +1,9 @@
-class SyringePumpController:
+from syrpu.arduino_iop import ArduinoIOP
 
-    def __init__(self):
+class Syringepump:
+
+    def __init__(self, **kwargs):
+        self.arduino = ArduinoIOP(**kwargs)
+
+    def run(self):
         pass
-
-    def 
