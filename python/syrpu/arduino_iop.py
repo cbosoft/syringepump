@@ -7,6 +7,14 @@ from os.path import exists
 class NotConnectedError(Exception):
     '''Error raised when an action needs a connection, but the connection has not been made.'''
 
+def needs_connection(f):
+    def decorator(self, *args, **kwargs):
+        if not self.connected:
+            raise NotConnectedError(f'{f.__name__} need connection: arduino not connected.')
+        else:
+            return f(self, *args, **kwargs)
+    return decorator
+
 class ArduinoIOP:
 
     def __init__(self, serial_path='/dev/ttyACM0'):
@@ -32,10 +40,8 @@ class ArduinoIOP:
         self._connection.close()
         self.connected = False
 
+    @needs_connection
     def send_data(self, data):
-
-        if not self.connected:
-            raise Exception('Need to connect before sending data.')
 
         sleep(0.5)
 
@@ -45,11 +51,8 @@ class ArduinoIOP:
         self._connection.write(data)
         self._connection.flush()
 
+    @needs_connection
     def read_line(self):
-
-        if not self.connected:
-            raise Exception('Need to connect before can receive data.')
-
         sleep(0.5)
 
         buf = ''
