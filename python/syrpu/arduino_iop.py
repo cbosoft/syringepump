@@ -32,9 +32,18 @@ class ArduinoIOP:
         if self.connected: 
             self.disconnect
 
+    @needs_connection
+    def reset(self):
+        self._connection.setDTR(False)
+        sleep(0.05)
+        self._connection.setDTR(True)
+        sleep(3)
+
+
     def connect(self):
         self._connection = serial.Serial(self.serial_path, 9600, timeout=5)
         self.connected = True
+        self.reset()
 
     def disconnect(self):
         self._connection.close()
@@ -42,8 +51,6 @@ class ArduinoIOP:
 
     @needs_connection
     def send_data(self, data):
-
-        sleep(0.5)
 
         if isinstance(data, str):
             data = data.encode()
@@ -53,8 +60,6 @@ class ArduinoIOP:
 
     @needs_connection
     def read_line(self):
-        sleep(0.5)
-
         buf = ''
         ch = ''
         while True:
