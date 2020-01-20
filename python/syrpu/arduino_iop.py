@@ -4,6 +4,9 @@ import serial
 
 from os.path import exists
 
+class NotConnectedError(Exception):
+    '''Error raised when an action needs a connection, but the connection has not been made.'''
+
 class ArduinoIOP:
 
     def __init__(self, serial_path='/dev/ttyACM0'):
