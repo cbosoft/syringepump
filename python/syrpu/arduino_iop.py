@@ -73,3 +73,7 @@ class ArduinoIOP:
                 buf += ch
         return buf
 
+    @needs_connection
+    def send_packet(self, key, value):
+        pass
+
