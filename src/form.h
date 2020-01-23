@@ -30,8 +30,6 @@ typedef enum FORM_CONTROLLED_VAR {
 
 int check_form(struct Data *data);
 void form_set_sensitive(struct Data *data, int sensitivity_flag);
-void form_set_progress(struct Data *data, double fraction);
-void form_pulse_progress(struct Data *data);
 FORM_CONTROL_SELECTION form_get_control_type(struct Data *data);
 FORM_SETTER_SELECTION form_get_setter_type(struct Data *data);
 FORM_CONTROLLED_VAR form_get_controlled_var(struct Data *data);

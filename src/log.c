@@ -188,24 +188,10 @@ static void *log_worker(void *void_data)
       timestamp(NULL, 0, "%s", received_text);
     }
 
-    // using third column (position) to get progress
-    // must be done last as strtok does funny things to strings
-    char *position_s = strtok(received_text, ",");
-    for (int i = 0; i < 2; i++) position_s = strtok(NULL, ",");
-
-    if (position_s != NULL) {
-      double prev = gtk_progress_bar_get_fraction(GTK_PROGRESS_BAR(get_object_safe(data, "progProgress")));
-      double fraction = 1.0 - (atof(position_s) / 110.0);
-      if (fraction > prev || prev >= 1.0)
-        form_set_progress(data, fraction);
-    }
-
   }
 
   if (data->log_worker_status > THREAD_CANCELLED)
     disconnect(data, 0);
-
-  form_set_progress(data, 1.0);
 
   return NULL;
 }

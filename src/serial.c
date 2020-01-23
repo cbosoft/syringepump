@@ -98,8 +98,6 @@ int wait_for(struct Data *data, int is_gui, const char *trigger, int timeout_s, 
 
   for (int time = 0; time < timeout_n; time++) {
 
-    form_pulse_progress(data);
-
     char buffer[512] = {0};
 
     read_serial_line(data, buffer, 512, 10);

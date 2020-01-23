@@ -984,19 +984,6 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="position">2</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkProgressBar" id="progProgress">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="pulse_step">0.20000000000000001</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="padding">10</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
       </object>
     </child>
   </object>

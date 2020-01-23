@@ -124,50 +124,6 @@ void form_set_cursor(struct Data *data, const char *name)
 
 
 
-// Progress bar functions and data
-struct progress_callback_data {
-  struct Data *data;
-  double fraction;
-};
-
-gboolean prog_pulse_callback(struct Data *data)
-{
-  gtk_progress_bar_pulse(GTK_PROGRESS_BAR(get_object_safe(data, "progProgress")));
-  return 0;
-}
-
-gboolean prog_set_callback(struct progress_callback_data *pcd)
-{
-  struct Data *data = pcd->data;
-  gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(get_object_safe(data, "progProgress")), pcd->fraction);
-  free(pcd);
-  return 0;
-}
-
-
-
-
-// make progress bar jiggle a bit to indicate stuff is happening
-void form_pulse_progress(struct Data *data)
-{
-  g_idle_add((GSourceFunc)prog_pulse_callback, data);
-}
-
-
-
-
-// set progress absolute value
-void form_set_progress(struct Data *data, double fraction)
-{
-  struct progress_callback_data *pcd = calloc(1, sizeof(struct progress_callback_data));
-  pcd->data = data;
-  pcd->fraction = fraction;
-  g_idle_add((GSourceFunc)prog_set_callback, pcd);
-}
-
-
-
-
 
 // Depending on the situation, different parts of the form should be turned off or on
 void form_set_sensitive(struct Data *data, int sensitivity_flag)
