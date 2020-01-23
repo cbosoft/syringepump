@@ -3,6 +3,7 @@
 
 static volatile unsigned long tripc = 0;
 static unsigned long time_last_check = 0;
+unsigned long total_ticks = 0;
 
 
 
@@ -32,6 +33,8 @@ double getSpeedReading()
   long dtrips = tripc;
   tripc = 0;
   interrupts();
+
+  total_ticks += dtrips;
   return (double(dtrips) * MM_PER_TRIP * MS_PER_S) / (double(dt));
 }
 

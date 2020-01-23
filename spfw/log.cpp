@@ -12,7 +12,7 @@ const int log_ticks = 1;
 
 void logToSerial(
     long time, double force, double flowrate, 
-    double control_action, long load_cell_reading, long ticks)
+    double control_action, long load_cell_reading, unsigned long ticks)
 {
   int ncols = 0;
 

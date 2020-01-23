@@ -23,6 +23,7 @@ extern double buflen;
 extern double inner_diameter;
 extern int log_options;
 extern double setpoint;
+extern unsigned long total_ticks;
 
 void (*softReset)(void) = 0;
 
@@ -85,7 +86,7 @@ void loop ()
   double control_action = controller->get_action(setpoint, flowrate, force);
   motorSetDC(int(control_action));
 
-  logToSerial(time, force, flowrate, control_action, load_cell, -1);
+  logToSerial(time, force, flowrate, control_action, load_cell, total_ticks);
 
   if (position < buflen) {
 
