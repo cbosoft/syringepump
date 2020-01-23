@@ -984,6 +984,22 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="position">2</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">end</property>
+            <property name="margin_right">10</property>
+            <property name="label" translatable="yes">&lt;small&gt;Notice something wrong? Email Chris! &lt;b&gt;OR&lt;/b&gt;, open a new issue on GitHub &lt;a href="https://github.com/cbosoft/syringepump/issues/new"&gt;here&lt;/a&gt;!&lt;/small&gt;</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>
