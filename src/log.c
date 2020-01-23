@@ -22,13 +22,30 @@ static GThread *log_worker_thread;
 void write_run_params(struct Data *data)
 {
   FILE *fp = fopen(data->logpath, "w");
-  int control_type = form_get_control_type(data);
-  int setter_type = form_get_setter_type(data);
+  FORM_CONTROL_SELECTION control_type = form_get_control_type(data);
+  FORM_SETTER_SELECTION setter_type = form_get_setter_type(data);
 
-  if (control_type == FORM_CONTROL_PID) {
-    fprintf(fp, "KP, KI, KD\n");
-    fprintf(fp, "%s\n\n", form_get_pid_params(data));
+  switch (control_type) {
+
+    case FORM_CONTROL_PID:
+      fprintf(fp, "PID control\n");
+      fprintf(fp, "KP, KI, KD\n");
+      fprintf(fp, "%s\n\n", form_get_pid_params(data));
+      break;
+
+    case FORM_CONTROL_MEAS:
+      fprintf(fp, "Passive control\n");
+      fprintf(fp, "Measure Time (s)\n");
+      fprintf(fp, "%s\n\n", form_get_meas_params(data));
+      break;
+
+    case FORM_CONTROL_NONE:
+      fprintf(fp, "Voltage control\n");
+      fprintf(fp, "Voltage is set directly according to setter.\n\n");
+      var_unit = "V";
+      break;
   }
+  
 
   char *s;
 
@@ -44,6 +61,15 @@ void write_run_params(struct Data *data)
       fprintf(fp, "Linearly changing setpoint\n");
       fprintf(fp, "Gradient,Intercept\n");
       s = form_get_ramp_setter_params(data);
+      fprintf(fp, "%s\n", s);
+      free(s);
+      s = NULL;
+      break;
+
+    case FORM_SETTER_STEP:
+      fprintf(fp, "Linearly changing setpoint\n");
+      fprintf(fp, "Initial Value (%s),Time of Change (s),Final Value (%s)\n", var_unit, var_unit);
+      s = form_get_step_setter_params(data);
       fprintf(fp, "%s\n", s);
       free(s);
       s = NULL;
