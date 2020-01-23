@@ -266,15 +266,15 @@ GObject * get_object_safe(struct Data *data, const char *name)
 }
 
 
-
+#define CHECK_RAD_IS_CHECKED(N) gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, N)))
 
 // Get control option from the GUI
-int form_get_control_type(struct Data *data)
+FORM_CONTROL_SELECTION form_get_control_type(struct Data *data)
 {
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, "radPID")))) {
+  if (CHECK_RAD_IS_CHECKED("radPID")) {
     return FORM_CONTROL_PID;
   }
-  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, "radPassive")))) {
+  else if (CHECK_RAD_IS_CHECKED("radPassive")) {
     return FORM_CONTROL_MEAS;
   }
   else {
@@ -286,19 +286,16 @@ int form_get_control_type(struct Data *data)
 
 
 // get setter option from GUI
-int form_get_setter_type(struct Data *data)
+FORM_SETTER_SELECTION form_get_setter_type(struct Data *data)
 {
-  GObject *rad_const = get_object_safe(data, "radConst");
-  GObject *rad_ramp = get_object_safe(data, "radRamp");
-  GObject *rad_step = get_object_safe(data, "radStep");
 
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_const))) {
+  if (CHECK_RAD_IS_CHECKED("radConst")) {
     return FORM_SETTER_CONSTANT;
   }
-  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_ramp))) {
+  else if (CHECK_RAD_IS_CHECKED("radRamp")) {
     return FORM_SETTER_RAMP;
   }
-  else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_step))) {
+  else if (CHECK_RAD_IS_CHECKED("radStep")) {
     return FORM_SETTER_STEP;
   }
   else {
@@ -310,10 +307,9 @@ int form_get_setter_type(struct Data *data)
 
 
 // get controlled variable from GUI
-int form_get_controlled_var(struct Data *data)
+FORM_CONTROLLED_VAR form_get_controlled_var(struct Data *data)
 {
-  GObject *rad_flow = get_object_safe(data, "radFlowControl");
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(rad_flow))) {
+  if (CHECK_RAD_IS_CHECKED("radFlowControl")) {
     return FORM_VAR_FLOW;
   }
   else {
