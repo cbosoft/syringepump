@@ -25,6 +25,8 @@ void write_run_params(struct Data *data)
   FORM_CONTROL_SELECTION control_type = form_get_control_type(data);
   FORM_SETTER_SELECTION setter_type = form_get_setter_type(data);
 
+  char *var_unit = (form_get_controlled_var(data) == FORM_VAR_FLOW) ? "ml/s" : "N";
+
   switch (control_type) {
 
     case FORM_CONTROL_PID:
@@ -53,13 +55,13 @@ void write_run_params(struct Data *data)
 
     case FORM_SETTER_CONSTANT:
       fprintf(fp, "Constant setpoint\n");
-      fprintf(fp, "Value\n");
+      fprintf(fp, "Value (%s)\n", var_unit);
       fprintf(fp, "%s\n", form_get_const_setter_params(data));
       break;
 
     case FORM_SETTER_RAMP:
       fprintf(fp, "Linearly changing setpoint\n");
-      fprintf(fp, "Gradient,Intercept\n");
+      fprintf(fp, "Gradient (%s/s),Intercept (%s)\n", var_unit, var_unit);
       s = form_get_ramp_setter_params(data);
       fprintf(fp, "%s\n", s);
       free(s);
@@ -77,7 +79,7 @@ void write_run_params(struct Data *data)
 
     case FORM_SETTER_SINE:
       fprintf(fp, "Sine wave setpoint\n");
-      fprintf(fp, "Frequency,Magnitude,Mean\n");
+      fprintf(fp, "Frequency (Hz),Magnitude (%s),Mean (%s)\n", var_unit, var_unit);
       s = form_get_sine_setter_params(data);
       fprintf(fp, "%s\n", s);
       free(s);
