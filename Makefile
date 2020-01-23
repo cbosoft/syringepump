@@ -91,3 +91,7 @@ install: syringepump
 	cp -r icons /usr/share/icons
 	cp -r applications /usr/share/applications
 
+.PHONY: python
+
+python:
+	cd python && python setup.py install
