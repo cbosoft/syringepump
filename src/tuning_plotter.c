@@ -67,7 +67,7 @@ int read_tuning_data(char *path, struct CompositionTuning **cdata)
   fseek(f, 0, SEEK_END);
   long length = ftell(f);
   fseek(f, 0, SEEK_SET);
-  char *buffer = malloc(length);
+  char *buffer = calloc(length+1, sizeof(char));
   if (!buffer)
     return 1;
   fread(buffer, 1, length, f);
