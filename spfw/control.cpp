@@ -79,18 +79,17 @@ double PIDController::get_action(double setpoint, double flowrate, double force)
   return this->ca;
 }
 
-
-
-
 double MeasureController::get_action(double setpoint, double flowrate, double force)
 {
-  // if measure period is over, just return a constant.
-  if (((time*0.001) > this->measure_time) || (this->passive--))
+  if ((time*0.001) > this->measure_time)
     return this->ca;
 
-  this->passive = 5;
+  double delta_t = (double)(time - ptime)*0.001; // in s
+  ptime = time;
 
-  // otherwise, measure how control affects the controlled variable.
+  double dca = 0.0;
+
+  // Calculate error
   double input = 0.0;
   switch (this->controlled_variable) {
     
@@ -103,48 +102,100 @@ double MeasureController::get_action(double setpoint, double flowrate, double fo
     break;
     
   }
+  double err = setpoint - input;
 
-  // // moving average of window length n
-  // if (!this->filled) {
-  //   this->inputs = realloc(this->inputs, (++this->n)*sizeof(char));
-  //   this->inputs[this->n] = input;
-  //   if (this->n == this->max_n-1) {
-  //     this->filled = 1;
-  //   }
-  // }
-  // else {
-  //   this->n = (++this->n) % this->max_n;
-  //   this->inputs[this->n] = input;
-  // }
-  // double total = 0.0;
-  // Serial.print("   INPUT: ");
-  // Serial.print(input);
+  // Proportional control
+  if (this->pid_kp)
+    dca += this->pid_kp * (err - this->err1);
 
-  // if (!this->filled) {
-  //   for (int i = 0; i < this->n; i++) total += this->inputs[i];
-  //   input = total / ((double)this->n);
-  // }
-  // else {
-  //   for (int i = 0; i < this->max_n; i++) total += this->inputs[i];
-  //   input = total / ((double)this->max_n);
-  // }
-  // Serial.print("   AVINPUT: ");
-  // Serial.print(input);
-  // Serial.print("\n");
+  // Integral control
+  if (this->pid_ki)
+    dca += this->pid_ki * err * delta_t;
 
+  // Derivative control
+  if ((this->pid_kd) && (delta_t != 0.0))
+    dca += this->pid_kd * (err - (2*this->err1) + this->err2) / delta_t;
 
+  // Update Error history
+  this->err2 = err1;
+  this->err1 = err;
 
-  if (input < setpoint) {
-    this->ca += 1;
-  }
-  else if (input > setpoint) {
-    this->ca -= 1;
-  }
-
-  delay(100);
+  this->previous_ca = this->ca;
+  this->ca = this->previous_ca + dca;
+  if (this->ca > MAX_DC)
+    this->ca = MAX_DC;
+  else if (this->ca < MIN_DC)
+    this->ca = MIN_DC;
 
   return this->ca;
 }
+
+
+
+
+// double MeasureController::get_action(double setpoint, double flowrate, double force)
+// {
+//   // if measure period is over or only been a few loops, just return a constant.
+//   if (((time*0.001) > this->measure_time) || (this->passive--))
+//     return this->ca;
+// 
+//   this->passive = 5;
+// 
+//   // otherwise, measure how control affects the controlled variable.
+//   double input = 0.0;
+//   switch (this->controlled_variable) {
+//     
+//   case CONTROLLED_FLOWRATE:
+//     input = flowrate;
+//     break;
+//     
+//   case CONTROLLED_FORCE:
+//     input = force;
+//     break;
+//     
+//   }
+// 
+//   // // moving average of window length n
+//   // if (!this->filled) {
+//   //   this->inputs = realloc(this->inputs, (++this->n)*sizeof(char));
+//   //   this->inputs[this->n] = input;
+//   //   if (this->n == this->max_n-1) {
+//   //     this->filled = 1;
+//   //   }
+//   // }
+//   // else {
+//   //   this->n = (++this->n) % this->max_n;
+//   //   this->inputs[this->n] = input;
+//   // }
+//   // double total = 0.0;
+//   // Serial.print("   INPUT: ");
+//   // Serial.print(input);
+// 
+//   // if (!this->filled) {
+//   //   for (int i = 0; i < this->n; i++) total += this->inputs[i];
+//   //   input = total / ((double)this->n);
+//   // }
+//   // else {
+//   //   for (int i = 0; i < this->max_n; i++) total += this->inputs[i];
+//   //   input = total / ((double)this->max_n);
+//   // }
+//   // Serial.print("   AVINPUT: ");
+//   // Serial.print(input);
+//   // Serial.print("\n");
+// 
+// 
+// 
+//   if (input < setpoint) {
+//     this->ca += 1;
+//   }
+//   else if (input > setpoint) {
+//     this->ca -= 1;
+//   }
+// 
+//   delay(100);
+// 
+//   return this->ca;
+// }
 
 
 
@@ -237,24 +288,29 @@ Controller *controlInit(){
       double kp, ki, kd;
       unsigned long meas_time;
       switch (ct) {
-	
-      case 'P':
-	control_type = CONTROL_PID;
 
-	param = strtok(val, ",");
-	kp = atof(param);
-	param = strtok(0, ",");
-	ki = atof(param);
-	param = strtok(0, ",");
-	kd = atof(param);
-	rv = new PIDController(kp, ki, kd);
-	break;
-	
+      case 'P':
+	      control_type = CONTROL_PID;
+
+	      param = strtok(val, ",");
+	      kp = atof(param);
+	      param = strtok(0, ",");
+	      ki = atof(param);
+	      param = strtok(0, ",");
+	      kd = atof(param);
+	      rv = new PIDController(kp, ki, kd);
+	      break;
+
       case 'M':
-	control_type = CONTROL_MEAS;
-	meas_time = atol(++val);
-	rv = new MeasureController(meas_time);
-	break;
+	      control_type = CONTROL_MEAS;
+	      param = strtok(val, ",");
+	      kp = atof(param);
+	      param = strtok(0, ",");
+	      ki = atof(param);
+	      param = strtok(0, ",");
+	      kd = atof(param);
+	      rv = new MeasureController(kp, ki, kd);
+	      break;
       }
 
       tp_recvd = 1;

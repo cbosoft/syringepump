@@ -58,9 +58,12 @@ class MeasureController : public Controller {
   private:
     int passive;
   public:
-    MeasureController(unsigned long measure_time) {
-      this->measure_time = measure_time;
-      this->passive = 0;
+    MeasureController(double kp, double ki, double kd) {
+      this->pid_kp = kp;
+      this->pid_ki = ki;
+      this->pid_kd = kd;
+      this->ca = 0.0;
+      this->previous_ca = 0.0;
     }
     double get_action(double setpoint, double flowrate, double force);
 };
@@ -69,3 +72,5 @@ class MeasureController : public Controller {
 
 
 Controller *controlInit();
+
+// vim: ft=cpp
