@@ -146,7 +146,7 @@ cgl_LineStyle *cgl_create_style()
   style->g = 0.0;
   style->b = 1.0;
   style->a = 1.0;
-  style->w = 1.0;
+  style->w = 2.0;
   return style;
 }
 
