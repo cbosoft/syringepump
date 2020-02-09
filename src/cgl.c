@@ -218,41 +218,78 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
   guint width = gtk_widget_get_allocated_width(widget);
   guint height = gtk_widget_get_allocated_height(widget);
 
+  //cairo_select_font_face(cr, "Courier", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
+  cairo_set_font_size(cr, 12);
+  cairo_text_extents_t extents;
+  cairo_text_extents(cr, "words", &extents);
+  cgl_uint text_height = extents.height;
+
   // Background
   cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
   cairo_paint(cr);
 
-  cgl_uint margin_left = (guint)(0.1*width);
+  cgl_uint margin_left = (guint)(0.15*width);
   cgl_uint margin_right = (guint)(0.1*width);
   cgl_uint margin_top = (guint)(0.1*height);
-  cgl_uint margin_bottom = (guint)(0.1*height);
+  cgl_uint margin_bottom = (guint)(0.25*height);
+
+  cgl_float px_per_data_x = ((cgl_float)(width-margin_left-margin_right)) / cgl_axes_get_span_x(fig->axes);
+  cgl_float px_per_data_y = ((cgl_float)(height-margin_top-margin_bottom)) / cgl_axes_get_span_y(fig->axes);
 
   // Axes
   cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
-  line_to(cr, margin_left, height-margin_bottom, width-margin_right, height-margin_top);
-  line_to(cr, margin_left, height-margin_bottom, margin_left, margin_top);
+  cgl_uint axes_x_length = width - margin_left - margin_right;
+  cgl_uint axes_y_length = height - margin_top - margin_bottom;
+  line_to(cr, margin_left-2, height-margin_bottom+2, width-margin_right+2, height-margin_bottom+2);
+  line_to(cr, margin_left-2, height-margin_bottom+2, margin_left-2, margin_top-2);
   cairo_stroke(cr);
 
-  // Labels
-  cairo_select_font_face(cr, "Courier", CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_BOLD);
-  cairo_set_font_size(cr, 12);
+  // Ticks
+  //cairo_set_line_width(cr, 1.0);
+  cgl_uint n_x_ticks = 3, n_y_ticks = 4;
+  cgl_uint x_tick_dp = axes_x_length/(n_x_ticks-1);
+  cgl_uint y_tick_dp = axes_y_length/(n_y_ticks-1);
+  for (cgl_uint i = 0; i < n_x_ticks; i++) {
+    cairo_move_to(cr, margin_left+(i*x_tick_dp), height-margin_bottom+2);
+    cairo_line_to(cr, margin_left+(i*x_tick_dp), height-margin_bottom+7);
+    cairo_stroke(cr);
 
-  cairo_text_extents_t extents;
+    char ticklabel[100] = {0};
+    snprintf(ticklabel, 99, "%.02f", (i*x_tick_dp)/px_per_data_x);
+    cairo_text_extents(cr, ticklabel, &extents);
+    cairo_move_to(cr, margin_left+(i*x_tick_dp)-extents.width/2, height-margin_bottom+10+extents.height);
+    cairo_show_text(cr, ticklabel);
+    cairo_stroke(cr);
+  }
+  for (cgl_uint i = 0; i < n_y_ticks; i++) {
+    cairo_move_to(cr, margin_left-2, margin_top+(i*y_tick_dp));
+    cairo_line_to(cr, margin_left-7, margin_top+(i*y_tick_dp));
+    cairo_stroke(cr);
+
+    char ticklabel[100] = {0};
+    snprintf(ticklabel, 99, "%.02f", (i*y_tick_dp)/px_per_data_y);
+    cairo_text_extents(cr, ticklabel, &extents);
+    cairo_move_to(cr, margin_left-extents.width-10, height-margin_bottom+2-(i*y_tick_dp));
+    cairo_show_text(cr, ticklabel);
+    cairo_stroke(cr);
+  }
+
+  // Labels
   cairo_text_extents(cr, fig->axes->x_label, &extents);
-  cairo_move_to(cr, width/2 - extents.width/2, height-(margin_bottom/2));
+  cairo_move_to(cr, margin_left + axes_x_length/2 - extents.width/2, height-(margin_bottom/2));
   cairo_show_text(cr, fig->axes->x_label);
 
   //cairo_save(cr); 
   //cairo_rotate(cr, 0.25*3.14);
   cairo_text_extents(cr, fig->axes->y_label, &extents);
-  cairo_move_to(cr, (margin_left-extents.width)/2, height/2);
+  cairo_move_to(cr, (margin_left-extents.width)/2, margin_top + axes_y_length/2);
   //cairo_move_to(cr, width/2 - extents.width/2, height-(margin_bottom/2));
   cairo_show_text(cr, fig->axes->y_label);
   //cairo_restore(cr);
 
+
+  cgl_uint legend = FALSE, legend_box_height = 0, legend_box_width = 0;
   // Data
-  cgl_float px_per_data_x = ((cgl_float)(width-margin_left-margin_right)) / cgl_axes_get_span_x(fig->axes);
-  cgl_float px_per_data_y = ((cgl_float)(height-margin_top-margin_bottom)) / cgl_axes_get_span_y(fig->axes);
 #define CGL_SCALE_X(F) (cgl_uint)(px_per_data_x * (F))
 #define CGL_SCALE_Y(F) (cgl_uint)(px_per_data_y * (F))
   for (cgl_uint line_i = 0; line_i < fig->nlines; line_i++) {
@@ -272,10 +309,50 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
       cairo_line_to(cr, margin_left + CGL_SCALE_X(point->x - fig->axes->x_lim[0]), height-(margin_bottom+CGL_SCALE_Y(point->y - fig->axes->y_lim[0])));
     }
     cairo_stroke(cr);
+
+
+    if (line->label) {
+      legend = TRUE;
+      cairo_text_extents(cr, line->label, &extents);
+      if (extents.width > legend_box_width) {
+        legend_box_width = extents.width;
+      }
+    }
   }
 #undef CGL_SCALE_Y
 #undef CGL_SCALE_X
 
+  // TODO legend
+  if (legend) {
+    cairo_set_line_width(cr, 2.0);
+    cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+    legend_box_height = (fig->nlines+1) * (text_height + 5);
+    legend_box_width = 30 + legend_box_width;
+    cairo_move_to(cr, width - 5 - legend_box_width, height/2 - legend_box_height/2);
+    cairo_line_to(cr, width - 5 - legend_box_width, height/2 + legend_box_height/2);
+    cairo_line_to(cr, width - 5,                    height/2 + legend_box_height/2);
+    cairo_line_to(cr, width - 5,                    height/2 - legend_box_height/2);
+    cairo_line_to(cr, width - 5 - legend_box_width, height/2 - legend_box_height/2);
+    cairo_stroke(cr);
+
+    for (cgl_uint i = 0; i < fig->nlines; i++) {
+      cgl_Line *line = fig->lines[i];
+      if (!line->label)
+        continue;
+
+      cairo_set_line_width(cr, line->style->w);
+
+      // paint small section of line
+      cairo_set_source_rgba(cr, line->style->r, line->style->g, line->style->b, line->style->a);
+      cairo_move_to(cr, width - 0 - legend_box_width, height/2 - legend_box_height/2 + (i+1)*(text_height+5));
+      cairo_line_to(cr, width + 5 - legend_box_width, height/2 - legend_box_height/2 + (i+1)*(text_height+5));
+      cairo_stroke(cr);
+
+      cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+      cairo_move_to(cr, width + 10 - legend_box_width, height/2 - legend_box_height/2 + (i+1)*(text_height+5) + 2.5);
+      cairo_show_text(cr, line->label);
+    }
+  }
   return FALSE;
 }
 
