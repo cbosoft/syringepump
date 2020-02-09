@@ -182,7 +182,6 @@ void cgl_figure_plot_vector(cgl_Figure *figure, cgl_float *x, cgl_float *y, cgl_
 
   figure->lines = realloc(figure->lines, (++figure->nlines)*sizeof(cgl_Line));
   cgl_uint colour_index = (figure->nlines-1) % n_colours;
-  fprintf(stderr, "%u\n", colour_index);
   cgl_line_set_colour(line, colours[colour_index]);
   figure->lines[figure->nlines-1] = line;
 }
@@ -203,7 +202,6 @@ void cgl_line_add_point(cgl_Line *line, cgl_float x, cgl_float y)
 
 void cgl_line_set_colour(cgl_Line *line, cgl_float colour[])
 {
-  fprintf(stderr, "%f %f %f\n", colour[0], colour[1], colour[2]);
   line->style->r = colour[0];
   line->style->g = colour[1];
   line->style->b = colour[2];
