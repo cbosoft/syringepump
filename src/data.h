@@ -5,6 +5,14 @@
 #include <Windows.h>
 #endif
 
+struct CompositionTuning {
+  double *cm;
+  double *kp;
+  double *ki;
+  double *kd;
+  unsigned int n;
+};
+
 struct Data {
 
 #ifdef WINDOWS
@@ -28,6 +36,8 @@ struct Data {
   int refresh_worker_status;
   int log_worker_status;
   int connect_worker_status;
+
+  struct CompositionTuning *composition_data;
 };
 
 // vim: ft=c

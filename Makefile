@@ -40,8 +40,8 @@ clean:
 	rm -rf src/*.o
 
 CC    = gcc
-CFLAGS = $(shell pkg-config --cflags gtk+-3.0)
-LINK   = $(shell pkg-config --libs gtk+-3.0)
+CFLAGS = $(shell pkg-config --cflags gtk+-3.0) -Wall -Wextra -Werror
+LINK   = $(shell pkg-config --libs gtk+-3.0) -lcgl
 
 DEFS     :=
 ifeq ($(OS),Windows_NT)
@@ -62,12 +62,14 @@ DEFS += -DARCH=\"$(shell gcc -dumpmachine)\"
 
 OBJ    = src/main.o \
 				 src/callbacks.o \
+				 src/cJSON.o \
 				 src/error.o \
 				 src/serial.o \
 				 src/log.o \
 				 src/connect.o \
 				 src/disconnect.o \
 				 src/refresh.o \
+				 src/tuning_plotter.o \
 				 src/form.o \
 				 src/util.o
 HDRS   = src/data.h

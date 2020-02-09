@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 
 
+#include "tuning_plotter.h"
 #include "form.h"
 #include "error.h"
 #include "util.h"
@@ -444,17 +445,39 @@ char *form_get_sine_setter_params(struct Data *data)
   return rv;
 }
 
+char *_get_pid_tuning(struct Data *data)
+{
+  int manual = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, "radManual")));
+  char *rv = malloc(70*sizeof(char));
+
+  if (manual) {
+    GObject *ent_KP = get_object_safe(data, "entKP");
+    GObject *ent_KI = get_object_safe(data, "entKI");
+    GObject *ent_KD = get_object_safe(data, "entKD");
+    sprintf(rv, "%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_KP)), gtk_entry_get_text(GTK_ENTRY(ent_KI)), gtk_entry_get_text(GTK_ENTRY(ent_KD)));
+  }
+  else {
+    GObject *composition_entry = get_object_safe(data, "entComposition");
+    double composition = atof(gtk_entry_get_text(GTK_ENTRY(composition_entry)));
+    unsigned int n = data->composition_data->n;
+    double kp = interp(data->composition_data->cm, data->composition_data->kp, n, composition);
+    double ki = interp(data->composition_data->cm, data->composition_data->ki, n, composition);
+    double kd = interp(data->composition_data->cm, data->composition_data->kd, n, composition);
+    sprintf(rv, "%f,%f,%f", kp, ki, kd);
+  }
+  return rv;
+}
+
 
 
 
 // get PID tuning params from dialog
 char *form_get_pid_params(struct Data *data)
 {
-  GObject *ent_KP = get_object_safe(data, "entKP");
-  GObject *ent_KI = get_object_safe(data, "entKI");
-  GObject *ent_KD = get_object_safe(data, "entKD");
+  char *tuning = _get_pid_tuning(data);
   char *rv = malloc(70*sizeof(char));
-  sprintf(rv, "P%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_KP)), gtk_entry_get_text(GTK_ENTRY(ent_KI)), gtk_entry_get_text(GTK_ENTRY(ent_KD)));
+  sprintf(rv, "P%s", tuning);
+  free(tuning);
   return rv;
 }
 
@@ -464,9 +487,10 @@ char *form_get_pid_params(struct Data *data)
 // get MEAS tuning params from dialog
 char *form_get_meas_params(struct Data *data)
 {
-  GObject *ent_meas_time = get_object_safe(data, "entMeasTime");
+  char *tuning = _get_pid_tuning(data);
   char *rv = malloc(70*sizeof(char));
-  sprintf(rv, "M%s", gtk_entry_get_text(GTK_ENTRY(ent_meas_time)));
+  sprintf(rv, "M%s", tuning);
+  free(tuning);
   return rv;
 }
 

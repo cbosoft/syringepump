@@ -14,6 +14,7 @@
 #include "disconnect.h"
 #include "refresh.h"
 #include "threads.h"
+#include "tuning_plotter.h"
 #include "log.h"
 #include "form.h"
 
@@ -85,6 +86,7 @@ int main (int argc, char **argv)
   data->log_worker_status = THREAD_NULL;
   data->refresh_worker_status = THREAD_NULL;
   data->connect_worker_status = THREAD_NULL;
+  data->composition_data = NULL;
 
   data->builder = builder;
   gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(get_object_safe(data, "fchLogFolder")), getenv("HOME"));
@@ -123,6 +125,10 @@ int main (int argc, char **argv)
   g_signal_connect(get_object_safe(data, "radPID"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radNoControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
   g_signal_connect(get_object_safe(data, "radPassive"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+
+  g_signal_connect(get_object_safe(data, "radManual"), "toggled", G_CALLBACK(cb_pid_manual_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "fcbCompTuning"), "file-set", G_CALLBACK(cb_file_set), data);
+  read_tuning_data("tuning.json", &data->composition_data);
   form_setter_update(data);
 
   timestamp(data, 1, "GUI started");

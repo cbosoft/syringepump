@@ -87,46 +87,17 @@ void cb_setter_radio_changed(GObject *obj, struct Data *data)
 
 
 
-
-//
-void cb_tuning_clicked(GObject *obj, struct Data *data)
+void cb_pid_manual_radio_changed(GObject *obj, struct Data *data)
 {
   (void) obj;
+  int manual = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(obj));
+  GObject *kp_ent = get_object_safe(data, "entKP");
+  GObject *ki_ent = get_object_safe(data, "entKI");
+  GObject *kd_ent = get_object_safe(data, "entKD");
+  GObject *filechooser = get_object_safe(data, "fcbCompTuning");
 
-  int control_type = form_get_control_type(data), response = 1;
-  char *kp = NULL;
-  char *ki = NULL;
-  char *kd = NULL;
-  char *mt = NULL;
-
-  switch (control_type) {
-    case FORM_CONTROL_NONE:
-      timestamp_error(data, 0, "this should never happen.");
-      return;
-
-    case FORM_CONTROL_PID:
-      kp = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKP"))));
-      ki = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKI"))));
-      kd = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entKD"))));
-      response = gtk_dialog_run(GTK_DIALOG(get_object_safe(data, "winTuningDialog")));
-      if (response != GTK_RESPONSE_ACCEPT) {
-          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKP")), kp);
-          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKI")), ki);
-          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entKD")), kd);
-      }
-      gtk_widget_hide(GTK_WIDGET(get_object_safe(data, "winTuningDialog")));
-      break;
-
-    case FORM_CONTROL_MEAS:
-      mt = strdup(gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entMeasTime"))));
-      response = gtk_dialog_run(GTK_DIALOG(get_object_safe(data, "winPassiveSettings")));
-      if (response != GTK_RESPONSE_ACCEPT) {
-          gtk_entry_set_text(GTK_ENTRY(get_object_safe(data, "entMeasTime")), mt);
-      }
-      gtk_widget_hide(GTK_WIDGET(get_object_safe(data, "winPassiveSettings")));
-      break;
-  }
-
-
-
+  gtk_widget_set_sensitive(GTK_WIDGET(kp_ent), manual);
+  gtk_widget_set_sensitive(GTK_WIDGET(ki_ent), manual);
+  gtk_widget_set_sensitive(GTK_WIDGET(kd_ent), manual);
+  gtk_widget_set_sensitive(GTK_WIDGET(filechooser), !manual);
 }
