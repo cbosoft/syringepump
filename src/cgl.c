@@ -85,11 +85,25 @@ void cgl_figure_add_line(cgl_Figure *fig, cgl_Line *line)
   fig->lines[fig->nlines-1] = line;
 }
 
+void cgl_point_free(cgl_Point *point)
+{
+  free(point);
+}
+
+void cgl_line_free(cgl_Line *line)
+{
+  for (cgl_uint i = 0; i < line->npoints; i++) {
+    cgl_point_free(line->points[i]);
+  }
+  free(line);
+}
+
 void cgl_figure_clear(cgl_Figure *fig)
 {
   if (fig->lines) {
-    // TODO free the rest
-    free(fig->lines);
+    for (cgl_uint i = 0; i < fig->nlines; i++) {
+      cgl_line_free(fig->lines[i]);
+    }
   }
 
   fig->lines = NULL;
