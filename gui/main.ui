@@ -1271,6 +1271,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="tooltip_markup" translatable="yes">Check this to have control action (motor duty cycle, as an 8 bit number) logged in the output. </property>
+                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>
@@ -1287,6 +1288,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="tooltip_markup" translatable="yes">Check this to have raw loadcell data (as a 24 bit number) logged in the output. </property>
+                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>
@@ -1303,6 +1305,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
                     <property name="tooltip_markup" translatable="yes">Check this to have ticks (number of rotations of optical encoder) logged in the output. </property>
+                    <property name="active">True</property>
                     <property name="draw_indicator">True</property>
                   </object>
                   <packing>

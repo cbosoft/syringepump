@@ -26,30 +26,33 @@ void write_run_params(struct Data *data)
   FORM_SETTER_SELECTION setter_type = form_get_setter_type(data);
 
   char *var_unit = (form_get_controlled_var(data) == FORM_VAR_FLOW) ? "ml/s" : "N";
+  char *s;
 
   switch (control_type) {
 
     case FORM_CONTROL_PID:
       fprintf(fp, "PID control\n");
       fprintf(fp, "KP, KI, KD\n");
-      fprintf(fp, "%s\n\n", form_get_pid_params(data));
+      s = form_get_pid_params(data);
+      fprintf(fp, "%s\n", ++s/* skip first character */);
       break;
 
     case FORM_CONTROL_MEAS:
       fprintf(fp, "Passive control\n");
       fprintf(fp, "Measure Time (s)\n");
-      fprintf(fp, "%s\n\n", form_get_meas_params(data));
+      s = form_get_meas_params(data);
+      fprintf(fp, "%s\n", ++s/* skip first character */);
       break;
 
     case FORM_CONTROL_NONE:
       fprintf(fp, "Voltage control\n");
-      fprintf(fp, "Voltage is set directly according to setter.\n\n");
+      fprintf(fp, "Voltage is set directly according to setter.\n");
       var_unit = "V";
       break;
   }
+  fprintf(fp, "\n");
   
 
-  char *s;
 
   switch (setter_type) {
 
@@ -87,6 +90,7 @@ void write_run_params(struct Data *data)
       break;
 
   }
+  fprintf(fp, "\n");
 
   fprintf(fp, "Stop buffer (mm), Syringe diameter (mm)\n");
   s = form_get_bldi_data(data);
