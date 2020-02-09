@@ -27,6 +27,8 @@ void cb_tuning_clicked(GObject *obj, struct Data *data)
   cgl_figure_plot_vector(fig, cdata->cm, cdata->kp, cdata->n, "Kp");
   cgl_figure_plot_vector(fig, cdata->cm, cdata->ki, cdata->n, "Ki");
   cgl_figure_plot_vector(fig, cdata->cm, cdata->kd, cdata->n, "Kd");
+  cgl_axes_set_ylabel(fig->axes, "Value");
+  cgl_axes_set_xlabel(fig->axes, "Composition (frac CS in solvent)");
   cgl_figure_scale_axes(fig);
 
   switch (control_type) {
