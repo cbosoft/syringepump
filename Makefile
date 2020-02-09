@@ -41,7 +41,7 @@ clean:
 
 CC    = gcc
 CFLAGS = $(shell pkg-config --cflags gtk+-3.0) -Wall -Wextra -Werror
-LINK   = $(shell pkg-config --libs gtk+-3.0) -lcgl
+LINK   = $(shell pkg-config --libs gtk+-3.0)
 
 DEFS     :=
 ifeq ($(OS),Windows_NT)
@@ -63,6 +63,7 @@ DEFS += -DARCH=\"$(shell gcc -dumpmachine)\"
 OBJ    = src/main.o \
 				 src/callbacks.o \
 				 src/cJSON.o \
+				 src/cgl.o \
 				 src/error.o \
 				 src/serial.o \
 				 src/log.o \

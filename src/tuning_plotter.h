@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gtk/gtk.h>
-#include <cgl.h>
+#include "cgl.h"
 #include "data.h"
 
 
