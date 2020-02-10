@@ -91,6 +91,13 @@ int check_form(struct Data *data)
       "Stop buffer length is a required field.",
       "Buffer length must be a number (containing only numbers 0-9 and decimal points "
       "('.').");
+  
+  if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, "radManual")))) {
+    CHECK_ENTRY_NUMBER(get_object_safe(data, "entComposition"),
+       "Suspension composition is a required field for composition control.",
+       "Suspension composition must be a number (containing only numbers 0-9 and decimal points "
+        "('.').");
+  }
 
   if (IS_EMPTY_ENTRY(get_object_safe(data, "entTag"))) {
     rv = 1;
