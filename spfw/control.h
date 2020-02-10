@@ -20,7 +20,7 @@ private:
   double ca = -1.0;
   double previous_ca = 0.0;
 
-  unsigned long measure_time;
+  unsigned long measure_time = 0;
   double previous_input = 0.0;
 public:
   Controller() { this->ca = 0.0; this->previous_ca = 0.0; };
@@ -64,6 +64,7 @@ class MeasureController : public Controller {
       this->pid_kd = kd;
       this->ca = 0.0;
       this->previous_ca = 0.0;
+      this->measure_time = 10;
     }
     double get_action(double setpoint, double flowrate, double force);
 };
