@@ -91,6 +91,7 @@ install: syringepump
 	cp syringepump /usr/bin/.
 	mkdir -p /usr/share/syringepump
 	cp gui/main.ui /usr/share/syringepump/.
+	cp default_tuning.csv /usr/share/syringepump/.
 	cp -r icons /usr/share/icons
 	cp -r applications /usr/share/applications
 
