@@ -65,43 +65,45 @@ int read_tuning_data(char *path, struct CompositionTuning **cdata)
     return 1;
 
   fseek(f, 0, SEEK_END);
-  long length = ftell(f);
+  long nchars = ftell(f);
   fseek(f, 0, SEEK_SET);
-  char *buffer = calloc(length+1, sizeof(char));
+  char *buffer = calloc(nchars+1, sizeof(char));
   if (!buffer)
     return 1;
-  fread(buffer, 1, length, f);
-
+  fread(buffer, 1, nchars, f);
   fclose(f);
 
-  cJSON *tuning_data = cJSON_Parse(buffer);
-  cJSON *composition_array = cJSON_GetObjectItem(tuning_data, "compositions");
+  long nlines = 0;
+  for (int i = 0; i < nchars; i++)
+    if (buffer[i] == '\n') nlines ++;
 
-  if (*cdata) {
-    // TODO free the rest
-    free(*cdata);
-  }
   (*cdata) = malloc(sizeof(struct CompositionTuning));
-  (*cdata)->n = cJSON_GetArraySize(composition_array);
-  (*cdata)->cm = malloc((*cdata)->n*sizeof(cgl_float));
-  (*cdata)->kp = malloc((*cdata)->n*sizeof(cgl_float));
-  (*cdata)->ki = malloc((*cdata)->n*sizeof(cgl_float));
-  (*cdata)->kd = malloc((*cdata)->n*sizeof(cgl_float));
-  cJSON *composition_data = NULL;
-  cgl_uint i = 0;
-  cJSON_ArrayForEach(composition_data, composition_array) {
-    cJSON *cm_json = cJSON_GetObjectItem(composition_data, "cm");
-    cJSON *kp_json = cJSON_GetObjectItem(composition_data, "kp");
-    cJSON *ki_json = cJSON_GetObjectItem(composition_data, "ki");
-    cJSON *kd_json = cJSON_GetObjectItem(composition_data, "kd");
-    (*cdata)->cm[i] = cm_json->valuedouble;
-    (*cdata)->kp[i] = kp_json->valuedouble;
-    (*cdata)->ki[i] = ki_json->valuedouble;
-    (*cdata)->kd[i] = kd_json->valuedouble;
-    i++;
-  }
+  (*cdata)->n = nlines;
+  (*cdata)->cm = malloc(nlines*sizeof(cgl_float));
+  (*cdata)->kp = malloc(nlines*sizeof(cgl_float));
+  (*cdata)->ki = malloc(nlines*sizeof(cgl_float));
+  (*cdata)->kd = malloc(nlines*sizeof(cgl_float));
 
+
+  char **lines = malloc(nlines*sizeof(char*));
+  char *line_buffer = strtok(buffer, "\n");
+  for (int i = 0; i < nlines; i++) {
+    lines[i] = strdup(line_buffer);
+    line_buffer = strtok(NULL, "\n");
+  }
   free(buffer);
+
+  for (int i = 0; i < nlines; i++) {
+    char *line = lines[i];
+    fprintf(stderr, "%s\n", line);
+    (*cdata)->cm[i] = atof(strtok(line, ","));
+    (*cdata)->kp[i] = atof(strtok(NULL, ","));
+    (*cdata)->ki[i] = atof(strtok(NULL, ","));
+    (*cdata)->kd[i] = atof(strtok(NULL, ","));
+    fprintf(stderr, "%f\n", (*cdata)->kd[i]);
+    free(line);
+  }
+  free(lines);
 
   return 0;
 }

@@ -2,9 +2,9 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkFileFilter" id="filefilterJson">
+  <object class="GtkFileFilter" id="filefilterCSV">
     <patterns>
-      <pattern>*.json</pattern>
+      <pattern>*.csv</pattern>
     </patterns>
   </object>
   <object class="GtkDialog" id="winTuningDialog">
@@ -307,7 +307,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                       <object class="GtkFileChooserButton" id="fcbCompTuning">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="filter">filefilterJson</property>
+                        <property name="filter">filefilterCSV</property>
                         <property name="title" translatable="yes"/>
                       </object>
                       <packing>
@@ -357,6 +357,11 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
       <action-widget response="-3">btnOkay</action-widget>
       <action-widget response="-6">btnCancel</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkFileFilter" id="filefilterJson">
+    <patterns>
+      <pattern>*.json</pattern>
+    </patterns>
   </object>
   <object class="GtkListStore" id="lstSerial">
     <columns>
@@ -540,7 +545,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkEntry" id="entComposition ">
+                          <object class="GtkEntry" id="entComposition">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="max_length">5</property>
