@@ -187,6 +187,8 @@ static void *log_worker(void *void_data)
     if (difftime(just_now, prev_print) > 1.0) {
       timestamp(data, 0, "%s", received_text);
       time(&prev_print);
+
+      // TODO also plot data
     }
     else {
       timestamp(NULL, 0, "%s", received_text);

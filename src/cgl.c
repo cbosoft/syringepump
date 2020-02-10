@@ -111,7 +111,8 @@ void cgl_figure_clear(cgl_Figure *fig)
 }
 
 
-
+// TODO multiple x and or y axes
+// nY axes, so that multiply plots can be shown on the same graph accurately
 cgl_Axes *cgl_create_axes()
 {
   cgl_Axes *ax = calloc(1, sizeof(cgl_Axes));
