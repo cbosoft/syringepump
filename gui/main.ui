@@ -650,6 +650,20 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
               </packing>
             </child>
             <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">10</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -898,7 +912,60 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+                <property name="margin_bottom">10</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="lblBuffer">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Stop buffer (mm):</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entBL">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Distance from the end which is close enough to stop. This prevents the pump trying to push the syring into itself.</property>
+                    <property name="text" translatable="yes">5.0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">10</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">5</property>
               </packing>
             </child>
             <child>
@@ -941,46 +1008,21 @@ Q = v x A
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">3</property>
+                <property name="position">6</property>
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkLabel" id="lblBuffer">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Stop buffer (mm):</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="entBL">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="tooltip_text" translatable="yes">Distance from the end which is close enough to stop. This prevents the pump trying to push the syring into itself.</property>
-                    <property name="text" translatable="yes">5.0</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="padding">10</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+                <property name="margin_top">10</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="padding">5</property>
-                <property name="position">4</property>
+                <property name="position">7</property>
               </packing>
             </child>
             <child>
@@ -997,7 +1039,7 @@ Q = v x A
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">5</property>
+                <property name="position">8</property>
               </packing>
             </child>
             <child>
@@ -1055,7 +1097,21 @@ The software will search for likely Arduino connections and display them here. I
                 <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">6</property>
+                <property name="position">9</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
+                <property name="margin_top">10</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">10</property>
               </packing>
             </child>
             <child>
@@ -1072,7 +1128,7 @@ The software will search for likely Arduino connections and display them here. I
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">7</property>
+                <property name="position">11</property>
               </packing>
             </child>
             <child>
@@ -1144,7 +1200,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">8</property>
+                <property name="position">12</property>
               </packing>
             </child>
             <child>
@@ -1169,6 +1225,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="tooltip_text" translatable="yes">This is the generated name of the log file being written to</property>
+                    <property name="label" translatable="yes">--</property>
                     <attributes>
                       <attribute name="font-desc" value="Monospace Italic 10"/>
                       <attribute name="weight" value="light"/>
@@ -1186,7 +1243,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">9</property>
+                <property name="position">13</property>
               </packing>
             </child>
             <child>
@@ -1203,7 +1260,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="padding">5</property>
-                <property name="position">10</property>
+                <property name="position">14</property>
               </packing>
             </child>
             <child>
@@ -1324,7 +1381,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="padding">5</property>
-                <property name="position">11</property>
+                <property name="position">15</property>
               </packing>
             </child>
           </object>
@@ -1362,6 +1419,17 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="fill">True</property>
             <property name="padding">10</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkDrawingArea" id="draw_plot">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -1403,7 +1471,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="padding">10</property>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -1419,7 +1487,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="pack_type">end</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
