@@ -215,7 +215,7 @@ Controller *controlInit(){
 
   for (int i = 0; i < 10 && !done; i++) {
 
-    while (!Serial.available()) delay(100);
+    while (!Serial.available());
 
     char recvd[65];
     byte size = Serial.readBytes(recvd, 64);
