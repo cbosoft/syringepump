@@ -128,16 +128,3 @@ void cb_file_set(GtkFileChooserButton *widget, struct Data *data)
   cgl_figure_plot_vector(fig, cdata->cm, cdata->kd, cdata->n, "Kd");
   cgl_figure_scale_axes(fig);
 }
-
-
-
-
-double interp(double *xvec, double *yvec, unsigned int n, double xat)
-{
-  for (unsigned int i = 1; i < n; i++) {
-    if (xat < xvec[i]) {
-      return xat*(yvec[i] - yvec[i-1]) / (xvec[i] - xvec[i-1]);
-    }
-  }
-  return -1.0;
-}

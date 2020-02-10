@@ -3,7 +3,6 @@
 #include <gtk/gtk.h>
 
 
-#include "tuning_plotter.h"
 #include "form.h"
 #include "error.h"
 #include "util.h"

@@ -5,6 +5,7 @@
 #endif
 
 #include <string.h>
+#include <stdio.h>
 
 
 #include "util.h"
@@ -41,4 +42,20 @@ int is_not_number(const char *s)
 
   }
   return 0;
+}
+
+
+
+// assumes monotonic increasing x
+double interp(double *xvec, double *yvec, unsigned int n, double xat)
+{
+  for (unsigned int i = 1; i < n; i++) {
+    if (xat < xvec[i]) {
+      double m = (yvec[i] - yvec[i-1]) / (xvec[i] - xvec[i-1]);
+      double rv = yvec[i-1] + m * (xat - xvec[i-1]);
+      fprintf(stderr, "%f between (%f,%f) and (%f,%f) gives %f\n", xat, xvec[i-1], yvec[i-1], xvec[i], yvec[i], rv);
+      return rv;
+    }
+  }
+  return -1.0;
 }
