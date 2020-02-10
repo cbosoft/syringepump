@@ -128,7 +128,7 @@ int main (int argc, char **argv)
 
   g_signal_connect(get_object_safe(data, "radManual"), "toggled", G_CALLBACK(cb_pid_manual_radio_changed), data);
   g_signal_connect(get_object_safe(data, "fcbCompTuning"), "file-set", G_CALLBACK(cb_file_set), data);
-  read_tuning_data("tuning.json", &data->composition_data);
+  read_tuning_data("default_tuning.json", &data->composition_data);
   form_setter_update(data);
 
   timestamp(data, 1, "GUI started");
