@@ -1,4 +1,4 @@
-#define VERSION "v0.7"
+#define VERSION "v0.8"
 
 #ifndef DATE
 #define DATE "??"

@@ -23,6 +23,7 @@ void cb_tuning_clicked(GObject *obj, struct Data *data)
   fig = cgl_init_figure();
   g_signal_connect(G_OBJECT(get_object_safe(data, "drawPlotter")), 
       "draw", G_CALLBACK(cgl_painter_cb), fig);
+  
   struct CompositionTuning *cdata = data->composition_data;
   cgl_figure_plot_vector(fig, cdata->cm, cdata->kp, cdata->n, "Kp");
   cgl_figure_plot_vector(fig, cdata->cm, cdata->ki, cdata->n, "Ki");
