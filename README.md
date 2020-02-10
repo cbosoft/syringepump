@@ -1,6 +1,6 @@
-# ![icon](https://github.com/cbosoft/syringepump/blob/master/icons/Adwaita/64x64/apps/syringepump.png?raw=true) Syringe pump v0.7
+# ![icon](https://github.com/cbosoft/syringepump/blob/master/icons/Adwaita/64x64/apps/syringepump.png?raw=true) Syringe pump v0.8
 
-![v0.6 screenshot](https://github.com/cbosoft/syringepump/blob/master/screenshots/v0.6.png?raw=true)
+![v0.8 screenshot](https://github.com/cbosoft/syringepump/blob/master/screenshots/v0.8.png?raw=true)
 
 This software controls a syringe pump (device used to push fluid through a
 channel at a closely controlled flow rate and stress). The device was originally
@@ -10,6 +10,12 @@ This suite is comprised of the Arduino firmware for the syringe pump, the gui
 control software, and a python module.
 
 Icon is by [bqlqn](https://www.flaticon.com/authors/bqlqn) ([CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/))
+
+# Features
+
+ - Control a syringe pump's flowrate and applied force using PID
+ - Control parameters can be defined to vary with suspension composition
+ - Step, ramp, constant and sinusoid setpoints are supported
 
 # Build from source
 
