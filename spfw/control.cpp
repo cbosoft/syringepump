@@ -87,7 +87,6 @@ double MeasureController::get_action(double setpoint, double flowrate, double fo
   double delta_t = (double)(time - ptime)*0.001; // in s
   ptime = time;
 
-  double dca = 0.0;
 
   // Calculate error
   double input = 0.0;
@@ -104,6 +103,7 @@ double MeasureController::get_action(double setpoint, double flowrate, double fo
   }
   double err = setpoint - input;
 
+  double dca = 0.0;
   // Proportional control
   if (this->pid_kp)
     dca += this->pid_kp * (err - this->err1);
