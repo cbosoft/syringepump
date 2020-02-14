@@ -292,7 +292,7 @@ Controller *controlInit(){
       case 'P':
 	      control_type = CONTROL_PID;
 
-	      param = strtok(val, ",");
+	      param = strtok(++val, ",");
 	      kp = atof(param);
 	      param = strtok(0, ",");
 	      ki = atof(param);
@@ -303,7 +303,7 @@ Controller *controlInit(){
 
       case 'M':
 	      control_type = CONTROL_MEAS;
-	      param = strtok(val, ",");
+	      param = strtok(++val, ",");
 	      kp = atof(param);
 	      param = strtok(0, ",");
 	      ki = atof(param);
