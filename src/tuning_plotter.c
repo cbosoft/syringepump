@@ -1,5 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 #include "cgl.h"
 
 
