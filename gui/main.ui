@@ -226,7 +226,7 @@ CA = K&lt;sub&gt;I&lt;/sub&gt; × ∫&lt;sub&gt;-∞&lt;/sub&gt;&lt;sup&gt;t&lt;
 High K&lt;sub&gt;I&lt;/sub&gt; means a strong dependence of the control action on past errors (long standing errors are eliminated), also guides against offset. Too high, and the controller will max out for the tiniest error.
 
 Set to zero to disable.</property>
-                            <property name="text" translatable="yes">10.0</property>
+                            <property name="text" translatable="yes">100.0</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
