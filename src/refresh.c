@@ -12,6 +12,27 @@
 static GThread *refresh_worker_thread = NULL;
 static int number_failed_attempts = 0;
 
+struct sensitive_callback_data {
+  struct Data *data;
+  int sensitive;
+};
+
+static gboolean sensitive_callback(struct sensitive_callback_data *acd)
+{
+  GObject *serial_combo_box = get_object_safe(acd->data, "cmbSerial");
+  gtk_widget_set_sensitive(GTK_WIDGET(serial_combo_box), acd->sensitive);
+
+  return 0;
+}
+
+
+static gboolean cmb_clear_callback(GObject *cmb)
+{
+  gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(cmb));
+
+  return 0;
+}
+
 
 
 static void *refresh_worker(void *vptr_data)
@@ -30,9 +51,8 @@ static void *refresh_worker(void *vptr_data)
   ms300_span.tv_nsec = 300*1000*1000;
   nanosleep(&ms300_span, NULL);
 
-  // TODO do from callback
-  gtk_combo_box_text_remove_all(
-      GTK_COMBO_BOX_TEXT(get_object_safe(data, "cmbSerial")));
+  g_idle_add((GSourceFunc)cmb_clear_callback, get_object_safe(data, "cmbSerial"));
+
 
   const char *dev = "/dev/ttyACM*";
   glob_t glob_res = {0};
@@ -43,10 +63,10 @@ static void *refresh_worker(void *vptr_data)
     number_failed_attempts ++;
 
     if (number_failed_attempts > 3) {
-      timestamp_error(data, 0, "No Arduino found! If its still not showing up, try rebooting.");
+      timestamp_error(data, 0, 1, "No Arduino found! If its still not showing up, try rebooting.");
     }
     else {
-      timestamp_error(data, 0, "No Arduino found! Is it definitely plugged in?");
+      timestamp_error(data, 0, 1, "No Arduino found! Is it definitely plugged in?");
     }
 
     form_set_sensitive(data, FORM_NOSERIAL);
@@ -70,8 +90,10 @@ static void *refresh_worker(void *vptr_data)
   form_set_sensitive(data, FORM_DISCONNECTED);
   data->refresh_worker_status = THREAD_STOPPED;
 
-  // TODO do from callback
-  gtk_combo_box_set_active(GTK_COMBO_BOX(get_object_safe(data, "cmbSerial")), 0);
+  struct sensitive_callback_data *scd = calloc(1, sizeof(struct sensitive_callback_data));
+  scd->data = data;
+  scd->sensitive = 0;
+  g_idle_add((GSourceFunc)sensitive_callback, scd);
 
   return NULL;
 }
