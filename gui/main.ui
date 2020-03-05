@@ -7,41 +7,19 @@
       <pattern>*.csv</pattern>
     </patterns>
   </object>
-  <object class="GtkFileFilter" id="filefilterJson">
-    <patterns>
-      <pattern>*.json</pattern>
-    </patterns>
-  </object>
-  <object class="GtkListStore" id="lstControl">
-    <columns>
-      <!-- column-name controlMethod -->
-      <column type="gchararray"/>
-      <!-- column-name controlMethodIndex -->
-      <column type="gint"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">None</col>
-        <col id="1">0</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">PID</col>
-        <col id="1">1</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Passive</col>
-        <col id="1">2</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkWindow" id="winMain">
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Syringepump</property>
-    <property name="window_position">center</property>
-    <property name="default_width">1280</property>
-    <property name="default_height">640</property>
+    <property name="modal">True</property>
+    <property name="default_width">640</property>
+    <property name="default_height">480</property>
     <child type="titlebar">
-      <placeholder/>
+      <object class="GtkLabel" id="lblStatus">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_markup">True</property>
+      </object>
     </child>
     <child>
       <object class="GtkBox">
@@ -54,7 +32,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_top">20</property>
-            <property name="expanded">True</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -153,7 +130,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkExpander">
+                  <object class="GtkExpander" id="expTuning">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <child>
@@ -198,13 +175,12 @@ You can manually set PID parameters, &lt;b&gt;or&lt;/b&gt; you can use the compo
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkRadioButton" id="radTuningManual">
+                              <object class="GtkRadioButton" id="radManual">
                                 <property name="label" translatable="yes">Manual</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">radCompositionTuning</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -214,13 +190,14 @@ You can manually set PID parameters, &lt;b&gt;or&lt;/b&gt; you can use the compo
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkRadioButton" id="radTuningComposition">
+                              <object class="GtkRadioButton" id="radComposition">
                                 <property name="label" translatable="yes">Composition Tuning</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
+                                <property name="group">radManual</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -468,6 +445,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Suspension composition.</property>
                         <property name="label" translatable="yes">Suspension Composition:</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
@@ -525,7 +503,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_top">20</property>
-            <property name="expanded">True</property>
+            <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -580,20 +558,57 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="margin_left">10</property>
-                    <property name="label" translatable="yes">Setpoint function parameters:</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel" id="lblSetterTitle">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Constant</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans Bold 11"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">5</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lblSetterDesc">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Setpoint is given by a constant value.</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">5</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lblSetterFormula">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;b&gt;formula goes here&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">5</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">False</property>
-                    <property name="padding">10</property>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -605,7 +620,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                     <property name="column_spacing">10</property>
                     <property name="column_homogeneous">True</property>
                     <child>
-                      <object class="GtkLabel" id="lblA1">
+                      <object class="GtkLabel" id="lblA">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;C&lt;/b&gt;:</property>
@@ -703,10 +718,137 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
           </packing>
         </child>
         <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="halign">end</property>
+            <property name="label" translatable="yes">&lt;small&gt;Notice something wrong? Email Chris! &lt;b&gt;OR&lt;/b&gt;, open a new issue on GitHub &lt;a href="https://github.com/cbosoft/syringepump/issues/new"&gt;here&lt;/a&gt;!&lt;/small&gt;</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkExpander" id="expSyringe">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="margin_top">20</property>
+            <property name="resize_toplevel">True</property>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Distance from the end (in mm) at which the syringe will stop. Larger syringes may require a larger buffer.</property>
+                        <property name="label" translatable="yes">Buffer length (mm):</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="entBL">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Internal diameter of the syringe in mm.</property>
+                        <property name="label" translatable="yes">Diameter (mm):</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="entDI">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+            <child type="label">
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
+                <property name="label" translatable="yes">Syringe Settings</property>
+                <attributes>
+                  <attribute name="font-desc" value="Sans Bold 15"/>
+                </attributes>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkExpander" id="expConnection">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_top">20</property>
+            <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -774,7 +916,7 @@ The software will search for likely Arduino connections and display them here. I
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -783,6 +925,7 @@ The software will search for likely Arduino connections and display them here. I
             <property name="can_focus">True</property>
             <property name="margin_top">20</property>
             <property name="expanded">True</property>
+            <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -921,7 +1064,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">5</property>
           </packing>
         </child>
         <child>
@@ -929,9 +1072,13 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_top">20</property>
+            <property name="expanded">True</property>
+            <property name="spacing">1</property>
+            <property name="resize_toplevel">True</property>
             <child>
-              <object class="GtkDrawingArea" id="draw_plot">
-                <property name="height_request">-1</property>
+              <object class="GtkDrawingArea" id="drawStatusPlot">
+                <property name="width_request">800</property>
+                <property name="height_request">300</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
               </object>
@@ -951,13 +1098,14 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">4</property>
+            <property name="position">6</property>
           </packing>
         </child>
         <child>
           <object class="GtkButtonBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_right">10</property>
             <property name="spacing">10</property>
             <property name="layout_style">end</property>
             <child>
@@ -991,26 +1139,38 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
           </object>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="halign">end</property>
-            <property name="label" translatable="yes">&lt;small&gt;Notice something wrong? Email Chris! &lt;b&gt;OR&lt;/b&gt;, open a new issue on GitHub &lt;a href="https://github.com/cbosoft/syringepump/issues/new"&gt;here&lt;/a&gt;!&lt;/small&gt;</property>
-            <property name="use_markup">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">6</property>
+            <property name="position">7</property>
           </packing>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkFileFilter" id="filefilterJson">
+    <patterns>
+      <pattern>*.json</pattern>
+    </patterns>
+  </object>
+  <object class="GtkListStore" id="lstControl">
+    <columns>
+      <!-- column-name controlMethod -->
+      <column type="gchararray"/>
+      <!-- column-name controlMethodIndex -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">None</col>
+        <col id="1">0</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">PID</col>
+        <col id="1">1</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Passive</col>
+        <col id="1">2</col>
+      </row>
+    </data>
   </object>
 </interface>
