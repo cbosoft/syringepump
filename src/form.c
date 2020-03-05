@@ -221,7 +221,7 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expControl")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expSetpoint")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expConnection")), 0);
-    gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expSyringe")), 1);
+    gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expSyringe")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expLog")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expStatus")), 1);
     break;
@@ -252,9 +252,6 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
   }
 
   // control
-  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expControl")), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expSetpoint")), control);
-  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expSyringe")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "cmbControlMethod")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "cmbSetpointFunction")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "cmbControlledVariable")), control);
@@ -265,12 +262,10 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entDI")), control);
 
   // connection
-  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expConnection")), connection);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "cmbSerial")), connection);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnSerialRefresh")), connection);
 
   // logging
-  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expLog")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entTag")), logging);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "fchLogFolder")), logging);
 
@@ -389,12 +384,17 @@ void form_setter_update(struct Data *data)
     *lblDesc = get_object_safe(data, "lblSetterDesc"),
     *lblFormula = get_object_safe(data, "lblSetterFormula");
 
-  int controlled = form_get_control_type(data) != FORM_CONTROL_NONE;
+  int controlled = form_get_control_type(data) != FORM_CONTROL_NONE; // what about FORM_CONTROL_ERROR?
   int flow_control = form_get_controlled_var(data) == FORM_VAR_FLOW;
 
   //gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnTuning")), controlled);
   //gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "radFlowControl")), controlled);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "cmbControlledVariable")), controlled);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expTuning")), controlled);
+
+  if (!controlled)
+    gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expTuning")), 0);
+
 
   switch (form_get_setter_type(data)) {
 
@@ -452,8 +452,8 @@ void form_setter_update(struct Data *data)
     case FORM_SETTER_SINE:
       gtk_label_set_text(GTK_LABEL(lblTitle), "Sine wave setter");
       gtk_label_set_text(GTK_LABEL(lblDesc), "Setpoint is an offset sine wave.");
-      gtk_label_set_markup(GTK_LABEL(lblFormula), !controlled ? "DC = <b>M</b> sine(π <b>ω</b> t) + <b>A</b>" : 
-          (flow_control ? "Q<sub>SP</sub> = <b>M</b> sine(π <b>ω</b> t) + <b>A</b>" : 
+      gtk_label_set_markup(GTK_LABEL(lblFormula), !controlled ? "DC = <b>M</b> sin(π <b>ω</b> t) + <b>A</b>" : 
+          (flow_control ? "Q<sub>SP</sub> = <b>M</b> sin(π <b>ω</b> t) + <b>A</b>" : 
            "F<sub>SP</sub> = <b>M</b> sin(π <b>ω</b> t) + <b>A</b>"));
 
       gtk_label_set_markup(GTK_LABEL(lblA), "<b>ω</b> (Hz):");
