@@ -11,9 +11,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Syringepump</property>
-    <property name="modal">True</property>
-    <property name="default_width">640</property>
-    <property name="default_height">480</property>
     <child type="titlebar">
       <object class="GtkLabel" id="lblStatus">
         <property name="visible">True</property>
@@ -31,13 +28,13 @@
           <object class="GtkExpander" id="expControl">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_top">20</property>
+            <property name="margin_top">10</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">10</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -133,12 +130,13 @@
                   <object class="GtkExpander" id="expTuning">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="resize_toplevel">True</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
-                        <property name="spacing">10</property>
+                        <property name="spacing">5</property>
                         <child>
                           <object class="GtkLabel">
                             <property name="visible">True</property>
@@ -160,7 +158,7 @@ You can manually set PID parameters, &lt;b&gt;or&lt;/b&gt; you can use the compo
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="spacing">10</property>
+                            <property name="spacing">5</property>
                             <child>
                               <object class="GtkLabel">
                                 <property name="visible">True</property>
@@ -217,13 +215,13 @@ You can manually set PID parameters, &lt;b&gt;or&lt;/b&gt; you can use the compo
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="spacing">10</property>
+                            <property name="spacing">5</property>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
-                                <property name="spacing">10</property>
+                                <property name="spacing">5</property>
                                 <child>
                                   <object class="GtkBox">
                                     <property name="visible">True</property>
@@ -380,6 +378,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="orientation">vertical</property>
+                                <property name="spacing">5</property>
                                 <child>
                                   <object class="GtkFileChooserButton" id="fcbCompTuning">
                                     <property name="visible">True</property>
@@ -395,8 +394,8 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                                 </child>
                                 <child>
                                   <object class="GtkDrawingArea" id="drawPlotter1">
-                                    <property name="width_request">600</property>
-                                    <property name="height_request">400</property>
+                                    <property name="width_request">300</property>
+                                    <property name="height_request">200</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                   </object>
@@ -487,7 +486,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                 <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Control Settings</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans Bold 15"/>
+                  <attribute name="font-desc" value="Sans Bold 12"/>
                 </attributes>
               </object>
             </child>
@@ -502,7 +501,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
           <object class="GtkExpander" id="expSetpoint">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_top">20</property>
+            <property name="margin_top">10</property>
             <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkBox">
@@ -706,7 +705,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                 <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Setpoint Settings</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans Bold 15"/>
+                  <attribute name="font-desc" value="Sans Bold 12"/>
                 </attributes>
               </object>
             </child>
@@ -736,13 +735,15 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
           <object class="GtkExpander" id="expSyringe">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_top">20</property>
+            <property name="margin_top">10</property>
+            <property name="expanded">True</property>
             <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -832,7 +833,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                 <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Syringe Settings</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans Bold 15"/>
+                  <attribute name="font-desc" value="Sans Bold 12"/>
                 </attributes>
               </object>
             </child>
@@ -847,7 +848,8 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
           <object class="GtkExpander" id="expConnection">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_top">20</property>
+            <property name="margin_top">10</property>
+            <property name="expanded">True</property>
             <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkBox">
@@ -908,7 +910,7 @@ The software will search for likely Arduino connections and display them here. I
                 <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Connection Settings</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans Bold 15"/>
+                  <attribute name="font-desc" value="Sans Bold 12"/>
                 </attributes>
               </object>
             </child>
@@ -923,7 +925,7 @@ The software will search for likely Arduino connections and display them here. I
           <object class="GtkExpander" id="expLog">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_top">20</property>
+            <property name="margin_top">10</property>
             <property name="expanded">True</property>
             <property name="resize_toplevel">True</property>
             <child>
@@ -931,7 +933,7 @@ The software will search for likely Arduino connections and display them here. I
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">10</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -1056,7 +1058,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Log Settings</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans Bold 15"/>
+                  <attribute name="font-desc" value="Sans Bold 12"/>
                 </attributes>
               </object>
             </child>
@@ -1071,8 +1073,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
           <object class="GtkExpander" id="expStatus">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="margin_top">20</property>
-            <property name="expanded">True</property>
+            <property name="margin_top">10</property>
             <property name="spacing">1</property>
             <property name="resize_toplevel">True</property>
             <child>
@@ -1090,7 +1091,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Status</property>
                 <attributes>
-                  <attribute name="font-desc" value="Sans Bold 15"/>
+                  <attribute name="font-desc" value="Sans Bold 12"/>
                 </attributes>
               </object>
             </child>
@@ -1150,27 +1151,5 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
     <patterns>
       <pattern>*.json</pattern>
     </patterns>
-  </object>
-  <object class="GtkListStore" id="lstControl">
-    <columns>
-      <!-- column-name controlMethod -->
-      <column type="gchararray"/>
-      <!-- column-name controlMethodIndex -->
-      <column type="gint"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">None</col>
-        <col id="1">0</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">PID</col>
-        <col id="1">1</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Passive</col>
-        <col id="1">2</col>
-      </row>
-    </data>
   </object>
 </interface>
