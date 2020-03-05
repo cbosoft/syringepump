@@ -27,11 +27,11 @@ static void *connect_worker(void *vptr_data)
   if (rv < 0) {
     switch (rv) {
       case -1:
-        timestamp_error(data, 0, "Failed to connect");
+        timestamp_error(data, 0, 1, "Failed to connect");
         break;
       case -2:
       case -3:
-        timestamp_error(data, 0, "Failed to apply serial settings");
+        timestamp_error(data, 0, 1, "Failed to apply serial settings");
         break;
     }
     gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "btnConnect")), 1);
@@ -42,10 +42,10 @@ static void *connect_worker(void *vptr_data)
   timestamp(data, 0, "Waiting on Arduino...");
   switch (wait_for(data, 0, "ON", 100, &data->connect_worker_status, THREAD_CANCELLED)) {
     case -1:
-      timestamp_error(data, 0, "Cancelled by user.");
+      timestamp_error(data, 0, 0, "Cancelled by user.");
       return NULL;
     case -2:
-      timestamp_error(data, 0, "Arduino connection timed out!");
+      timestamp_error(data, 0, 0, "Arduino connection timed out!");
       return NULL;
   }
 
@@ -57,88 +57,40 @@ static void *connect_worker(void *vptr_data)
   timestamp(data, 0, "Waiting on Arduino...");
   switch (wait_for(data, 0, "WAIT", 100, &data->connect_worker_status, THREAD_CANCELLED)) {
     case -1:
-      timestamp_error(data, 0, "Cancelled by user.");
+      timestamp_error(data, 0, 0, "Cancelled by user.");
       return NULL;
     case -2:
-      timestamp_error(data, 0, "Arduino connection timed out!");
+      timestamp_error(data, 0, 0, "Arduino connection timed out!");
       return NULL;
   }
 
   timestamp(data, 0, "Sending run parameters to Arduino");
-  
-  // TODO migrate setpoint get params stuff to form.c
-  int 
-    controlled_var = form_get_controlled_var(data), 
-    controller_type = form_get_control_type(data), 
-    setpoint_type = form_get_setter_type(data);
 
-  char *setpoint = NULL, controlled_var_ch, *setter_params, setter_ch;
+  char *control_packet = NULL;
+  switch (form_get_control_type(data)) {
 
-  // get character representing controlled var
-  if (controller_type != FORM_CONTROL_NONE) {
-    if (controlled_var == FORM_VAR_FLOW) {
-      controlled_var_ch = 'Q'; // Flowrate
-    }
-    else {
-      controlled_var_ch = 'F'; // Force
-    }
-  }
-  else {
-    controlled_var_ch = 'D'; // DC
-  }
-
-  setpoint = calloc(70, sizeof(char));
-
-  switch (setpoint_type) {
-
-    case FORM_SETTER_CONSTANT:
-      setter_ch = 'C';
-      setter_params = form_get_const_setter_params(data);
+    case FORM_CONTROL_ERROR:
+      // don't need to handle error: should be checked earlier
+    case FORM_CONTROL_NONE:
+      // control "None" doesn't require params to be sent
       break;
 
-    case FORM_SETTER_RAMP:
-      setter_ch = 'R';
-      setter_params = form_get_ramp_setter_params(data);
+    case FORM_CONTROL_MEAS:
+    case FORM_CONTROL_PID:
+      control_packet = form_get_controller_packet(data);
+      send_data_packet(data, 0, "TP", control_packet);
+      free(control_packet);
       break;
-
-    case FORM_SETTER_STEP:
-      setter_ch = 'T';
-      setter_params = form_get_step_setter_params(data);
-      break;
-
-    case FORM_SETTER_SINE:
-      setter_ch = 'S';
-      setter_params = form_get_sine_setter_params(data);
-      break;
-
   }
 
-  sprintf(setpoint, "%c%c%s", controlled_var_ch, setter_ch, setter_params);
-  if (setpoint_type != FORM_SETTER_CONSTANT) {
-    free(setter_params);
-  }
-  send_data_packet(data, 0, "SP", setpoint);
-  free(setpoint);
 
-  if (controller_type == FORM_CONTROL_PID) {
-    char *pid_tuning = form_get_pid_params(data);
-    send_data_packet(data, 0, "TP", pid_tuning);
-    free(pid_tuning);
-  }
-  else if (controller_type == FORM_CONTROL_MEAS) {
-    char *meas_params = form_get_meas_params(data);
-    send_data_packet(data, 0, "TP", meas_params);
-    free(meas_params);
-  }
+  char *setter_packet = form_get_setter_packet(data);
+  send_data_packet(data, 0, "SP", setter_packet);
+  free(setter_packet);
 
-  char *bldi_data = form_get_bldi_data(data);
-  send_data_packet(data, 0, "BD", bldi_data);
-  free(bldi_data);
-
-  char *log_options = malloc(70*sizeof(char));
-  sprintf(log_options, "%d", form_get_log_options(data));
-  send_data_packet(data, 0, "LO", log_options);
-  free(log_options);
+  char *bldi_packet = form_get_bldi_packet(data);
+  send_data_packet(data, 0, "BD", bldi_packet);
+  free(bldi_packet);
 
   timestamp(data, 0, "All parameters sent successfully!");
   start_log(data);
