@@ -62,6 +62,7 @@ gboolean status_callback(struct timestamp_callback_data *tcd)
 
 
 
+
 void timestamp_error(struct Data *data, int is_gui, int show_errno, const char *fmt, ...)
 {
   (void) is_gui;
@@ -120,6 +121,7 @@ void timestamp_error(struct Data *data, int is_gui, int show_errno, const char *
 
 
 
+// TODO: simplify timestamp by removing GUI printing
 void timestamp(struct Data *data, int is_gui, const char *fmt, ...)
 {
 
