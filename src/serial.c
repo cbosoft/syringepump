@@ -27,51 +27,51 @@
 #include "data.h"
 #include "error.h"
 #include "util.h"
+#include "packet.h"
 
-#define ARDUINO_MESG_LEN 64
 
 
 void send_data_packet(struct Data *data, int is_gui, const char *key, const char *value)
 {
   if (key == NULL) {
-    timestamp_error(data, is_gui, "key to send was null. PLEASE LET CHRIS KNOW IF THIS ERROR POPS UP!");
+    timestamp_error(data, is_gui, 0, "key to send was NULL.");
     return;
   }
 
   if (value == NULL) {
-    timestamp_error(data, is_gui, "value to send was null. PLEASE LET CHRIS KNOW IF THIS ERROR POPS UP!");
+    timestamp_error(data, is_gui, 0, "value to send was NULL.");
     return;
   }
 
   int len;
-  if ((len = strlen(key)) > ARDUINO_MESG_LEN/2) {
-    timestamp_error(data, is_gui,
-        "KEY TOO LARGE TO SEND (must be < %d chars, is %lu chars)", 
-        ARDUINO_MESG_LEN/2, 
+  if ((len = strlen(key)) > PACKET_KEY_LEN) {
+    timestamp_error(data, is_gui, 0,
+        "Key too large to send (must be < %d chars, is %lu chars)", 
+        PACKET_KEY_LEN, 
         len);
     return;
   }
 
   if ((len = strlen(value)) > ARDUINO_MESG_LEN/2) {
-    timestamp_error(data, is_gui,
-        "VALUE TOO LARGE TO SEND (must be < %d chars, is %lu chars)", 
-        ARDUINO_MESG_LEN/2,
+    timestamp_error(data, is_gui, 0,
+        "Value too large to send (must be < %d chars, is %lu chars)", 
+        PACKET_VALUE_LEN,
         len);
     return;
   }
 
-  char mesg[ARDUINO_MESG_LEN+1] = {0};
-  sprintf(mesg, "%s=%s", key, value);
+  char mesg[ARDUINO_MESG_LEN] = {0};
+  snprintf(mesg, ARDUINO_MESG_LEN, "%s=%s", key, value);
 
   timestamp(NULL, is_gui, "sending k/v pair: %s", mesg);
   write(data->serial_fd, mesg, ARDUINO_MESG_LEN);
 
   switch (wait_for(data, is_gui, "OK", 10, &data->connect_worker_status, THREAD_CANCELLED)) {
   case -1:
-    timestamp_error(NULL, is_gui, "Cancelled by user.");
+    timestamp_error(NULL, is_gui, 0, "Cancelled by user.");
     return;
   case -2:
-    timestamp_error(NULL, is_gui, "Arduino didn't understand message");
+    timestamp_error(NULL, is_gui, 0, "Arduino didn't understand message");
     // TODO: deal with this properly
     exit(1);
   }
