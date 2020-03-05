@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 200809L
 #include <time.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -33,15 +34,15 @@ void write_run_params(struct Data *data)
     case FORM_CONTROL_PID:
       fprintf(fp, "PID control\n");
       fprintf(fp, "KP, KI, KD\n");
-      s = form_get_pid_params(data);
-      fprintf(fp, "%s\n", ++s/* skip first character */);
+      s = form_get_pid_tuning(data);
+      fprintf(fp, "%s\n", s);
       break;
 
     case FORM_CONTROL_MEAS:
       fprintf(fp, "Passive control\n");
       fprintf(fp, "Measure Time (s)\n");
-      s = form_get_meas_params(data);
-      fprintf(fp, "%s\n", ++s/* skip first character */);
+      s = form_get_pid_tuning(data);
+      fprintf(fp, "%s\n", s);
       break;
 
     case FORM_CONTROL_NONE:
@@ -49,6 +50,12 @@ void write_run_params(struct Data *data)
       fprintf(fp, "Voltage is set directly according to setter.\n");
       var_unit = "V";
       break;
+
+    case FORM_CONTROL_ERROR:
+      fprintf(fp, "Unknown control method\n");
+      fprintf(fp, "Chris has made a typo somewhere. Please let him know ASAP so he can fix this.\n");
+      break;
+
   }
   fprintf(fp, "\n");
   
@@ -59,13 +66,16 @@ void write_run_params(struct Data *data)
     case FORM_SETTER_CONSTANT:
       fprintf(fp, "Constant setpoint\n");
       fprintf(fp, "Value (%s)\n", var_unit);
-      fprintf(fp, "%s\n", form_get_const_setter_params(data));
+      s = form_get_setter_params(data, 1);
+      fprintf(fp, "%s\n", s);
+      free(s); 
+      s = NULL;
       break;
 
     case FORM_SETTER_RAMP:
       fprintf(fp, "Linearly changing setpoint\n");
       fprintf(fp, "Gradient (%s/s),Intercept (%s)\n", var_unit, var_unit);
-      s = form_get_ramp_setter_params(data);
+      s = form_get_setter_params(data, 2);
       fprintf(fp, "%s\n", s);
       free(s);
       s = NULL;
@@ -74,7 +84,7 @@ void write_run_params(struct Data *data)
     case FORM_SETTER_STEP:
       fprintf(fp, "Linearly changing setpoint\n");
       fprintf(fp, "Initial Value (%s),Time of Change (s),Final Value (%s)\n", var_unit, var_unit);
-      s = form_get_step_setter_params(data);
+      s = form_get_setter_params(data, 3);
       fprintf(fp, "%s\n", s);
       free(s);
       s = NULL;
@@ -83,17 +93,31 @@ void write_run_params(struct Data *data)
     case FORM_SETTER_SINE:
       fprintf(fp, "Sine wave setpoint\n");
       fprintf(fp, "Frequency (Hz),Magnitude (%s),Mean (%s)\n", var_unit, var_unit);
-      s = form_get_sine_setter_params(data);
+      s = form_get_setter_params(data, 3);
       fprintf(fp, "%s\n", s);
       free(s);
       s = NULL;
+      break;
+
+    case FORM_SETTER_SQUARE:
+      fprintf(fp, "Square wave setpoint\n");
+      fprintf(fp, "Frequency (Hz),Low value (%s),High value (%s)\n", var_unit, var_unit);
+      s = form_get_setter_params(data, 3);
+      fprintf(fp, "%s\n", s);
+      free(s);
+      s = NULL;
+      break;
+
+    case FORM_SETTER_ERROR:
+      fprintf(fp, "Unknown setpoint function\n");
+      fprintf(fp, "Chris has made a typo somewhere. Please let him know ASAP so he can fix this.\n");
       break;
 
   }
   fprintf(fp, "\n");
 
   fprintf(fp, "Stop buffer (mm), Syringe diameter (mm)\n");
-  s = form_get_bldi_data(data);
+  s = form_get_bldi_packet(data);
   fprintf(fp, "%s\n", s);
   free(s);
 
@@ -113,10 +137,10 @@ static void *log_worker(void *void_data)
   timestamp(data, 0, "Waiting for Arduino...");
   switch (wait_for(data, 0, "START", 100, &data->log_worker_status, THREAD_CANCELLED)) {
     case -1:
-      timestamp_error(data, 0, "Cancelled by user.");
+      timestamp_error(data, 0, 0, "Cancelled by user.");
       return NULL;
     case -2:
-      timestamp_error(data, 0, "Arduino connection timed out!");
+      timestamp_error(data, 0, 0, "Arduino connection timed out!");
       return NULL;
   }
   timestamp(data, 0, "Arduino ready, starting!");
@@ -141,7 +165,7 @@ static void *log_worker(void *void_data)
 
       if(n == -1) {
         // error
-        timestamp_error(NULL, 0, 
+        timestamp_error(NULL, 0, 1, 
             "something went wrong reading a byte (read failed) (%d) %s", 
             errno, strerror(errno));
         exit(1); // TODO handle properly
@@ -151,7 +175,7 @@ static void *log_worker(void *void_data)
         nanosleep(&ms_span, NULL);  // wait 1 msec try again
         timeout--;
         if(timeout == 0){
-          timestamp_error(NULL, 0,  
+          timestamp_error(NULL, 0, 1,
               "something went wrong reading a byte (timed out) (%d), %s", 
               errno, strerror(errno));
           exit(1); // TODO handle properly
@@ -189,6 +213,7 @@ static void *log_worker(void *void_data)
       time(&prev_print);
 
       // TODO also plot data
+      // append force and flowrate to local timeseries
     }
     else {
       timestamp(NULL, 0, "%s", received_text);
@@ -219,21 +244,16 @@ void append_text_to_log(struct Data *data, const char *added_markup)
 
   if (log_string == NULL) {
 
-    log_string = calloc(
-        strlen(added_markup) + 1, 
-        sizeof(char));
-
-    strcpy(log_string, added_markup);
+    log_string = strdup(added_markup);
 
   }
   else {
     
-    log_string = realloc(
-        log_string, 
-        strlen(log_string) + 1 + strlen(added_markup) + 1);
+    const int newlen = strlen(log_string) + strlen(added_markup) + 1;
+    log_string = realloc(log_string, newlen+1);
 
-    strcat(log_string, "\n");
-    strcat(log_string, added_markup);
+    strncat(log_string, "\n", newlen);
+    strncat(log_string, added_markup, newlen);
 
   }
 
@@ -253,12 +273,12 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
 
   const char *pref = "syrpu";
 
-  char *date = calloc(15, sizeof(char));
+  char *date = calloc(16, sizeof(char));
   time_t rawtime;
   struct tm *timeinfo;
   time(&rawtime);
   timeinfo = localtime(&rawtime);
-  strftime(date, 50, "%Y-%m-%d", timeinfo);
+  strftime(date, 16, "%Y-%m-%d", timeinfo);
 
   const char *tag = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entTag")));
   int taglen = strlen(tag);
@@ -276,8 +296,8 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
   data->tag = realloc(data->tag, (taglen+1)*sizeof(char));
   strcpy(data->tag, santag);
 
-  char *pattern = calloc(256, sizeof(char));
-  sprintf(pattern, 
+  char *pattern = calloc(257, sizeof(char));
+  snprintf(pattern, 256,
     "%s/%s_%s(*)_%s.csv", 
     log_dir, 
     pref, 
@@ -288,8 +308,8 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
   glob((const char *)pattern, GLOB_NOSORT, NULL, &glob_res);
   free(pattern);
 
-  char *logpath = calloc(256, sizeof(char));
-  sprintf(logpath, 
+  char *logpath = calloc(257, sizeof(char));
+  snprintf(logpath, 256,
       "%s/%s_%s(%u)_%s.csv", 
       log_dir, 
       pref, 
