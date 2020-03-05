@@ -29,6 +29,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_top">10</property>
+            <property name="expanded">True</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -461,6 +462,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                       <object class="GtkEntry" id="entComposition">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="placeholder_text" translatable="yes">composition (mass fraction)</property>
                         <property name="input_purpose">number</property>
                       </object>
                       <packing>
@@ -502,6 +504,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="margin_top">10</property>
+            <property name="expanded">True</property>
             <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkBox">
@@ -557,67 +560,13 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkLabel" id="lblSetterTitle">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Constant</property>
-                        <attributes>
-                          <attribute name="font-desc" value="Sans Bold 11"/>
-                        </attributes>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">5</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lblSetterDesc">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Setpoint is given by a constant value.</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">5</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="lblSetterFormula">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">&lt;b&gt;formula goes here&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="padding">5</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">10</property>
+                    <property name="margin_right">10</property>
                     <property name="row_spacing">10</property>
                     <property name="column_spacing">10</property>
-                    <property name="column_homogeneous">True</property>
                     <child>
                       <object class="GtkLabel" id="lblA">
                         <property name="visible">True</property>
@@ -626,7 +575,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                         <property name="use_markup">True</property>
                       </object>
                       <packing>
-                        <property name="left_attach">0</property>
+                        <property name="left_attach">1</property>
                         <property name="top_attach">0</property>
                       </packing>
                     </child>
@@ -638,7 +587,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                         <property name="use_markup">True</property>
                       </object>
                       <packing>
-                        <property name="left_attach">0</property>
+                        <property name="left_attach">1</property>
                         <property name="top_attach">1</property>
                       </packing>
                     </child>
@@ -650,7 +599,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                         <property name="use_markup">True</property>
                       </object>
                       <packing>
-                        <property name="left_attach">0</property>
+                        <property name="left_attach">1</property>
                         <property name="top_attach">2</property>
                       </packing>
                     </child>
@@ -659,10 +608,12 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
+                        <property name="hexpand">True</property>
                         <property name="text" translatable="yes">0.5</property>
+                        <property name="input_purpose">number</property>
                       </object>
                       <packing>
-                        <property name="left_attach">1</property>
+                        <property name="left_attach">2</property>
                         <property name="top_attach">0</property>
                       </packing>
                     </child>
@@ -671,9 +622,11 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="input_purpose">number</property>
                       </object>
                       <packing>
-                        <property name="left_attach">1</property>
+                        <property name="left_attach">2</property>
                         <property name="top_attach">1</property>
                       </packing>
                     </child>
@@ -682,18 +635,57 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="input_purpose">number</property>
                       </object>
                       <packing>
-                        <property name="left_attach">1</property>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lblSetterTitle">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Constant</property>
+                        <attributes>
+                          <attribute name="font-desc" value="Sans Bold 11"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lblSetterDesc">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Setpoint is given by a constant value.</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lblSetterFormula">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">&lt;b&gt;formula goes here&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
                         <property name="top_attach">2</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">False</property>
                     <property name="padding">10</property>
-                    <property name="position">2</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>
@@ -769,6 +761,8 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                       <object class="GtkEntry" id="entBL">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="text" translatable="yes">5</property>
+                        <property name="input_purpose">number</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -809,6 +803,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                       <object class="GtkEntry" id="entDI">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="text" translatable="yes">20.5</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -988,7 +983,6 @@ The software will search for likely Arduino connections and display them here. I
                         <property name="tooltip_text" translatable="yes">Log names are generated according to the time they were created, the control parameters, and this user defined "tag".
 
 Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will be converted to dashes ('-') before use.</property>
-                        <property name="text" translatable="yes">delme</property>
                         <property name="placeholder_text" translatable="yes">tag to identify the logged data</property>
                       </object>
                       <packing>
@@ -1078,10 +1072,10 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
             <property name="resize_toplevel">True</property>
             <child>
               <object class="GtkDrawingArea" id="drawStatusPlot">
-                <property name="width_request">800</property>
-                <property name="height_request">300</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
               </object>
             </child>
             <child type="label">
