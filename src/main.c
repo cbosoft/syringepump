@@ -113,18 +113,12 @@ int main (int argc, char **argv)
   g_signal_connect(get_object_safe(data, "btnConnect"), "clicked", G_CALLBACK(cb_begin_clicked), data);
   g_signal_connect(get_object_safe(data, "btnDisconnect"), "clicked", G_CALLBACK(cb_stop_clicked), data);
   g_signal_connect(get_object_safe(data, "btnSerialRefresh"), "clicked", G_CALLBACK(cb_refresh_clicked), data);
-  g_signal_connect(get_object_safe(data, "lblLog"), "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
+  // g_signal_connect(get_object_safe(data, "lblLog"), "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
   g_signal_connect(get_object_safe(data, "entTag"), "changed", G_CALLBACK(cb_tag_text_changed), data);
-  g_signal_connect(get_object_safe(data, "btnTuning"), "clicked", G_CALLBACK(cb_tuning_clicked), data);
 
-  g_signal_connect(get_object_safe(data, "radConst"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
-  g_signal_connect(get_object_safe(data, "radRamp"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
-  g_signal_connect(get_object_safe(data, "radStep"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
-  g_signal_connect(get_object_safe(data, "radSine"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
-  g_signal_connect(get_object_safe(data, "radFlowControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
-  g_signal_connect(get_object_safe(data, "radPID"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
-  g_signal_connect(get_object_safe(data, "radNoControl"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
-  g_signal_connect(get_object_safe(data, "radPassive"), "toggled", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "cmbSetpointFunction"), "changed", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "cmbControlMethod"), "changed", G_CALLBACK(cb_setter_radio_changed), data);
+  g_signal_connect(get_object_safe(data, "cmbControlledVariable"), "changed", G_CALLBACK(cb_setter_radio_changed), data);
 
   g_signal_connect(get_object_safe(data, "radManual"), "toggled", G_CALLBACK(cb_pid_manual_radio_changed), data);
   g_signal_connect(get_object_safe(data, "fcbCompTuning"), "file-set", G_CALLBACK(cb_file_set), data);
@@ -134,8 +128,13 @@ int main (int argc, char **argv)
   timestamp(data, 1, "GUI started");
 
   get_new_log_name(data, NULL);
-  refresh(data);
 
+  sleep(1);
+  refresh(data);
+  sleep(1);
+
+  //GObject *window = get_object_safe(data, "winMain");
+  //gtk_widget_show(GTK_WIDGET(window));
   gtk_main();
   
   if (data->logpath != NULL)
