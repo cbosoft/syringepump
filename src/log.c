@@ -13,6 +13,7 @@
 #include "disconnect.h"
 #include "serial.h"
 #include "error.h"
+#include "status.h"
 
 
 
@@ -154,7 +155,7 @@ static void *log_worker(void *void_data)
   ms_span.tv_sec = 0;
   ms_span.tv_nsec = 1000*1000;
 
-  time_t prev_print = 0, just_now;
+  unsigned long n_lines_recieved = 0;
 
   while (data->log_worker_status < THREAD_CANCELLED) {
     char received_text[512] = {0};
@@ -192,6 +193,7 @@ static void *log_worker(void *void_data)
 
 
     received_text[charno-1] = 0;
+    n_lines_recieved ++;
 
     if (strcmp(received_text, "STOP") == 0) {
       // arduino requests stop
@@ -206,18 +208,12 @@ static void *log_worker(void *void_data)
     fprintf(fp, "%s\n", received_text);
     fclose(fp);
 
-    time(&just_now);
+    // print to console
+    timestamp(NULL, 0, "%s", received_text);
 
-    if (difftime(just_now, prev_print) > 1.0) {
-      timestamp(data, 0, "%s", received_text);
-      time(&prev_print);
-
-      // TODO also plot data
-      // append force and flowrate to local timeseries
-    }
-    else {
-      timestamp(NULL, 0, "%s", received_text);
-    }
+    // plot
+    if (n_lines_recieved > 1)
+      status_update(received_text);
 
   }
 
