@@ -40,7 +40,7 @@ clean:
 	rm -rf src/*.o
 
 CC    = gcc
-CFLAGS = -g -O0 $(shell pkg-config --cflags gtk+-3.0) -Wall -Wextra -Werror
+CFLAGS = -g3 -O0 $(shell pkg-config --cflags gtk+-3.0) -Wall -Wextra -Werror
 LINK   = $(shell pkg-config --libs gtk+-3.0)
 
 DEFS     :=
