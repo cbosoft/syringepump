@@ -6,7 +6,8 @@ unsigned long ptime = 0;
 double dc = 0.0;
 double buflen = 0.0;
 double inner_diameter = 0.0;
-int log_options = 56; // 111000
+//int log_options = 56; // 111000
+int log_options = 63; // 111111
 
 
 extern unsigned long time;
@@ -206,7 +207,6 @@ Controller *controlInit(){
     sp_recvd = 0,
     tp_recvd = 0,
     bd_recvd = 0,
-    lo_recvd = 0,
     controlled_var = 0,
     control_type = CONTROL_NONE;
 
@@ -323,22 +323,17 @@ Controller *controlInit(){
 
       bd_recvd = 1;
     }
-    else if (strcmp(key, "LO") == 0) {
-      log_options = atoi(val);
-
-      lo_recvd = 1;
-    }
 
     switch (control_type) {
 
     case CONTROL_PID:
     case CONTROL_MEAS:
-      if (sp_recvd && tp_recvd && lo_recvd && bd_recvd)
+      if (sp_recvd && tp_recvd && bd_recvd)
         done = 1;
       break;
 
     case CONTROL_NONE:
-      if (sp_recvd && lo_recvd && bd_recvd)
+      if (sp_recvd && bd_recvd)
         done = 1;
       break;
 
