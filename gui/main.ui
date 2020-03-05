@@ -506,6 +506,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Control Settings</property>
                 <attributes>
                   <attribute name="font-desc" value="Sans Bold 15"/>
@@ -687,6 +688,7 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Setpoint Settings</property>
                 <attributes>
                   <attribute name="font-desc" value="Sans Bold 15"/>
@@ -761,6 +763,7 @@ The software will search for likely Arduino connections and display them here. I
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Connection Settings</property>
                 <attributes>
                   <attribute name="font-desc" value="Sans Bold 15"/>
@@ -907,6 +910,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Log Settings</property>
                 <attributes>
                   <attribute name="font-desc" value="Sans Bold 15"/>
@@ -936,6 +940,7 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">5</property>
                 <property name="label" translatable="yes">Status</property>
                 <attributes>
                   <attribute name="font-desc" value="Sans Bold 15"/>
