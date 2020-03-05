@@ -2,9 +2,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "cgl.h"
-
-
 #include "tuning_plotter.h"
 #include "cJSON.h"
 #include "data.h"
@@ -13,7 +12,7 @@
 
 static cgl_Figure *fig = NULL;
 
-void cb_tuning_clicked(GObject *obj, struct Data *data)
+void cb_tuning_expanded(GObject *obj, struct Data *data)
 {
   (void) obj;
 
@@ -36,7 +35,7 @@ void cb_tuning_clicked(GObject *obj, struct Data *data)
 
   switch (control_type) {
     case FORM_CONTROL_NONE:
-      timestamp_error(data, 0, "this should never happen.");
+      timestamp_error(data, 0, 0, "This should never happen, if it does, let Chris know ASAP so he can fix it.");
       return;
 
     case FORM_CONTROL_MEAS:
