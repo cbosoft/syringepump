@@ -10,7 +10,7 @@
 #include "cgl.h"
 
 
-cgl_float colours[][3] = 
+cgl_float CGL_COLOURS[][3] = 
 {
   {0.12156862745098039, 0.4666666666666667, 0.7058823529411765},
   {1.0, 0.4980392156862745, 0.054901960784313725},
@@ -23,7 +23,7 @@ cgl_float colours[][3] =
   {0.7372549019607844, 0.7411764705882353, 0.13333333333333333},
   {0.09019607843137255, 0.7450980392156863, 0.8117647058823529}
 };
-cgl_uint n_colours = 10;
+cgl_uint CGL_N_COLOURS = 10;
 
 
 cgl_Figure *cgl_init_figure()
@@ -61,6 +61,22 @@ void cgl_figure_scale_axes(cgl_Figure *fig)
   cgl_float x_min = DBL_MAX, x_max = DBL_MIN, y_min = DBL_MAX, y_max = DBL_MIN;
   for (cgl_uint i = 0; i < fig->nlines; i++) {
     cgl_Line *line = fig->lines[i];
+
+    if (line->npoints < 2) {
+
+      if (1.0 > x_max)
+        x_max = 1.0;
+      if (0.0 < x_min)
+        x_min = 0.0;
+
+      if (1.0 > y_max)
+        y_max = 1.0;
+      if (0.0 < y_min)
+        y_min = 0.0;
+
+      continue;
+    }
+
     for (cgl_uint j = 0; j < line->npoints; j++) {
       cgl_Point *point = line->points[j];
 
@@ -106,6 +122,9 @@ void cgl_figure_clear(cgl_Figure *fig)
       cgl_line_free(fig->lines[i]);
     }
   }
+
+  free(fig->axes);
+  fig->axes = cgl_create_axes();
 
   fig->lines = NULL;
   fig->nlines = 0;
@@ -170,8 +189,6 @@ void line_to(cairo_t *cr, guint x1, guint y1, guint x2, guint y2)
 
 void cgl_figure_plot_vector(cgl_Figure *figure, cgl_float *x, cgl_float *y, cgl_uint npoints, char *label)
 {
-  (void) figure;
-  
   cgl_Line *line = cgl_create_line();
   line->points = calloc(npoints, sizeof(cgl_Point*));
   // TODO error checking on alloc
@@ -183,8 +200,8 @@ void cgl_figure_plot_vector(cgl_Figure *figure, cgl_float *x, cgl_float *y, cgl_
   }
 
   figure->lines = realloc(figure->lines, (++figure->nlines)*sizeof(cgl_Line));
-  cgl_uint colour_index = (figure->nlines-1) % n_colours;
-  cgl_line_set_colour(line, colours[colour_index]);
+  cgl_uint colour_index = (figure->nlines-1) % CGL_N_COLOURS;
+  cgl_line_set_colour(line, CGL_COLOURS[colour_index]);
   figure->lines[figure->nlines-1] = line;
 }
 

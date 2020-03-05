@@ -64,6 +64,6 @@ void cgl_axes_get_ylim(cgl_Axes *ax, cgl_float *bottom, cgl_float *top);
 void cgl_axes_set_xlim(cgl_Axes *ax, cgl_float left, cgl_float right);
 void cgl_axes_set_ylim(cgl_Axes *ax, cgl_float bottom, cgl_float top);
 
-gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data);
+gboolean cgl_painter_cb(GtkWidget *widget, cairo_t *cr, gpointer data);
 
 // vim: ft=c

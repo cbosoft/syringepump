@@ -17,6 +17,7 @@
 #include "tuning_plotter.h"
 #include "log.h"
 #include "form.h"
+#include "status.h"
 
 
 
@@ -128,6 +129,9 @@ int main (int argc, char **argv)
   timestamp(data, 1, "GUI started");
 
   get_new_log_name(data, NULL);
+  form_setter_update(data);
+
+  status_init(get_object_safe(data, "drawStatusPlot"));
 
   sleep(1);
   refresh(data);

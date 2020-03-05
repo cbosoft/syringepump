@@ -67,6 +67,7 @@ OBJ    = src/main.o \
 				 src/error.o \
 				 src/serial.o \
 				 src/log.o \
+				 src/status.o \
 				 src/connect.o \
 				 src/disconnect.o \
 				 src/refresh.o \
