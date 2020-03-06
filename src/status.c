@@ -70,3 +70,16 @@ void status_clear()
   }
   figure_owned = 0;
 }
+
+void status_free()
+{
+  if (fig->nlines) {
+    for (unsigned int i = 0; i < fig->nlines; i++) {
+      free(fig->lines[i]);
+    }
+    free(fig->lines);
+  }
+
+  cgl_axes_free(fig->axes);
+  free(fig);
+}
