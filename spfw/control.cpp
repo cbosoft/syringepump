@@ -14,18 +14,9 @@ extern unsigned long time;
 
 extern setter_func setter;
 
-extern double sine_frequency;
-extern double sine_mean;
-extern double sine_magnitude;
-
-extern double ramp_gradient;
-extern double ramp_intercept;
-
-extern double constant_val;
-
-extern double step_initial;
-extern double step_time;
-extern double step_final;
+extern double sp_A;
+extern double sp_B;
+extern double sp_C;
 
 
 
@@ -241,42 +232,59 @@ Controller *controlInit(){
         setter = &sine;
 
         param = strtok(val, ",");
-        sine_frequency = atof(param);
+        sp_A = atof(param);
 
         param = strtok(0, ",");
-        sine_magnitude = atof(param);
+        sp_B = atof(param);
 
         param = strtok(0, ",");
-        sine_mean = atof(param);
+        sp_C = atof(param);
         break;
 
       case 'R':
         setter = &ramp;
 
         param = strtok(val, ",");
-        ramp_gradient = atof(param);
+        sp_A = atof(param);
 
         param = strtok(0, ",");
-        ramp_intercept = atof(param);
+        sp_B = atof(param);
+
+        sp_C = 0.0;
         break;
 
       case 'T':
         setter = &step;
 
         param = strtok(val, ",");
-        step_initial = atof(param);
+        sp_A = atof(param);
 
         param = strtok(0, ",");
-        step_time = atof(param);
+        sp_B = atof(param);
 
         param = strtok(0, ",");
-        step_final = atof(param);
+        sp_C = atof(param);
+        break;
+
+      case 'Q':
+        setter = &square;
+
+        param = strtok(val, ",");
+        sp_A = atof(param);
+
+        param = strtok(0, ",");
+        sp_B = atof(param);
+
+        param = strtok(0, ",");
+        sp_C = atof(param);
         break;
 
       default:
       case 'C':
         setter = &constant;
-        constant_val = atof(val);
+        sp_A = atof(val);
+        sp_B = 0.0;
+        sp_C = 0.0;
         break;
       }
 
