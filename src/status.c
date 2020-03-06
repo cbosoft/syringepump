@@ -70,8 +70,8 @@ void status_clear()
     cgl_line_set_colour(line, CGL_COLOURS[i%10]);
     cgl_figure_add_line(fig, line);
   }
-  // cgl_axes_set_xlabel(fig->axes, "time, t [s]");
-  // cgl_axes_set_ylabel(fig->axes, "(blue) force, F [N]   (orange) flowrate, Q [ml/s]");
+  cgl_axes_set_xlabel(fig->axes, "time, t [s]");
+  cgl_axes_set_ylabel(fig->axes, "(blue) force, F [N]\n(orange) flowrate, Q [ml/s]");
   figure_owned = 0;
 }
 
