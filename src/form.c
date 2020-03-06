@@ -185,7 +185,30 @@ void form_set_cursor(struct Data *data, const char *name)
 
 
 // Depending on the situation, different parts of the form should be turned off or on
-void form_set_sensitive(struct Data *data, int sensitivity_flag)
+struct form_set_sensitive_data{
+  struct Data *data;
+  FORM_SENSITIVITIES sensitivity_flag;
+};
+
+void _form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag);
+static gboolean form_set_sensitive_callback(struct form_set_sensitive_data *cb_data)
+{
+  _form_set_sensitive(cb_data->data, cb_data->sensitivity_flag);
+  free(cb_data);
+  return FALSE;
+}
+
+void form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag)
+{
+  struct form_set_sensitive_data *cb_data = malloc(sizeof(struct form_set_sensitive_data));
+  cb_data->data = data;
+  cb_data->sensitivity_flag = sensitivity_flag;
+
+  g_idle_add((GSourceFunc)form_set_sensitive_callback, cb_data);
+}
+
+
+void _form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag)
 {
   // parts
   int 
@@ -195,6 +218,8 @@ void form_set_sensitive(struct Data *data, int sensitivity_flag)
     connected = 0, 
     cursor_normal = 1,
     serial_available = 1;
+
+  fprintf(stderr, "SETTING SENSITIVITY %d\n", sensitivity_flag);
 
   switch (sensitivity_flag){
 
