@@ -20,7 +20,7 @@ void status_update(const char *oline)
 
   char *tok = strtok(line, ",");
   if (!tok) goto free_and_return;
-  double time = atof(tok);
+  double time = atof(tok) * 0.001;
 
   tok = strtok(NULL, ",");
   if (!tok) goto free_and_return;
