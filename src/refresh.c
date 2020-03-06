@@ -47,6 +47,7 @@ static gboolean cmb_fill_callback(struct cmb_fill_callback_data *cfd)
   }
   gtk_combo_box_set_active(GTK_COMBO_BOX(cfd->cmb), 0);
 
+  globfree(cfd->glob_ptr);
   free(cfd->glob_ptr);
   free(cfd);
 
@@ -89,6 +90,7 @@ static void *refresh_worker(void *vptr_data)
       timestamp_error(data, 0, 1, "No Arduino found! Is it definitely plugged in?");
     }
 
+    globfree(glob_res);
     free(glob_res);
     form_set_sensitive(data, FORM_NOSERIAL);
     data->refresh_worker_status = THREAD_STOPPED;

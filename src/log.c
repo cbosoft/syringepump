@@ -278,7 +278,7 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
 
   const char *tag = gtk_entry_get_text(GTK_ENTRY(get_object_safe(data, "entTag")));
   int taglen = strlen(tag);
-  char santag[taglen+1];
+  char *santag = calloc(taglen+1, sizeof(char));
   for (int i = 0; i < taglen; i++) {
     if (tag[i] == ' ' || tag[i] == '_' || tag[i] == '.') {
       santag[i] = '-';
@@ -288,11 +288,13 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
     }
   }
   santag[taglen] = '\0';
-  
-  data->tag = realloc(data->tag, (taglen+1)*sizeof(char));
-  strcpy(data->tag, santag);
+ 
+  if (data->tag)
+    free(data->tag);
 
-  char *pattern = calloc(257, sizeof(char));
+  data->tag = santag;
+
+  char *pattern = malloc(257*sizeof(char));
   snprintf(pattern, 256,
     "%s/%s_%s(*)_%s.csv", 
     log_dir, 
@@ -304,7 +306,7 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
   glob((const char *)pattern, GLOB_NOSORT, NULL, &glob_res);
   free(pattern);
 
-  char *logpath = calloc(257, sizeof(char));
+  char *logpath = malloc(257*sizeof(char));
   snprintf(logpath, 256,
       "%s/%s_%s(%u)_%s.csv", 
       log_dir, 
@@ -313,7 +315,11 @@ char *get_new_log_name(struct Data *data, int *control_type_override)
       (unsigned int)glob_res.gl_pathc, 
       data->tag);
   free(date);
-  
+  globfree(&glob_res);
+ 
+  if (data->logpath)
+    free(data->logpath);
+
   data->logpath = logpath;
   gtk_label_set_text(GTK_LABEL(get_object_safe(data, "lblLogName")), logpath);
   return logpath;
