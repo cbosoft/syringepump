@@ -212,8 +212,7 @@ static void *log_worker(void *void_data)
     timestamp(NULL, 0, "%s", received_text);
 
     // plot
-    if (n_lines_recieved > 1)
-      status_update(received_text);
+    status_update(received_text, n_lines_recieved, 10);
 
   }
 
