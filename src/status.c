@@ -23,8 +23,6 @@ gboolean status_redraw_callback(GtkWidget *s)
 
 void status_update(const char *oline, int linen, int draw_every)
 {
-  fprintf(stderr, "%d %d\n", linen, draw_every);
-
   char *line = strdup(oline);
 
   char *tok = strtok(line, ",");
@@ -50,7 +48,6 @@ void status_update(const char *oline, int linen, int draw_every)
     cgl_figure_scale_axes(fig);
 
     if (linen % draw_every == 2) {
-      //gtk_widget_queue_draw(status_plot);
       g_idle_add((GSourceFunc)status_redraw_callback, status_plot);
     }
   }
@@ -80,8 +77,10 @@ void status_clear()
     cgl_line_set_colour(line, CGL_COLOURS[i%10]);
     cgl_figure_add_line(fig, line);
   }
-  cgl_axes_set_xlabel(fig->axes, "time, t [s]");
-  cgl_axes_set_ylabel(fig->axes, "(blue) force, F [N]\n(orange) flowrate, Q [ml/s]");
+  fig->lines[1]->y_ax_index = 1;
+  cgl_axes_set_xlabel(fig->axes, "Time, t [s]");
+  cgl_axes_set_ylabel(fig->axes, "(blue) Force, F [N]");
+  cgl_axes_set_alt_ylabel(fig->axes, "(orange) Flowrate, Q [ml/s]");
   figure_owned = 0;
 }
 
