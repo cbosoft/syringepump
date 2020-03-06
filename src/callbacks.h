@@ -11,5 +11,6 @@ void cb_tag_text_changed(GObject *obj, struct Data *data);
 void cb_tab_page_changed(GObject *obj, GtkWidget *page, guint page_num, struct Data *data);
 void cb_setter_radio_changed(GObject *obj, struct Data *data);
 void cb_tuning_clicked(GObject *obj, struct Data *data);
+void cb_pid_manual_radio_changed(GObject *obj, struct Data *data);
 
 // vim: ft=c
