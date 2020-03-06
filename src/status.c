@@ -14,7 +14,7 @@ static GtkWidget *status_plot = NULL;
 extern double CGL_COLOURS[][3];
 
 
-void status_update(const char *oline)
+void status_update(const char *oline, int linen, int draw_every)
 {
   char *line = strdup(oline);
 
@@ -40,7 +40,9 @@ void status_update(const char *oline)
     cgl_line_add_point(flowrate_line, time, flowrate);
     cgl_figure_scale_axes(fig);
 
-    gtk_widget_queue_draw(status_plot);
+    if (linen % draw_every == 2) {
+      gtk_widget_queue_draw(status_plot);
+    }
   }
 
   figure_owned = 0;
@@ -68,6 +70,8 @@ void status_clear()
     cgl_line_set_colour(line, CGL_COLOURS[i%10]);
     cgl_figure_add_line(fig, line);
   }
+  // cgl_axes_set_xlabel(fig->axes, "time, t [s]");
+  // cgl_axes_set_ylabel(fig->axes, "(blue) force, F [N]   (orange) flowrate, Q [ml/s]");
   figure_owned = 0;
 }
 
