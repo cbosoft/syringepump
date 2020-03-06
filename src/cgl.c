@@ -6,7 +6,6 @@
 #include <limits.h>
 
 #include <gtk/gtk.h>
-#include "memory_shim.h"
 
 #include "cgl.h"
 
