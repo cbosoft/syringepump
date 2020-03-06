@@ -13,9 +13,17 @@ static GtkWidget *status_plot = NULL;
 
 extern double CGL_COLOURS[][3];
 
+gboolean status_redraw_callback(GtkWidget *s)
+{
+  gtk_widget_queue_draw(s);
+  return FALSE;
+}
+
 
 void status_update(const char *oline, int linen, int draw_every)
 {
+  fprintf(stderr, "%d %d\n", linen, draw_every);
+
   char *line = strdup(oline);
 
   char *tok = strtok(line, ",");
@@ -41,7 +49,8 @@ void status_update(const char *oline, int linen, int draw_every)
     cgl_figure_scale_axes(fig);
 
     if (linen % draw_every == 2) {
-      gtk_widget_queue_draw(status_plot);
+      //gtk_widget_queue_draw(status_plot);
+      g_idle_add((GSourceFunc)status_redraw_callback, status_plot);
     }
   }
 
