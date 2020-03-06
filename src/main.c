@@ -140,10 +140,12 @@ int main (int argc, char **argv)
   //GObject *window = get_object_safe(data, "winMain");
   //gtk_widget_show(GTK_WIDGET(window));
   gtk_main();
+  timestamp(data, 1, "Freeing memory...");
   
   if (data->logpath != NULL)
     free(data->logpath);
   free(data);
 
+  timestamp(data, 1, "Done!");
   return 0;
 }

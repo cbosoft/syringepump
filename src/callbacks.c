@@ -57,8 +57,8 @@ void cb_quit_clicked(GObject *obj, struct Data *data)
 {
   (void) obj;
 
+  timestamp(data, 1, "Disconnecting...");
   disconnect(data, 1);
-  timestamp(data, 1, "Closing...");
   gtk_main_quit();
 
 }
