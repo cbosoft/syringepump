@@ -19,6 +19,7 @@
 #include "log.h"
 #include "form.h"
 #include "status.h"
+#include "util.h"
 
 
 
@@ -141,9 +142,9 @@ int main (int argc, char **argv)
 
   status_init(get_object_safe(data, "drawStatusPlot"));
 
-  sleep(1);
+  ptble_usleep(100000);
   refresh(data);
-  sleep(1);
+  ptble_usleep(100000); // 100ms
 
   //GObject *window = get_object_safe(data, "winMain");
   //gtk_widget_show(GTK_WIDGET(window));
