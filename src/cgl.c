@@ -112,6 +112,14 @@ void cgl_line_free(cgl_Line *line)
   for (cgl_uint i = 0; i < line->npoints; i++) {
     cgl_point_free(line->points[i]);
   }
+  free(line->points);
+
+  if (line->label)
+    free(line->label);
+
+  if (line->style)
+    cgl_style_free(line->style);
+
   free(line);
 }
 
@@ -121,13 +129,12 @@ void cgl_figure_clear(cgl_Figure *fig)
     for (cgl_uint i = 0; i < fig->nlines; i++) {
       cgl_line_free(fig->lines[i]);
     }
+    fig->lines = NULL;
+    fig->nlines = 0;
   }
 
-  free(fig->axes);
+  cgl_axes_free(fig->axes);
   fig->axes = cgl_create_axes();
-
-  fig->lines = NULL;
-  fig->nlines = 0;
 }
 
 
@@ -136,13 +143,22 @@ void cgl_figure_clear(cgl_Figure *fig)
 cgl_Axes *cgl_create_axes()
 {
   cgl_Axes *ax = calloc(1, sizeof(cgl_Axes));
-  ax->x_label = "x";
-  ax->y_label = "y";
+  ax->x_label = calloc(2, sizeof(char));
+  ax->x_label[0] = 'x';
+  ax->y_label = calloc(2, sizeof(char));
+  ax->y_label[0] = 'y';
   ax->x_lim[0] = 0.0;
   ax->x_lim[1] = 1.0;
   ax->y_lim[0] = 0.0;
   ax->y_lim[1] = 1.0;
   return ax;
+}
+
+void cgl_axes_free(cgl_Axes *ax)
+{
+  free(ax->x_label);
+  free(ax->y_label);
+  free(ax);
 }
 
 cgl_float cgl_axes_get_span_x(cgl_Axes *ax)
@@ -169,6 +185,11 @@ cgl_LineStyle *cgl_create_style()
   style->a = 1.0;
   style->w = 2.0;
   return style;
+}
+
+void cgl_style_free(cgl_LineStyle *style)
+{
+  free(style);
 }
 
 cgl_Line *cgl_create_line()
@@ -204,6 +225,7 @@ void cgl_figure_plot_vector(cgl_Figure *figure, cgl_float *x, cgl_float *y, cgl_
   cgl_line_set_colour(line, CGL_COLOURS[colour_index]);
   figure->lines[figure->nlines-1] = line;
 }
+
 
 cgl_Point *cgl_create_point(cgl_float x, cgl_float y)
 {
@@ -298,13 +320,14 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
   cairo_move_to(cr, margin_left + axes_x_length/2 - extents.width/2, height-(margin_bottom/2));
   cairo_show_text(cr, fig->axes->x_label);
 
-  //cairo_save(cr); 
-  //cairo_rotate(cr, 0.25*3.14);
+  cairo_save(cr); 
+  cairo_rotate(cr, -0.5*3.14);
   cairo_text_extents(cr, fig->axes->y_label, &extents);
-  cairo_move_to(cr, (margin_left-extents.width)/2, margin_top + axes_y_length/2);
+  //cairo_move_to(cr, (margin_left-extents.width)/2, margin_top + axes_y_length/2); // without rotation
+  cairo_move_to(cr, margin_top + axes_y_length/2, margin_right + axes_x_length + margin_left/2);
   //cairo_move_to(cr, width/2 - extents.width/2, height-(margin_bottom/2));
   cairo_show_text(cr, fig->axes->y_label);
-  //cairo_restore(cr);
+  cairo_restore(cr);
 
 
   cgl_uint legend = FALSE, legend_box_height = 0, legend_box_width = 0;
@@ -391,18 +414,26 @@ char *cgl_axes_get_xlabel(cgl_Axes *ax)
 
 void cgl_axes_set_ylabel(cgl_Axes *ax, char *lbl)
 {
+  free(ax->y_label);
   ax->y_label = strdup(lbl);
 }
 
 
 void cgl_axes_set_xlabel(cgl_Axes *ax, char *lbl)
 {
+  free(ax->x_label);
   ax->x_label = strdup(lbl);
 }
 
 
 void cgl_figure_free(cgl_Figure *fig)
 {
-  // TODO free the rest of the stuff
+  if (fig->lines) {
+    for (unsigned int i = 0; i < fig->nlines; i++) {
+      cgl_line_free(fig->lines[i]);
+    }
+    free(fig->lines);
+  }
+  cgl_axes_free(fig->axes);
   free(fig);
 }
