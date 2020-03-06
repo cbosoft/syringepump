@@ -23,7 +23,9 @@ void disconnect(struct Data *data, int is_gui)
 
   if (is_serial_open(data)) {
 
-    write_serial(data, "QUIT", 4);
+    int rv, i = 0;
+    while ((rv = write_serial(data, "QUIT", 4)) && ++i < 10);
+    if (rv) timestamp_error(data, 1, 1, "Error writing to serial: ");
 
     close_serial(data);
 
