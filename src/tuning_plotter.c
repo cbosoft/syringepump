@@ -65,10 +65,10 @@ int read_tuning_data(char *path, struct CompositionTuning **cdata)
 
   (*cdata) = malloc(sizeof(struct CompositionTuning));
   (*cdata)->n = nlines;
-  (*cdata)->cm = malloc(nlines*sizeof(cgl_float));
-  (*cdata)->kp = malloc(nlines*sizeof(cgl_float));
-  (*cdata)->ki = malloc(nlines*sizeof(cgl_float));
-  (*cdata)->kd = malloc(nlines*sizeof(cgl_float));
+  (*cdata)->cm = malloc(nlines*sizeof(double));
+  (*cdata)->kp = malloc(nlines*sizeof(double));
+  (*cdata)->ki = malloc(nlines*sizeof(double));
+  (*cdata)->kd = malloc(nlines*sizeof(double));
 
 
   char **lines = malloc(nlines*sizeof(char*));
