@@ -55,7 +55,6 @@ int main (int argc, char **argv)
   XInitThreads();
 #endif
 
-
   gtk_init(&argc, &argv);
 
   timestamp(NULL, 1, "GTK initialised.");
@@ -121,7 +120,6 @@ int main (int argc, char **argv)
   g_signal_connect(get_object_safe(data, "btnConnect"), "clicked", G_CALLBACK(cb_begin_clicked), data);
   g_signal_connect(get_object_safe(data, "btnDisconnect"), "clicked", G_CALLBACK(cb_stop_clicked), data);
   g_signal_connect(get_object_safe(data, "btnSerialRefresh"), "clicked", G_CALLBACK(cb_refresh_clicked), data);
-  // g_signal_connect(get_object_safe(data, "lblLog"), "size-allocate", G_CALLBACK(cb_lbl_size_changed), data);
   g_signal_connect(get_object_safe(data, "entTag"), "changed", G_CALLBACK(cb_tag_text_changed), data);
 
   g_signal_connect(get_object_safe(data, "cmbSetpointFunction"), "changed", G_CALLBACK(cb_setter_radio_changed), data);
@@ -134,25 +132,28 @@ int main (int argc, char **argv)
 
   read_tuning_data("/usr/share/syringepump/default_tuning.csv", &data->composition_data);
   form_setter_update(data);
-
-  timestamp(data, 1, "GUI started");
-
   get_new_log_name(data, NULL);
-  form_setter_update(data);
-
+  init_tuning_plot(data);
   status_init(get_object_safe(data, "drawStatusPlot"));
 
   ptble_usleep(100000);
   refresh(data);
   ptble_usleep(100000); // 100ms
 
-  //GObject *window = get_object_safe(data, "winMain");
-  //gtk_widget_show(GTK_WIDGET(window));
+  timestamp(data, 1, "GUI started");
   gtk_main();
   timestamp(data, 1, "Freeing memory...");
   
-  if (data->logpath != NULL)
+  status_free();
+  composition_data_free(data->composition_data);
+  free_tuning_plot();
+  
+  if (data->logpath)
     free(data->logpath);
+
+  if (data->tag)
+    free(data->tag);
+
   free(data);
 
   timestamp(data, 1, "Done!");
