@@ -1,0 +1,471 @@
+# Actual GTK things
+{
+  GtkWidgetClass action GPtrArray
+  Memcheck:Leak
+  fun:malloc
+  fun:g_malloc
+  fun:g_slice_alloc
+  fun:g_ptr_array_sized_new
+  fun:g_ptr_array_new
+  fun:gtk_widget_class_add_action
+}
+
+{
+   GTK media extension gio modules
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:g_io_module_new
+   fun:g_io_modules_scan_all_in_directory_with_scope
+   fun:gtk_media_file_extension_init
+}
+
+# mesa driver stuff
+{
+   i965 addr4
+   Memcheck:Addr4
+   obj:/usr/lib/dri/i965_dri.so*
+}
+
+{
+   i965 addr8
+   Memcheck:Addr8
+   obj:/usr/lib/dri/i965_dri.so*
+}
+
+{
+   i965 memcpy
+   Memcheck:Addr8
+   fun:memcpy*
+   obj:/usr/lib/dri/i965_dri.so*
+}
+
+{
+   i965 memcpy
+   Memcheck:Addr2
+   fun:memcpy*
+   obj:/usr/lib/dri/i965_dri.so*
+}
+
+{
+   mesa memcmp 8
+   Memcheck:Addr8
+   fun:*memcmp*
+   obj:/usr/lib/dri/i965_dri.so*
+}
+
+{
+   mesa memcmp 1
+   Memcheck:Addr1
+   fun:*memcmp*
+   obj:/usr/lib/dri/i965_dri.so*
+}
+
+{
+   mesa memset 8
+   Memcheck:Addr8
+   fun:*memset*
+   obj:/usr/lib/dri/i965_dri.so
+}
+
+{
+   mesa realpath
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:realpath@@GLIBC_2.3
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:epoxy_eglInitialize_global_rewrite_ptr
+}
+
+{
+   mesa calloc
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:epoxy_eglInitialize_global_rewrite_ptr
+}
+
+{
+   mesa malloc
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:/usr/lib/dri/i965_dri.so*
+}
+
+# Fontconfig
+{
+   FcFontSetList
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:/usr/lib/libfontconfig.so*
+   obj:/usr/lib/libfontconfig.so*
+   fun:FcFontSetList
+}
+
+{
+   FcFontRenderPrepare
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib/libfontconfig.so*
+   obj:/usr/lib/libfontconfig.so*
+   fun:FcFontRenderPrepare
+}
+
+# Pango
+{
+   pango 1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib/libfontconfig.so*
+   obj:/usr/lib/libfontconfig.so*
+   obj:/usr/lib/libcairo.so*
+   fun:pango_cairo_fc_font_map_fontset_key_substitute
+}
+
+{
+  <libpango>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libpango*
+}
+
+{
+  <libpango>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libpango*
+}
+{
+  <libpango>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libpango*
+}
+{
+  <libpango>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libpango*
+}
+{
+  <libpango>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libpango*
+}
+{
+  <libgtk>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libgtk*
+}
+{
+  <libgtk>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libgtk*
+}
+{
+  <libgtk>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libgtk*
+}
+{
+  <libgtk>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libgtk*
+}
+{
+  <libgobject>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libgobject*
+}
+{
+  <libgobject>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libgobject*
+}
+{
+  <libgobject>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libgobject*
+}
+{
+  <libgobject>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libgobject*
+}
+{
+  <libglib>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libglib*
+}
+{
+  <libglib>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libglib*
+}
+{
+  <libglib>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libglib*
+}
+{
+  <libglib>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libglib*
+}
+{
+  <libfreetype>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libfreetype*
+}
+{
+  <libfreetype>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libfreetype*
+}
+{
+  <libfreetype>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libfreetype*
+}
+{
+  <libfreetype>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libfreetype*
+}
+{
+  <libfontconfig>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libfontconfig*
+}
+{
+  <libfontconfig>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libfontconfig*
+}
+{
+  <libfontconfig>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libfontconfig*
+}
+{
+  <libfontconfig>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libfontconfig*
+}
+{
+  <libgdk>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libgdk*
+}
+{
+  <libgdk>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libgdk*
+}
+{
+  <libgdk>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libgdk*
+}
+{
+  <libgdk>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libgdk*
+}
+{
+  <libdl>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libdl*
+}
+{
+  <libdl>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libdl*
+}
+{
+  <libdl>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libdl*
+}
+{
+  <libdl>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libdl*
+}
+{
+  <libcairo>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libcairo*
+}
+{
+  <libcairo>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libcairo*
+}
+{
+  <libcairo>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libcairo*
+}
+{
+  <libcairo>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libcairo*
+}
+{
+  <libX11>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libX11*
+}
+{
+  <libX11>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libX11*
+}
+{
+  <libX11>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libX11*
+}
+{
+  <libX11>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libX11*
+}
+{
+  <librsvg>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/librsvg*
+}
+{
+  <librsvg>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/librsvg*
+}
+{
+  <librsvg>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/librsvg*
+}
+{
+  <librsvg>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/librsvg*
+}
+{
+  <libpixman>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libpixman*
+}
+{
+  <libpixman>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libpixman*
+}
+{
+  <libpixman>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libpixman*
+}
+{
+  <libpixman>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libpixman*
+}
+{
+  <libdbus>
+  Memcheck:Cond
+  ...
+  obj:/usr/*lib*/libdbus*
+}
+{
+  <libdbus>
+  Memcheck:Leak
+  ...
+  obj:/usr/*lib*/libdbus*
+}
+{
+  <libdbus>
+  Memcheck:Addr8
+  ...
+  obj:/usr/*lib*/libdbus*
+}
+{
+  <libdbus>
+  Memcheck:Value8
+  ...
+  obj:/usr/*lib*/libdbus*
+}
