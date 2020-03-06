@@ -18,7 +18,7 @@
 
 
 
-static char *log_string = NULL;
+//static char *log_string = NULL;
 static GThread *log_worker_thread;
 
 void write_run_params(struct Data *data)
@@ -234,28 +234,28 @@ void start_log(struct Data *data)
 
 
 
-void append_text_to_log(struct Data *data, const char *added_markup)
-{
-
-
-  if (log_string == NULL) {
-
-    log_string = strdup(added_markup);
-
-  }
-  else {
-    
-    const int newlen = strlen(log_string) + strlen(added_markup) + 1;
-    log_string = realloc(log_string, newlen+1);
-
-    strncat(log_string, "\n", newlen);
-    strncat(log_string, added_markup, newlen);
-
-  }
-
-  gtk_label_set_markup(GTK_LABEL(get_object_safe(data, "lblLog")), log_string);
-
-}
+// void append_text_to_log(struct Data *data, const char *added_markup)
+// {
+// 
+// 
+//   if (log_string == NULL) {
+// 
+//     log_string = strdup(added_markup);
+// 
+//   }
+//   else {
+//     
+//     const int newlen = strlen(log_string) + strlen(added_markup) + 1;
+//     log_string = realloc(log_string, newlen+1);
+// 
+//     strncat(log_string, "\n", newlen);
+//     strncat(log_string, added_markup, newlen);
+// 
+//   }
+// 
+//   gtk_label_set_markup(GTK_LABEL(get_object_safe(data, "lblLog")), log_string);
+// 
+// }
 
 
 

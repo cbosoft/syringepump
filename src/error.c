@@ -37,16 +37,16 @@ struct timestamp_callback_data {
 };
 
 
-gboolean timestamp_callback(struct timestamp_callback_data *tcd)
-{
-
-  append_text_to_log(tcd->data, tcd->message);
-
-  free(tcd->message);
-  free(tcd);
-
-  return 0;
-}
+// gboolean timestamp_callback(struct timestamp_callback_data *tcd)
+// {
+// 
+//   append_text_to_log(tcd->data, tcd->message);
+// 
+//   free(tcd->message);
+//   free(tcd);
+// 
+//   return 0;
+// }
 
 gboolean status_callback(struct timestamp_callback_data *tcd)
 {
