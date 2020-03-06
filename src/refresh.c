@@ -1,11 +1,13 @@
 #include <gtk/gtk.h>
 #include <glob.h>
+#include <stdlib.h>
 
 #include "refresh.h"
 #include "threads.h"
 #include "error.h"
 #include "form.h"
 #include "errno.h"
+#include "util.h"
 
 
 
@@ -62,16 +64,11 @@ static void *refresh_worker(void *vptr_data)
 
   data->refresh_worker_status = THREAD_STARTED;
 
-  // TODO do from callback
   form_set_sensitive(data, FORM_REFRESHING);
 
   timestamp(data, 0, "Searching for Arduino...");
 
-  struct timespec ms300_span;
-  ms300_span.tv_sec = 0;
-  ms300_span.tv_nsec = 300*1000*1000;
-  nanosleep(&ms300_span, NULL);
-
+  ptble_usleep(300);
   g_idle_add((GSourceFunc)cmb_clear_callback, get_object_safe(data, "cmbSerial"));
 
 
