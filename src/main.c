@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include <gtk/gtk.h>
 
@@ -43,9 +44,12 @@ void catch(int signal)
 
 int main (int argc, char **argv)
 {
-  GtkBuilder *builder;
-  GError *error = NULL;
-  
+
+  // if called from _not_ a terminal, redirect stderr to file
+  if (!isatty(fileno(stdin)))
+    if (!freopen("syringepump_error_log.txt", "a", stderr))
+      freopen("syringepump_error_log.txt", "w", stderr);
+
 #ifdef LINUX
   XInitThreads();
 #endif
@@ -55,7 +59,8 @@ int main (int argc, char **argv)
 
   timestamp(NULL, 1, "GTK initialised.");
 
-  builder = gtk_builder_new();
+  GtkBuilder *builder = gtk_builder_new();
+  GError *error = NULL;
   if (gtk_builder_add_from_file(builder, "/usr/share/syringepump/main.ui", &error) == 0) {
     timestamp(NULL, 1, "Error loading layout file: %s\n", error->message);
     g_clear_error(&error);
@@ -110,6 +115,7 @@ int main (int argc, char **argv)
     }
   }
 
+  // signals -->
   g_signal_connect(get_object_safe(data, "winMain"), "destroy", G_CALLBACK(cb_quit_clicked), data);
   g_signal_connect(get_object_safe(data, "btnConnect"), "clicked", G_CALLBACK(cb_begin_clicked), data);
   g_signal_connect(get_object_safe(data, "btnDisconnect"), "clicked", G_CALLBACK(cb_stop_clicked), data);
@@ -123,6 +129,8 @@ int main (int argc, char **argv)
 
   g_signal_connect(get_object_safe(data, "radManual"), "toggled", G_CALLBACK(cb_pid_manual_radio_changed), data);
   g_signal_connect(get_object_safe(data, "fcbCompTuning"), "file-set", G_CALLBACK(cb_file_set), data);
+  // <--
+
   read_tuning_data("/usr/share/syringepump/default_tuning.csv", &data->composition_data);
   form_setter_update(data);
 
