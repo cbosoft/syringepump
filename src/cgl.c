@@ -6,6 +6,7 @@
 #include <limits.h>
 
 #include <gtk/gtk.h>
+#include "memory_shim.h"
 
 #include "cgl.h"
 
@@ -269,18 +270,18 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
   cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
   cairo_paint(cr);
 
-  cgl_uint margin_left = (guint)(0.15*width);
-  cgl_uint margin_right = (guint)(0.1*width);
-  cgl_uint margin_top = (guint)(0.1*height);
-  cgl_uint margin_bottom = (guint)(0.25*height);
+  int margin_left = (guint)(0.2*width);
+  int margin_right = (guint)(0.1*width);
+  int margin_top = (guint)(0.1*height);
+  int margin_bottom = (guint)(0.25*height);
 
   cgl_float px_per_data_x = ((cgl_float)(width-margin_left-margin_right)) / cgl_axes_get_span_x(fig->axes);
   cgl_float px_per_data_y = ((cgl_float)(height-margin_top-margin_bottom)) / cgl_axes_get_span_y(fig->axes);
 
   // Axes
   cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
-  cgl_uint axes_x_length = width - margin_left - margin_right;
-  cgl_uint axes_y_length = height - margin_top - margin_bottom;
+  int axes_x_length = width - margin_left - margin_right;
+  int axes_y_length = height - margin_top - margin_bottom;
   line_to(cr, margin_left-2, height-margin_bottom+2, width-margin_right+2, height-margin_bottom+2);
   line_to(cr, margin_left-2, height-margin_bottom+2, margin_left-2, margin_top-2);
   cairo_stroke(cr);
@@ -317,15 +318,22 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 
   // Labels
   cairo_text_extents(cr, fig->axes->x_label, &extents);
-  cairo_move_to(cr, margin_left + axes_x_length/2 - extents.width/2, height-(margin_bottom/2));
+  int exth = extents.height;
+  int extw = extents.width;
+  cairo_move_to(cr, margin_left + ((axes_x_length - extw)/2), height-((margin_bottom - exth)/2));
   cairo_show_text(cr, fig->axes->x_label);
 
   cairo_save(cr); 
-  cairo_rotate(cr, -0.5*3.14);
   cairo_text_extents(cr, fig->axes->y_label, &extents);
+  exth = extents.height; extw = extents.width;
+  //cairo_rotate(cr, 0.5*3.1415926);
+  //cairo_move_to(cr, margin_top + ((axes_y_length - extents.width)/2), -(margin_left - extents.height)/2);
+
+  cairo_rotate(cr, -0.5*3.1415926);
+  //extw = 0; exth = 0;
+  cairo_move_to(cr, -margin_top - ((extw + axes_y_length)/2), margin_left / 4);
+
   //cairo_move_to(cr, (margin_left-extents.width)/2, margin_top + axes_y_length/2); // without rotation
-  cairo_move_to(cr, margin_top + axes_y_length/2, margin_right + axes_x_length + margin_left/2);
-  //cairo_move_to(cr, width/2 - extents.width/2, height-(margin_bottom/2));
   cairo_show_text(cr, fig->axes->y_label);
   cairo_restore(cr);
 
