@@ -38,63 +38,63 @@ int check_form(struct Data *data)
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
         "C is a required parameter for constant setter",
         "C must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       break;
 
     case FORM_SETTER_RAMP:
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
         "Gradient (M) is a required parameter for ramp setter",
         "Gradient (M) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entB"),
         "Intercept (C) is a required parameter for ramp setter",
         "Intercept (C) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       break;
 
     case FORM_SETTER_STEP:
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
         "Initial value (I) is a required parameter for step setter",
         "Initial value (I) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entB"),
         "Time of change (tc) is a required parameter for step setter",
         "Time of change (tc) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entC"),
         "Final value (F) is a required parameter for step setter",
         "Final value (F) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       break;
 
     case FORM_SETTER_SINE:
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
         "Frequency (ω) is a required parameter for sine wave setter",
         "Frequency (ω) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entB"),
         "Magnitude (M) is a required parameter for sine wave setter",
         "Magnitude (M) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entC"),
         "Mean (A) is a required parameter for sine wave setter",
         "Mean (A) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       break;
 
     case FORM_SETTER_SQUARE:
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entA"),
-        "Frequency (ω) is a required parameter for sine wave setter",
+        "Frequency (ω) is a required parameter for square wave setter",
         "Frequency (ω) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "'.').");
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entB"),
-        "Magnitude (M) is a required parameter for sine wave setter",
-        "Magnitude (M) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "Low value (A) is a required parameter for square wave setter",
+        "Low value (A) must be a number (containing only numbers 0-9 and decimal points "
+        "'.').");
       CHECK_ENTRY_NUMBER(get_object_safe(data, "entC"),
-        "Mean (A) is a required parameter for sine wave setter",
-        "Mean (A) must be a number (containing only numbers 0-9 and decimal points "
-        "('.').");
+        "High value (B) is a required parameter for sine wave setter",
+        "High value (B) must be a number (containing only numbers 0-9 and decimal points "
+        "'.').");
       break;
 
     case FORM_SETTER_ERROR:
@@ -106,12 +106,12 @@ int check_form(struct Data *data)
   CHECK_ENTRY_NUMBER(get_object_safe(data, "entDI"),
       "Syringe diameter is a required field.",
       "Syringe diameter must be a number (containing only numbers 0-9 and decimal points "
-      "('.').");
+      "'.').");
 
   CHECK_ENTRY_NUMBER(get_object_safe(data, "entBL"),
       "Stop buffer length is a required field.",
       "Buffer length must be a number (containing only numbers 0-9 and decimal points "
-      "('.').");
+      "'.').");
   
   if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, "radManual")))) {
     CHECK_ENTRY_NUMBER(get_object_safe(data, "entComposition"),
@@ -535,17 +535,19 @@ char *form_get_setter_params(struct Data *data, int n)
   if (n > 0) {
     rv = calloc(PACKET_VALUE_LEN+1, sizeof(char));
     GObject *ent_A = get_object_safe(data, "entA");
-    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_A)), PACKET_VALUE_LEN-1);
+    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_A)), PACKET_VALUE_LEN);
   }
 
   if (n > 1) {
+    strncat(rv, ",", PACKET_VALUE_LEN);
     GObject *ent_B = get_object_safe(data, "entB");
-    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_B)), PACKET_VALUE_LEN-1);
+    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_B)), PACKET_VALUE_LEN);
   }
 
   if (n > 2) {
+    strncat(rv, ",", PACKET_VALUE_LEN-1);
     GObject *ent_C = get_object_safe(data, "entC");
-    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_C)), PACKET_VALUE_LEN-1);
+    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_C)), PACKET_VALUE_LEN);
   }
 
   return rv;
@@ -669,9 +671,17 @@ char *form_get_setter_packet(struct Data *data)
       break;
 
     case FORM_SETTER_STEP:
+      setter_ch = 'T';
+      setter_params = form_get_setter_params(data, 3);
+      break;
+
     case FORM_SETTER_SINE:
-    case FORM_SETTER_SQUARE:
       setter_ch = 'S';
+      setter_params = form_get_setter_params(data, 3);
+      break;
+
+    case FORM_SETTER_SQUARE:
+      setter_ch = 'Q';
       setter_params = form_get_setter_params(data, 3);
       break;
 
