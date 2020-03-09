@@ -233,6 +233,8 @@ void _form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag)
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expSyringe")), 1);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expLog")), 1);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expStatus")), 1);
+    gtk_widget_set_visible(GTK_WIDGET(get_object_safe(data, "drawStatusPlot")), 1);
+    gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expStatus")), 1);
     break;
       
   case FORM_BUSY:
@@ -249,6 +251,8 @@ void _form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag)
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expSyringe")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expLog")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expStatus")), 1);
+    gtk_widget_set_visible(GTK_WIDGET(get_object_safe(data, "drawStatusPlot")), 1);
+    gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expStatus")), 1);
     break;
 
   case FORM_DISCONNECTED:
@@ -261,6 +265,8 @@ void _form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag)
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expSyringe")), 1);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expLog")), 1);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expStatus")), 0);
+    gtk_widget_set_visible(GTK_WIDGET(get_object_safe(data, "drawStatusPlot")), 0);
+    gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expStatus")), 0);
     break;
 
   case FORM_NOSERIAL:
@@ -272,6 +278,8 @@ void _form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag)
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expSyringe")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expLog")), 0);
     gtk_expander_set_expanded(GTK_EXPANDER(get_object_safe(data, "expStatus")), 0);
+    gtk_widget_set_visible(GTK_WIDGET(get_object_safe(data, "drawStatusPlot")), 0);
+    gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "expStatus")), 0);
     break;
       
   }
