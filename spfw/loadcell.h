@@ -12,8 +12,8 @@
 //#define STRESS_C 4.48866159e-02
 
 // UPDATE MARCH 9 2020
-#define STRESS_M -3633.41614758 
-#define STRESS_C -121985.46679477
+#define STRESS_M -2.74050662e-04 
+#define STRESS_C -3.34244139e+01
 
 long getLoadCellReading();
 double getLoadCellReadingUnits(long bytes);
