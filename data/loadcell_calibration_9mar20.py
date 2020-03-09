@@ -48,12 +48,12 @@ for t, lc in zip(time, loadcell):
         readings.append(lc)
 
 force = np.multiply(mass, 9.81)
-cal = np.polyfit(force, readings, 1)
+cal = np.polyfit(readings, force, 1)
 
 plt.plot(readings, force)
 
-caly = np.linspace(0, 10)
-calx = np.add(np.multiply(caly, cal[0]), cal[1])
+calx = np.linspace(-123800, -134750)
+caly = np.add(np.multiply(calx, cal[0]), cal[1])
 plt.plot(calx, caly)
 plt.show()
 
