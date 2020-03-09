@@ -366,6 +366,8 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
     cairo_show_text(cr, ticklabel);
     cairo_stroke(cr);
   }
+
+  // TODO properly scale axes for negative results
   if (cgl_figure_does_use_alt_y(fig)) {
     for (unsigned int i = 0; i < n_alt_y_ticks; i++) {
       cairo_move_to(cr, margin_left-2, margin_top+(i*alt_y_tick_dp));
@@ -413,6 +415,7 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
   // Data
 #define CGL_SCALE_X(F) (unsigned int)(px_per_data_x * (F))
 #define CGL_SCALE_Y(F) (unsigned int)(  (line->y_ax_index?px_per_data_alt_y:px_per_data_y) * (F))
+#define CGL_YLIM ((line->y_ax_index) ? fig->axes->alt_y_lim : fig->axes->y_lim)
   for (unsigned int line_i = 0; line_i < fig->nlines; line_i++) {
     cgl_Line *line = fig->lines[line_i];
     cairo_set_line_width(cr, line->style->w);
@@ -420,14 +423,14 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
       continue;
 
     cgl_Point *point = line->points[0];
-    cairo_move_to(cr, margin_left + CGL_SCALE_X(point->x - fig->axes->x_lim[0]), height-(margin_bottom+CGL_SCALE_Y(point->y - fig->axes->y_lim[0])));
+    cairo_move_to(cr, margin_left + CGL_SCALE_X(point->x - fig->axes->x_lim[0]), height-(margin_bottom+CGL_SCALE_Y(point->y - CGL_YLIM[0])));
     // TODO draw point if style requires it
 
-    cairo_set_source_rgba(cr, line->style->r, line->style->g, line->style->b, line->style->a * 0.8);
+    cairo_set_source_rgba(cr, line->style->r, line->style->g, line->style->b, 1.0);
 
     for (unsigned int point_i = 1; point_i < line->npoints; point_i++) {
       point = line->points[point_i];
-      cairo_line_to(cr, margin_left + CGL_SCALE_X(point->x - fig->axes->x_lim[0]), height-(margin_bottom+CGL_SCALE_Y(point->y - fig->axes->y_lim[0])));
+      cairo_line_to(cr, margin_left + CGL_SCALE_X(point->x - fig->axes->x_lim[0]), height-(margin_bottom+CGL_SCALE_Y(point->y - CGL_YLIM[0])));
     }
     cairo_stroke(cr);
 
@@ -440,6 +443,7 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
       }
     }
   }
+#undef CGL_YLIM
 #undef CGL_SCALE_Y
 #undef CGL_SCALE_X
 
