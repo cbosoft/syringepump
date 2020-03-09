@@ -360,7 +360,7 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
     cairo_stroke(cr);
 
     char ticklabel[100] = {0};
-    snprintf(ticklabel, 99, "%.02f", (i*y_tick_dp)/px_per_data_y);
+    snprintf(ticklabel, 99, "%.02f", ((((int)i)*y_tick_dp) + fig->axes->y_lim[0])/px_per_data_y);
     cairo_text_extents(cr, ticklabel, &extents);
     cairo_move_to(cr, margin_left-extents.width-10, height-margin_bottom+2-(i*y_tick_dp));
     cairo_show_text(cr, ticklabel);
@@ -375,7 +375,7 @@ gboolean cgl_painter_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
       cairo_stroke(cr);
 
       char ticklabel[100] = {0};
-      snprintf(ticklabel, 99, "%.02f", (i*alt_y_tick_dp)/px_per_data_alt_y);
+      snprintf(ticklabel, 99, "%.02f", ((((int)i)*alt_y_tick_dp) + fig->axes->alt_y_lim[0])/px_per_data_alt_y);
       cairo_text_extents(cr, ticklabel, &extents);
       cairo_move_to(cr, width-margin_right+10, height-margin_bottom+2-(i*alt_y_tick_dp));
       cairo_show_text(cr, ticklabel);
