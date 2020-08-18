@@ -328,6 +328,14 @@ GObject * get_object_safe(struct Data *data, const char *name)
 }
 
 
+const char *get_ent_str(struct Data *data, const char *name)
+{
+  GObject *ent = get_object_safe(data, name);
+  const char *rv = gtk_entry_get_text(GTK_ENTRY(ent));
+  return rv;
+}
+
+
 #define CHECK_RAD_IS_CHECKED(N) gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(get_object_safe(data, N)))
 
 // Get control option from the GUI
@@ -542,20 +550,20 @@ char *form_get_setter_params(struct Data *data, int n)
 
   if (n > 0) {
     rv = calloc(PACKET_VALUE_LEN+1, sizeof(char));
-    GObject *ent_A = get_object_safe(data, "entA");
-    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_A)), PACKET_VALUE_LEN);
+    const char *A = get_ent_str(data, "entA");
+    strncat(rv, A, PACKET_VALUE_LEN - strlen(rv));
   }
 
   if (n > 1) {
-    strncat(rv, ",", PACKET_VALUE_LEN);
-    GObject *ent_B = get_object_safe(data, "entB");
-    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_B)), PACKET_VALUE_LEN);
+    strncat(rv, ",", PACKET_VALUE_LEN - strlen(rv));
+    const char *B = get_ent_str(data, "entB");
+    strncat(rv, B, PACKET_VALUE_LEN - strlen(rv));
   }
 
   if (n > 2) {
-    strncat(rv, ",", PACKET_VALUE_LEN-1);
-    GObject *ent_C = get_object_safe(data, "entC");
-    strncat(rv, gtk_entry_get_text(GTK_ENTRY(ent_C)), PACKET_VALUE_LEN);
+    strncat(rv, ",", PACKET_VALUE_LEN - strlen(rv));
+    const char *C = get_ent_str(data, "entC");
+    strncat(rv, C, PACKET_VALUE_LEN - strlen(rv));
   }
 
   return rv;
@@ -580,14 +588,14 @@ char *form_get_pid_tuning(struct Data *data)
   char *rv = calloc(PACKET_VALUE_LEN+1, sizeof(char));
 
   if (manual) {
-    GObject *ent_KP = get_object_safe(data, "entKP");
-    GObject *ent_KI = get_object_safe(data, "entKI");
-    GObject *ent_KD = get_object_safe(data, "entKD");
-    snprintf(rv, PACKET_VALUE_LEN, "%s,%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_KP)), gtk_entry_get_text(GTK_ENTRY(ent_KI)), gtk_entry_get_text(GTK_ENTRY(ent_KD)));
+    const char *KP = get_ent_str(data, "entKP");
+    const char *KI = get_ent_str(data, "entKI");
+    const char *KD = get_ent_str(data, "entKD");
+    snprintf(rv, PACKET_VALUE_LEN, "%s,%s,%s", KP, KI, KD);
   }
   else {
-    GObject *composition_entry = get_object_safe(data, "entComposition");
-    double composition = atof(gtk_entry_get_text(GTK_ENTRY(composition_entry)));
+    const char *composition_str = get_ent_str(data, "entComposition");
+    double composition = atof(composition_str);
     unsigned int n = data->composition_data->n;
     double kp = interp(data->composition_data->cm, data->composition_data->kp, n, composition);
     double ki = interp(data->composition_data->cm, data->composition_data->ki, n, composition);
@@ -603,10 +611,10 @@ char *form_get_pid_tuning(struct Data *data)
 // get bufflen, dia from GUI
 char *form_get_bldi_packet(struct Data *data)
 {
-  GObject *ent_bl = get_object_safe(data, "entBL");
-  GObject *ent_di = get_object_safe(data, "entDI");
+  const char *bl = get_ent_str(data, "entBL");
+  const char *di = get_ent_str(data, "entDI");
   char *rv = calloc(PACKET_VALUE_LEN+1, sizeof(char));
-  snprintf(rv, PACKET_VALUE_LEN, "%s,%s", gtk_entry_get_text(GTK_ENTRY(ent_bl)), gtk_entry_get_text(GTK_ENTRY(ent_di)));
+  snprintf(rv, PACKET_VALUE_LEN, "%s,%s", bl, di);
   return rv;
 }
 
