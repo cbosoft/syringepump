@@ -15,13 +15,17 @@ static cgl_Figure *fig = NULL;
 void init_tuning_plot(struct Data *data)
 {
   fig = cgl_init_figure();
-  g_signal_connect(G_OBJECT(get_object_safe(data, "drawPlotter")), 
+  g_signal_connect(G_OBJECT(get_object_safe(data, "drawPlotter")),
       "draw", G_CALLBACK(cgl_painter_cb), fig);
-  
+
   struct CompositionTuning *cdata = data->composition_data;
-  cgl_figure_plot_vector(fig, cdata->cm, cdata->kp, cdata->n, "Kp");
-  cgl_figure_plot_vector(fig, cdata->cm, cdata->ki, cdata->n, "Ki");
-  cgl_figure_plot_vector(fig, cdata->cm, cdata->kd, cdata->n, "Kd");
+
+  if (cdata) {
+    cgl_figure_plot_vector(fig, cdata->cm, cdata->kp, cdata->n, "Kp");
+    cgl_figure_plot_vector(fig, cdata->cm, cdata->ki, cdata->n, "Ki");
+    cgl_figure_plot_vector(fig, cdata->cm, cdata->kd, cdata->n, "Kd");
+  }
+
   cgl_axes_set_ylabel(fig->axes, "Value");
   cgl_axes_set_xlabel(fig->axes, "Composition (frac CS in solvent)");
   cgl_figure_scale_axes(fig);
