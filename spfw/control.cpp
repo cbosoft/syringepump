@@ -317,7 +317,9 @@ Controller *controlInit(){
 	      ki = atof(param);
 	      param = strtok(0, ",");
 	      kd = atof(param);
-	      rv = new MeasureController(kp, ki, kd);
+        param = strtok(0, ",");
+        meas_time = (unsigned long)((param != NULL) ? atol(param) : 10);
+	      rv = new MeasureController(kp, ki, kd, meas_time);
 	      break;
       }
 

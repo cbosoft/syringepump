@@ -58,13 +58,13 @@ class MeasureController : public Controller {
   private:
     int passive;
   public:
-    MeasureController(double kp, double ki, double kd) {
+    MeasureController(double kp, double ki, double kd, unsigned long measure_time) {
       this->pid_kp = kp;
       this->pid_ki = ki;
       this->pid_kd = kd;
       this->ca = 0.0;
       this->previous_ca = 0.0;
-      this->measure_time = 10;
+      this->measure_time = measure_time;
     }
     double get_action(double setpoint, double flowrate, double force);
 };
