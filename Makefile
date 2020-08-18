@@ -59,6 +59,12 @@ endif
 DEFS += -DDATE=\"$(shell date +"%Y-%m-%d")\"
 DEFS += -DARCH=\"$(shell gcc -dumpmachine)\"
 
+## Colours
+COL_OBJ = $(shell tput setaf 3 2>/dev/null)
+COL_EXE = $(shell tput setaf 4 2>/dev/null)
+COL_RST = $(shell tput sgr0 2>/dev/null)
+COL_BLD = $(shell tput bold 2>/dev/null)
+
 
 OBJ    = src/main.o \
 				 src/callbacks.o \
@@ -80,10 +86,12 @@ echodefs:
 	@echo $(DEFS)
 
 src/%.o: src/%.c $(HDRS)
-	$(CC) $(CFLAGS) $< -c -o $@ $(DEFS)
+	@printf "$(COL_OBJ)ASSEMBLING OBJECT $@$(COL_RST)\n"
+	@$(CC) $(CFLAGS) $< -c -o $@ $(DEFS)
 
 syringepump: $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $@ $(DEFS) $(LINK)
+	@printf "$(COL_OBJ)LINKING OBJECTS TO EXECUTABLE $@$(COL_RST)\n"
+	@$(CC) $(CFLAGS) $(OBJ) -o $@ $(DEFS) $(LINK)
 
 release: syringepump
 	zip syringepump_$(shell gcc -dumpmachine).zip syringepump gui/main.ui README.md
