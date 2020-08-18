@@ -100,7 +100,7 @@ int main (int argc, char **argv)
   // SET UP
   gtk_window_set_title(GTK_WINDOW(get_object_safe(data, "winMain")), "Syringepump ("LONG_VERSION")");
   timestamp(data, 1, "Starting Syringepump (%s)", LONG_VERSION);
-  
+
 #ifndef WINDOWS
   // TODO error handling around this
   signal(SIGINT, catch);
@@ -131,6 +131,16 @@ int main (int argc, char **argv)
   // <--
 
   read_tuning_data("/usr/share/syringepump/default_tuning.csv", &data->composition_data);
+
+  if (!data->composition_data) {
+    timestamp(NULL, 0, "Error reading default tuning data: trying local");
+    read_tuning_data("default_tuning.csv", &data->composition_data);
+    if (!data->composition_data) {
+      timestamp(NULL, 0, "Error reading local runing data.");
+      exit(1);
+    }
+  }
+
   form_setter_update(data);
   get_new_log_name(data, NULL);
   init_tuning_plot(data);
@@ -143,11 +153,11 @@ int main (int argc, char **argv)
   timestamp(data, 1, "GUI started");
   gtk_main();
   timestamp(data, 1, "Freeing memory...");
-  
+
   status_free();
   composition_data_free(data->composition_data);
   free_tuning_plot();
-  
+
   if (data->logpath)
     free(data->logpath);
 
