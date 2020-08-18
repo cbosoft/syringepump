@@ -126,8 +126,13 @@ int check_form(struct Data *data)
       case FORM_CONTROL_NONE:
         break;
 
-      case FORM_CONTROL_PID:
       case FORM_CONTROL_MEAS:
+        CHECK_ENTRY_NUMBER(get_object_safe(data, "entMeasureTime"),
+           "Measure time is a required field for (passive) PID control.",
+           "Measure time must be a number (containing only numbers 0-9 and decimal points "
+            "('.').");
+        /* fall through */
+      case FORM_CONTROL_PID:
         CHECK_ENTRY_NUMBER(get_object_safe(data, "entKP"),
            "KP is a required field for PID control.",
            "KP must be a number (containing only numbers 0-9 and decimal points "
@@ -156,7 +161,7 @@ int check_form(struct Data *data)
         "Tag should not be empty; use it to describe the run in a few words.");
   }
 
-  // if tag contains spaces, periods, or underscores; they will be 
+  // if tag contains spaces, periods, or underscores; they will be
   // replaced with dashes
   // this is handled in the generate tag function.
 
@@ -293,6 +298,7 @@ void _form_set_sensitive(struct Data *data, FORM_SENSITIVITIES sensitivity_flag)
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entC")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entBL")), control);
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entDI")), control);
+  gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "entMeasureTime")), control);
 
   // connection
   gtk_widget_set_sensitive(GTK_WIDGET(get_object_safe(data, "cmbSerial")), connection);
@@ -602,6 +608,14 @@ char *form_get_pid_tuning(struct Data *data)
     double kd = interp(data->composition_data->cm, data->composition_data->kd, n, composition);
     snprintf(rv, PACKET_VALUE_LEN, "%f,%f,%f", kp, ki, kd);
   }
+
+  // If using passive/measure controller, add measure time to PID coeffs
+  if (form_get_control_type(data) == FORM_CONTROL_MEAS) {
+    const char *mt = get_ent_str(data, "entMeasureTime");
+    strncat(rv, ",", PACKET_VALUE_LEN - strlen(rv));
+    strncat(rv, mt, PACKET_VALUE_LEN - strlen(rv));
+  }
+
   return rv;
 }
 

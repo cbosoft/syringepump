@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.36.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkFileFilter" id="filefilterCSV">
@@ -10,31 +10,14 @@
   <object class="GtkApplicationWindow" id="winMain">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">5</property>
-        <property name="margin_right">5</property>
         <property name="margin_top">5</property>
         <property name="margin_bottom">5</property>
         <property name="orientation">vertical</property>
         <property name="spacing">10</property>
-        <child>
-          <object class="GtkLabel" id="lblStatus">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="use_markup">True</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkExpander" id="expControl">
             <property name="visible">True</property>
@@ -490,6 +473,51 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                     <property name="position">3</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Suspension composition.</property>
+                        <property name="label" translatable="yes">Measure time (s):</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="entMeasureTime">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="tooltip_markup" translatable="yes">&lt;b&gt;For passive control.&lt;/b&gt; This is the time the controller is active for, before turning over to passive mode. The longer this time is, the more accurate the control should be but less run time will be available in passive mode.</property>
+                        <property name="hexpand">True</property>
+                        <property name="text" translatable="yes">20</property>
+                        <property name="placeholder_text" translatable="yes">time (seconds)</property>
+                        <property name="input_purpose">number</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="padding">10</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
               </object>
             </child>
             <child type="label">
@@ -503,6 +531,18 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                 </attributes>
               </object>
             </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lblStatus">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="use_markup">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -574,8 +614,6 @@ Set K&lt;sub&gt;D&lt;/sub&gt; to zero to disable (recommended).</property>
                   <object class="GtkGrid">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_left">10</property>
-                    <property name="margin_right">10</property>
                     <property name="row_spacing">10</property>
                     <property name="column_spacing">10</property>
                     <child>
@@ -1086,8 +1124,8 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="double_buffered">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
+                <property name="margin_start">10</property>
+                <property name="margin_end">10</property>
                 <property name="margin_top">10</property>
                 <property name="margin_bottom">10</property>
                 <property name="hexpand">True</property>
@@ -1116,7 +1154,6 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
           <object class="GtkButtonBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_right">10</property>
             <property name="spacing">10</property>
             <property name="layout_style">end</property>
             <child>
@@ -1155,6 +1192,9 @@ Spaces (' '), full-stops ('.'), and underscores ('_') are not allowed and will b
           </packing>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </object>
   <object class="GtkFileFilter" id="filefilterJson">
