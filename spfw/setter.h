@@ -1,6 +1,6 @@
 typedef double (*setter_func)(long time);
 
-double sqaure(long time);
+double square(long time);
 double sine(long time);
 double ramp(long time);
 double step(long time);
