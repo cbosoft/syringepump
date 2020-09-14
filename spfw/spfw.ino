@@ -100,6 +100,8 @@ void loop ()
     softReset();
   }
 
-  if (Serial.available())
+  if (Serial.available()){
+    motorSetDC(0);
     softReset();
+  }
 }
